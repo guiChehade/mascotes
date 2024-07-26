@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { database } from '../firebase';
 import styles from './PetForm.module.css';
+import InputMask from 'react-input-mask';
 
 const PetForm = () => {
   const [formData, setFormData] = useState({
@@ -45,18 +46,42 @@ const PetForm = () => {
       {Object.keys(formData).map((key) => (
         <div className={styles.formGroup} key={key}>
           <label className={styles.label}>{key}</label>
-          <input
+          <InputMask
             type="text"
             name={key}
             value={formData[key]}
             onChange={handleChange}
             className={styles.input}
+            mask={getInputMask(key)}
           />
         </div>
       ))}
       <button type="submit" className={styles.button}>Inserir</button>
     </form>
   );
+};
+
+const getInputMask = (key) => {
+  switch (key) {
+    case 'cpf':
+      return '999.999.999-99';
+    case 'rg':
+      return '99.999.999-9';
+    case 'celular_tutor':
+    case 'celular_vet_comercial':
+    case 'celular_vet_pessoal':
+      return '(99) 99999-9999';
+    case 'valor':
+    case 'inspecao':
+    case 'banho':
+    case 'hotel':
+    case 'passeio':
+    case 'adestramento':
+    case 'vet':
+      return 'R$ 999,99';
+    default:
+      return '';
+  }
 };
 
 export default PetForm;
