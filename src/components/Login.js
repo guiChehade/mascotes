@@ -1,6 +1,6 @@
 // src/components/Login.js
 import React, { useState } from 'react';
-import { auth } from '../firebase'; // Certifique-se de configurar o Firebase no projeto
+import { auth, database } from '../firebase';
 
 const Login = () => {
   const [email, setEmail] = useState('');
