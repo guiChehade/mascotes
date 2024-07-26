@@ -1,17 +1,20 @@
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/database';
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyB2OWJsfmLFKEQuz99V9UMhRmiv7jqRGTI",
-  authDomain: "parque-dos-mascotes.firebaseapp.com",
-  databaseURL:"https://parque-dos-mascotes.firebaseio.com",
-  projectId: "parque-dos-mascotes",
-  storageBucket: "parque-dos-mascotes.appspot.com",
-  messagingSenderId: "979810961225",
-  appId: "1:979810961225:web:713b8925a3d7d2a98cfc98"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
+
+export const auth = firebase.auth();
+export const database = firebase.database();
+
+export default firebase;

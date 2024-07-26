@@ -1,6 +1,6 @@
-// src/components/PetForm.js
 import React, { useState } from 'react';
-import firebase from '../firebase'; // Certifique-se de configurar o Firebase no projeto
+import { database } from '../firebase';
+import styles from './PetForm.module.css';
 
 const PetForm = () => {
   const [formData, setFormData] = useState({
@@ -35,25 +35,26 @@ const PetForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    firebase.database().ref('pets').push(formData)
+    database.ref('pets').push(formData)
       .then(() => alert('Mascotinho adicionado com sucesso!'))
       .catch((error) => alert('Erro ao adicionar mascotinho: ', error));
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className={styles.form}>
       {Object.keys(formData).map((key) => (
-        <div className="form-group" key={key}>
-          <label>{key}</label>
+        <div className={styles.formGroup} key={key}>
+          <label className={styles.label}>{key}</label>
           <input
             type="text"
             name={key}
             value={formData[key]}
             onChange={handleChange}
+            className={styles.input}
           />
         </div>
       ))}
-      <button type="submit">Inserir</button>
+      <button type="submit" className={styles.button}>Inserir</button>
     </form>
   );
 };

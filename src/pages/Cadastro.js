@@ -1,8 +1,9 @@
 import React from 'react';
 import PetForm from '../components/PetForm';
+import styles from './Cadastro.module.css';
 
 const Cadastro = () => (
-  <div>
+  <div className={styles.cadastro}>
     <h1>Cadastro de Mascotinhos</h1>
     <PetForm />
   </div>

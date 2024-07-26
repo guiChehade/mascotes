@@ -7,6 +7,7 @@ import Cadastro from './pages/Cadastro';
 import Controle from './pages/Controle';
 import Financas from './pages/Financas';
 import Login from './components/Login';
+import './App.module.css';
 
 function App() {
   return (

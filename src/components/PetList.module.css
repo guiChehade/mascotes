@@ -1,0 +1,15 @@
+.listContainer {
+    padding: 20px;
+  }
+  
+  .petItem {
+    background-color: #f4f4f4;
+    margin-bottom: 10px;
+    padding: 15px;
+    border-radius: 5px;
+  }
+  
+  .petItem p {
+    margin: 5px 0;
+  }
+  
