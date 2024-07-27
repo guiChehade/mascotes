@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Button from '../components/Button';
-import '../dashboard.css';
+import '../styles/dashboard.css';
 
 const Dashboard = () => (
   <div className="dashboard">

@@ -1,5 +1,5 @@
 import React from 'react';
-import '../financas.css';
+import '../styles/financas.css';
 
 const Financas = () => (
   <div className="financas">
