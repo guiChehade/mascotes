@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { database } from '../firebase';
+import { firestore } from '../firebase';
 import styles from './PetList.module.css';
 
 const PetList = () => {
@@ -7,7 +7,7 @@ const PetList = () => {
 
   useEffect(() => {
     const fetchPets = async () => {
-      const snapshot = await database.ref('pets').once('value');
+      const snapshot = await firestore.ref('pets').once('value');
       const petsData = snapshot.val();
       const petsArray = Object.keys(petsData).map(key => ({
         id: key,

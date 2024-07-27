@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { database } from '../firebase';
+import { firestore } from '../firebase';
 import styles from './PetForm.module.css';
 import InputMask from 'react-input-mask';
 
@@ -36,7 +36,7 @@ const PetForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    database.ref('pets').push(formData)
+    firestore.ref('pets').push(formData)
       .then(() => alert('Mascotinho adicionado com sucesso!'))
       .catch((error) => alert('Erro ao adicionar mascotinho: ', error));
   };
