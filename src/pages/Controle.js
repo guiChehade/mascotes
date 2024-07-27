@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { firestore } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
-import styles from './Controle.module.css';
+import '../styles/Controle.css';
 import Button from '../components/Button';
 
 const Controle = () => {
@@ -21,11 +21,11 @@ const Controle = () => {
   }, []);
 
   return (
-    <div className={styles.controle}>
+    <div className="controle">
       <h1>Controle de Mascotinhos</h1>
-      <div className={styles.petList}>
+      <div className="petList">
         {pets.map(pet => (
-          <div key={pet.id} className={styles.petCard}>
+          <div key={pet.id} className="petCard">
             <p><strong>Mascotinho:</strong> {pet.mascotinho}</p>
             <p><strong>Tutor:</strong> {pet.tutor}</p>
             <Button onClick={() => handleSelectPet(pet.id)}>Selecionar</Button>
