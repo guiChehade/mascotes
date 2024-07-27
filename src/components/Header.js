@@ -4,17 +4,16 @@ import '../styles/header.css';
 
 const Header = ({ toggleTheme }) => (
   <header className="header">
-    <div className="header-logo">
-      <span role="img" aria-label="dog">🐶</span>
-      <h1>ERP Mascotinhos</h1>
-    </div>
-    <div className="header-buttons">
-      <button onClick={toggleTheme} className="theme-toggle-button">
-        <span role="img" aria-label="moon">🌜</span>
-      </button>
-      <Link to="/login">Login</Link>
-      <Link to="/register">Register</Link>
-    </div>
+    <div className="logo">🐶</div>
+    <nav className="nav">
+      <ul className="ul">
+        <li className="li"><Link className="link" to="/">Início</Link></li>
+        <li className="li"><Link className="link" to="/cadastro">Cadastro</Link></li>
+        <li className="li"><Link className="link" to="/controle">Controle</Link></li>
+        <li className="li"><Link className="link" to="/financas">Finanças</Link></li>
+      </ul>
+    </nav>
+    <button className="themeToggle" onClick={toggleTheme}>🌗</button>
   </header>
 );
 
