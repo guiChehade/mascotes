@@ -32,13 +32,13 @@ function App() {
         <Header toggleTheme={toggleTheme} />
         <div className="container" style={{ marginTop: '100px', marginBottom: '60px' }}>
           <Routes>
+            <Route path="/" element={<Home isAuthenticated={isAuthenticated} />} />
             <Route path="/cadastro" element={<Cadastro />} />
             <Route path="/controle" element={<Controle />} />
             <Route path="/financas" element={<Financas />} />
             <Route path="/login" element={<Login setAuthenticated={setAuthenticated} />} />
             <Route path="/register" element={<Register />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/" element={<Home isAuthenticated={isAuthenticated} />} />
           </Routes>
         </div>
         <Footer />

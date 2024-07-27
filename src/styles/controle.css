@@ -1,21 +1,34 @@
 .controle {
-  text-align: center;
-  padding: 50px;
-}
-
-.petList {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.petCard {
-  background-color: var(--input-background);
-  color: var(--text-color);
-  border: 1px solid var(--input-border);
-  border-radius: 10px;
   padding: 20px;
-  margin: 10px;
-  width: 200px;
+}
+
+.pets-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.pet-card {
+  background-color: var(--button-background);
+  padding: 20px;
+  border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.pet-card h2 {
+  margin-top: 0;
+}
+
+.pet-card button {
+  background-color: var(--button-color);
+  color: var(--background-color);
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.pet-card button:hover {
+  background-color: var(--button-hover-background);
 }
