@@ -1,24 +1,22 @@
 .header {
   background-color: var(--primary-color);
   color: var(--button-color);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   padding: 20px;
+  text-align: center;
   position: fixed;
-  top: 0;
   width: 100%;
   z-index: 1000;
+  top: 0;
 }
 
 .header-logo {
   display: flex;
+  justify-content: space-between;
   align-items: center;
 }
 
 .header-logo img {
   height: 40px;
-  margin-right: 10px;
 }
 
 .header-buttons {
@@ -38,4 +36,15 @@
 
 .header-buttons button:hover {
   background-color: var(--button-hover-background);
+}
+
+.theme-toggle-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.dog-icon {
+  height: 40px;
+  margin-right: 10px;
 }

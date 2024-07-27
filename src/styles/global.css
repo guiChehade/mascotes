@@ -1,13 +1,13 @@
 :root {
-  --primary-color: #2a9d8f;
-  --secondary-color: #e9c46a;
-  --background-color: #f4f4f9;
-  --text-color: #264653;
-  --input-background: #fff;
-  --input-border: #ccc;
-  --button-background: #2a9d8f;
-  --button-hover-background: #21867a;
-  --button-color: #fff;
+  --primary-color: #1f1f1f;
+  --secondary-color: #2a2a2a;
+  --background-color: #121212;
+  --text-color: #ffffff;
+  --input-background: #2a2a2a;
+  --input-border: #555555;
+  --button-background: #3a3a3a;
+  --button-hover-background: #4a4a4a;
+  --button-color: #ffffff;
 }
 
 body {
@@ -68,4 +68,61 @@ footer {
 
 .header-buttons button:hover {
   background-color: var(--button-hover-background);
+}
+
+.footer {
+  background-color: var(--primary-color);
+  color: var(--button-color);
+  text-align: center;
+  padding: 20px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.button {
+  background-color: var(--button-background);
+  color: var(--button-color);
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  text-align: center;
+  display: block;
+  margin: 10px auto;
+  width: 100%;
+  max-width: 360px;
+}
+
+.button:hover {
+  background-color: var(--button-hover-background);
+}
+
+.form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 50px;
+  background-color: var(--input-background);
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.input {
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--input-border);
+  background-color: var(--input-background);
 }

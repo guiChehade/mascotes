@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -12,11 +12,18 @@ import Dashboard from './pages/Dashboard';
 import './styles/global.css';
 
 function App() {
-  const [theme, setTheme] = useState('light-mode');
+  const [theme, setTheme] = useState('dark-mode');
   const [isAuthenticated, setAuthenticated] = useState(false);
 
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') || 'dark-mode';
+    setTheme(savedTheme);
+  }, []);
+
   const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === 'light-mode' ? 'dark-mode' : 'light-mode'));
+    const newTheme = theme === 'light-mode' ? 'dark-mode' : 'light-mode';
+    setTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
   };
 
   return (
