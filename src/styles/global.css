@@ -1,65 +1,75 @@
 :root {
-    --background-color: #121212;
-    --text-color: #ffffff;
-    --button-background: #1f1f1f;
-    --button-color: #ffffff;
-    --button-hover-background: #333333;
-  }
-  
-  .light-mode {
-    --background-color: #ffffff;
-    --text-color: #000000;
-    --button-background: #f1f1f1;
-    --button-color: #000000;
-    --button-hover-background: #dddddd;
-  }
-  
-  body {
-    margin: 0;
-    padding: 0;
-    font-family: 'DM Sans', sans-serif;
-    background-color: var(--background-color);
-    color: var(--text-color);
-  }
-  
-  button {
-    background-color: var(--button-background);
-    color: var(--button-color);
-    border: none;
-    border-radius: 10px;
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  button:hover {
-    background-color: var(--button-hover-background);
-  }
-  
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
-  .card {
-    background-color: var(--button-background);
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  input, label {
-    width: 100%;
-    display: block;
-  }
-  
-  input {
-    padding: 10px;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    border-radius: 10px;
-    border: 1px solid var(--button-hover-background);
-  }
-  
+  --background-color: #121212;
+  --text-color: #ffffff;
+  --button-background: #1f1f1f;
+  --button-color: #ffffff;
+  --button-hover-background: #333333;
+}
+
+.light-mode {
+  --background-color: #ffffff;
+  --text-color: #000000;
+  --button-background: #f1f1f1;
+  --button-color: #000000;
+  --button-hover-background: #dddddd;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'DM Sans', sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+button {
+  background-color: var(--button-background);
+  color: var(--button-color);
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: var(--button-hover-background);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.card {
+  background-color: var(--button-background);
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+input, label {
+  width: 100%;
+  display: block;
+}
+
+input {
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  border: 1px solid var(--button-hover-background);
+}
+
+.header, .footer {
+  background-color: var(--button-background);
+  color: var(--button-color);
+}
+
+.theme-toggle {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+}

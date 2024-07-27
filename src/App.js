@@ -7,6 +7,7 @@ import Cadastro from './pages/Cadastro';
 import Controle from './pages/Controle';
 import Financas from './pages/Financas';
 import Login from './components/Login';
+import Register from './components/Register';
 import './styles/global.css';
 
 function App() {
@@ -19,16 +20,14 @@ function App() {
   return (
     <div className={theme}>
       <Router>
-        <Header />
-        <button onClick={toggleTheme} className="theme-toggle">
-          Toggle Theme
-        </button>
+        <Header toggleTheme={toggleTheme} />
         <div className="container">
           <Routes>
             <Route path="/cadastro" element={<Cadastro />} />
             <Route path="/controle" element={<Controle />} />
             <Route path="/financas" element={<Financas />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
             <Route path="/" element={<Home />} />
           </Routes>
         </div>

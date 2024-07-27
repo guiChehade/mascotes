@@ -1,10 +1,9 @@
 .footer {
-    background-color: #282c34;
-    padding: 20px;
-    color: white;
-    text-align: center;
-    position: fixed;
-    width: 100%;
-    bottom: 0;
-  }
-  
+  background-color: var(--button-background);
+  color: var(--button-color);
+  padding: 20px;
+  text-align: center;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+}

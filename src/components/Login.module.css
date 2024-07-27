@@ -1,0 +1,49 @@
+.loginContainer {
+    text-align: center;
+    padding: 50px;
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .input {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 10px;
+    border: 1px solid var(--button-hover-background);
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .button {
+    background-color: var(--button-background);
+    color: var(--button-color);
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+    max-width: 360px;
+    text-align: center;
+    display: block;
+    margin: 10px auto;
+  }
+  
+  .button:hover {
+    background-color: var(--button-hover-background);
+  }
+  
+  .link {
+    color: var(--button-color);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  
+  .link:hover {
+    color: var(--button-hover-background);
+  }
+  

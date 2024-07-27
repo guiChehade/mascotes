@@ -1,10 +1,18 @@
 .header {
-  background-color: #282c34;
+  background-color: var(--button-background);
+  color: var(--button-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 20px;
-  color: white;
+}
+
+.logo {
+  font-size: 24px;
 }
 
 .nav {
+  flex-grow: 1;
   display: flex;
   justify-content: center;
 }
@@ -13,6 +21,7 @@
   list-style: none;
   padding: 0;
   display: flex;
+  margin: 0;
 }
 
 .li {
@@ -20,6 +29,19 @@
 }
 
 .link {
-  color: #61dafb;
+  color: var(--button-color);
   text-decoration: none;
+  transition: color 0.3s;
+}
+
+.link:hover {
+  color: var(--button-hover-background);
+}
+
+.themeToggle {
+  background: none;
+  border: none;
+  color: var(--button-color);
+  font-size: 24px;
+  cursor: pointer;
 }
