@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Header.module.css';
-import logo from '../assets/logo.png';
+import logo from '../assets/logo.jpeg';
 
 const Header = ({ toggleTheme }) => (
   <header className={styles.header}>
