@@ -30,7 +30,7 @@ function App() {
     <div className={theme}>
       <Router>
         <Header toggleTheme={toggleTheme} />
-        <div className="container" style={{ marginTop: '100px', marginBottom: '60px' }}>
+        <div className="container">
           <Routes>
             <Route path="/cadastro" element={<Cadastro />} />
             <Route path="/controle" element={<Controle />} />
