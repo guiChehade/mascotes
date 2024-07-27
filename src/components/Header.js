@@ -10,7 +10,7 @@ const Header = ({ toggleTheme }) => (
     </div>
     <div className="header-buttons">
       <button onClick={toggleTheme} className="theme-toggle-button">
-        <span role="img" aria-label="moon">🌙</span>
+        <span role="img" aria-label="moon">🌜</span>
       </button>
       <Link to="/login">Login</Link>
       <Link to="/register">Register</Link>

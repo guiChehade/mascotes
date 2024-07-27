@@ -1,58 +1,28 @@
 :root {
-  --primary-color: #1f1f1f;
-  --secondary-color: #2a2a2a;
   --background-color: #121212;
   --text-color: #ffffff;
-  --input-background: #2a2a2a;
-  --input-border: #555555;
-  --button-background: #3a3a3a;
-  --button-hover-background: #4a4a4a;
+  --button-background: #1f1f1f;
   --button-color: #ffffff;
+  --button-hover-background: #333333;
+}
+
+.light-mode {
+  --background-color: #ffffff;
+  --text-color: #000000;
+  --button-background: #f1f1f1;
+  --button-color: #000000;
+  --button-hover-background: #dddddd;
 }
 
 body {
   margin: 0;
+  padding: 0;
   font-family: 'DM Sans', sans-serif;
   background-color: var(--background-color);
   color: var(--text-color);
 }
 
-.container {
-  margin: 100px auto 60px;
-  max-width: 1200px;
-  padding: 0 20px;
-}
-
-header, footer {
-  background-color: var(--primary-color);
-  color: var(--button-color);
-  padding: 20px;
-  text-align: center;
-  position: fixed;
-  width: 100%;
-  z-index: 1000;
-}
-
-header {
-  top: 0;
-}
-
-footer {
-  bottom: 0;
-}
-
-.footer {
-  background-color: var(--primary-color);
-  color: var(--button-color);
-  text-align: center;
-  padding: 20px;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  z-index: 1000;
-}
-
-.button {
+button {
   background-color: var(--button-background);
   color: var(--button-color);
   border: none;
@@ -60,40 +30,46 @@ footer {
   padding: 10px 20px;
   cursor: pointer;
   transition: background-color 0.3s;
-  text-align: center;
-  display: block;
-  margin: 10px auto;
-  width: 100%;
-  max-width: 360px;
 }
 
-.button:hover {
+button:hover {
   background-color: var(--button-hover-background);
 }
 
-.form {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  padding: 50px;
-  background-color: var(--input-background);
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.card {
+  background-color: var(--button-background);
+  padding: 20px;
   border-radius: 10px;
+  margin-bottom: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.formGroup {
-  display: flex;
-  flex-direction: column;
+input, label {
+  width: 100%;
+  display: block;
 }
 
-.label {
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-.input {
+input {
   padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 15px;
   border-radius: 10px;
-  border: 1px solid var(--input-border);
-  background-color: var(--input-background);
+  border: 1px solid var(--button-hover-background);
+}
+
+.header, .footer {
+  background-color: var(--button-background);
+  color: var(--button-color);
+}
+
+.theme-toggle {
+  position: absolute;
+  right: 20px;
+  top: 20px;
 }
