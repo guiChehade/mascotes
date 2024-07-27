@@ -1,5 +1,5 @@
 .header {
-  background-color: var(--button-background);
+  background-color: var(--primary-color);
   color: var(--button-color);
   display: flex;
   justify-content: space-between;
@@ -11,41 +11,31 @@
   z-index: 1000;
 }
 
-.logo {
-  font-size: 24px;
-}
-
-.nav {
-  flex-grow: 1;
+.header-logo {
   display: flex;
-  justify-content: center;
+  align-items: center;
 }
 
-.ul {
-  list-style: none;
-  padding: 0;
+.header-logo img {
+  height: 40px;
+  margin-right: 10px;
+}
+
+.header-buttons {
   display: flex;
-  margin: 0;
+  gap: 10px;
 }
 
-.li {
-  margin-right: 20px;
-}
-
-.link {
-  color: var(--button-color);
-  text-decoration: none;
-  transition: color 0.3s;
-}
-
-.link:hover {
-  color: var(--button-hover-background);
-}
-
-.themeToggle {
-  background: none;
+.header-buttons button {
+  background-color: var(--button-background);
   border: none;
+  border-radius: 10px;
   color: var(--button-color);
-  font-size: 24px;
+  padding: 10px 20px;
   cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.header-buttons button:hover {
+  background-color: var(--button-hover-background);
 }

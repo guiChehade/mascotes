@@ -2,6 +2,10 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
+  padding: 50px;
+  background-color: var(--input-background);
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .formGroup {
@@ -11,12 +15,14 @@
 
 .label {
   margin-bottom: 5px;
+  font-weight: bold;
 }
 
 .input {
   padding: 10px;
   border-radius: 10px;
-  border: 1px solid var(--button-hover-background);
+  border: 1px solid var(--input-border);
+  background-color: var(--input-background);
 }
 
 .button {
@@ -31,5 +37,5 @@
   max-width: 360px;
   text-align: center;
   display: block;
-  margin: 10px auto;
+  margin: 20px auto;
 }

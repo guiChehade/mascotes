@@ -6,11 +6,11 @@
   padding: 10px 20px;
   cursor: pointer;
   transition: background-color 0.3s;
-  width: 100%;
-  max-width: 360px;
   text-align: center;
   display: block;
   margin: 10px auto;
+  width: 100%;
+  max-width: 360px;
 }
 
 .button:hover {

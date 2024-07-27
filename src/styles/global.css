@@ -1,75 +1,71 @@
 :root {
-  --background-color: #121212;
-  --text-color: #ffffff;
-  --button-background: #1f1f1f;
-  --button-color: #ffffff;
-  --button-hover-background: #333333;
-}
-
-.light-mode {
-  --background-color: #ffffff;
-  --text-color: #000000;
-  --button-background: #f1f1f1;
-  --button-color: #000000;
-  --button-hover-background: #dddddd;
+  --primary-color: #2a9d8f;
+  --secondary-color: #e9c46a;
+  --background-color: #f4f4f9;
+  --text-color: #264653;
+  --input-background: #fff;
+  --input-border: #ccc;
+  --button-background: #2a9d8f;
+  --button-hover-background: #21867a;
+  --button-color: #fff;
 }
 
 body {
   margin: 0;
-  padding: 0;
   font-family: 'DM Sans', sans-serif;
   background-color: var(--background-color);
   color: var(--text-color);
 }
 
-button {
-  background-color: var(--button-background);
+.container {
+  margin: 100px auto 60px;
+  max-width: 1200px;
+  padding: 0 20px;
+}
+
+header, footer {
+  background-color: var(--primary-color);
   color: var(--button-color);
+  padding: 20px;
+  text-align: center;
+  position: fixed;
+  width: 100%;
+  z-index: 1000;
+}
+
+header {
+  top: 0;
+}
+
+footer {
+  bottom: 0;
+}
+
+.header-logo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-logo img {
+  height: 40px;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.header-buttons button {
+  background-color: var(--button-background);
   border: none;
   border-radius: 10px;
+  color: var(--button-color);
   padding: 10px 20px;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
-button:hover {
+.header-buttons button:hover {
   background-color: var(--button-hover-background);
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.card {
-  background-color: var(--button-background);
-  padding: 20px;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-input, label {
-  width: 100%;
-  display: block;
-}
-
-input {
-  padding: 10px;
-  margin-top: 5px;
-  margin-bottom: 15px;
-  border-radius: 10px;
-  border: 1px solid var(--button-hover-background);
-}
-
-.header, .footer {
-  background-color: var(--button-background);
-  color: var(--button-color);
-}
-
-.theme-toggle {
-  position: absolute;
-  right: 20px;
-  top: 20px;
 }

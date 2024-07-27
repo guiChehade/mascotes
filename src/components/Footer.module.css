@@ -1,9 +1,10 @@
 .footer {
-  background-color: var(--button-background);
+  background-color: var(--primary-color);
   color: var(--button-color);
-  padding: 20px;
   text-align: center;
+  padding: 20px;
   position: fixed;
-  width: 100%;
   bottom: 0;
+  width: 100%;
+  z-index: 1000;
 }

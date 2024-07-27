@@ -1,20 +1,12 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Button from '../components/Button';
 import styles from './Home.module.css';
 
-const Home = ({ isAuthenticated }) => {
-  const navigate = useNavigate();
-
-  React.useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/login');
-    }
-  }, [isAuthenticated, navigate]);
-
-  return (
-    <div className={styles.home}>
-      <h1>Bem-vindo ao ERP Mascotinhos</h1>
+const Home = ({ isAuthenticated }) => (
+  <div className={styles.home}>
+    <h1>Bem-vindo ao ERP Mascotinhos</h1>
+    {isAuthenticated && (
       <div className={styles.buttons}>
         <div className={styles.buttonWrapper}>
           <Link to="/"><Button>Início</Button></Link>
@@ -25,8 +17,8 @@ const Home = ({ isAuthenticated }) => {
           <Link to="/financas"><Button>Finanças</Button></Link>
         </div>
       </div>
-    </div>
-  );
-};
+    )}
+  </div>
+);
 
 export default Home;

@@ -1,20 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Header.module.css';
-import Button from './Button';
+import logo from '../assets/logo.png';
 
 const Header = ({ toggleTheme }) => (
   <header className={styles.header}>
-    <div className={styles.logo}>🐶</div>
-    <nav className={styles.nav}>
-      <ul className={styles.ul}>
-        <li className={styles.li}><Link className={styles.link} to="/">Início</Link></li>
-        <li className={styles.li}><Link className={styles.link} to="/cadastro">Cadastro</Link></li>
-        <li className={styles.li}><Link className={styles.link} to="/controle">Controle</Link></li>
-        <li className={styles.li}><Link className={styles.link} to="/financas">Finanças</Link></li>
-      </ul>
-    </nav>
-    <button className={styles.themeToggle} onClick={toggleTheme}>🌗</button>
+    <div className={styles.headerLogo}>
+      <img src={logo} alt="Logo" />
+      <h1>ERP Mascotinhos</h1>
+    </div>
+    <div className={styles.headerButtons}>
+      <button onClick={toggleTheme}>Toggle Theme</button>
+      <Link to="/login">Login</Link>
+      <Link to="/register">Register</Link>
+    </div>
   </header>
 );
 
