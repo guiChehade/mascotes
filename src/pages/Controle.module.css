@@ -1,7 +1,6 @@
 .controle {
   text-align: center;
   padding: 50px;
-  color: var(--text-color);
 }
 
 .petList {
@@ -12,10 +11,11 @@
 
 .petCard {
   background-color: var(--button-background);
-  padding: 20px;
+  color: var(--button-color);
+  border: none;
   border-radius: 10px;
+  padding: 20px;
   margin: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 200px;
-  text-align: left;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }

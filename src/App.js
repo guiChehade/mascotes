@@ -13,6 +13,7 @@ import './styles/global.css';
 
 function App() {
   const [theme, setTheme] = useState('dark-mode');
+  const [isAuthenticated, setAuthenticated] = useState(false);
 
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === 'dark-mode' ? 'light-mode' : 'dark-mode'));
@@ -27,10 +28,10 @@ function App() {
             <Route path="/cadastro" element={<Cadastro />} />
             <Route path="/controle" element={<Controle />} />
             <Route path="/financas" element={<Financas />} />
-            <Route path="/login" element={<Login />} />
+            <Route path="/login" element={<Login setAuthenticated={setAuthenticated} />} />
             <Route path="/register" element={<Register />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Home isAuthenticated={isAuthenticated} />} />
           </Routes>
         </div>
         <Footer />

@@ -3,7 +3,7 @@ import { auth } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 import styles from './Login.module.css';
 
-const Login = () => {
+const Login = ({ setAuthenticated }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -13,7 +13,8 @@ const Login = () => {
     try {
       await auth.signInWithEmailAndPassword(email, password);
       alert("Login bem-sucedido!");
-      navigate('/dashboard');  // Redirecionar após login bem-sucedido
+      setAuthenticated(true);
+      navigate('/dashboard');
     } catch (error) {
       alert("Erro ao fazer login: " + error.message);
     }

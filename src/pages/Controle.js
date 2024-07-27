@@ -26,15 +26,18 @@ const Controle = () => {
       <div className={styles.petList}>
         {pets.map(pet => (
           <div key={pet.id} className={styles.petCard}>
-            <p><strong>ID:</strong> {pet.id}</p>
-            <p><strong>Nome:</strong> {pet.nome}</p>
+            <p><strong>Mascotinho:</strong> {pet.mascotinho}</p>
             <p><strong>Tutor:</strong> {pet.tutor}</p>
-            <Button>Selecionar</Button>
+            <Button onClick={() => handleSelectPet(pet.id)}>Selecionar</Button>
           </div>
         ))}
       </div>
     </div>
   );
+
+  function handleSelectPet(petId) {
+    // Lógica para selecionar o pet e exibir o formulário
+  }
 };
 
 export default Controle;
