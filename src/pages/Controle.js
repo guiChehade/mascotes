@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { database } from '../firebase';
-import { ref, get } from 'firebase/database';
+import { firestore } from '../firebase';
+import { collection, getDocs } from 'firebase/firestore';
 import styles from './Controle.module.css';
 import Button from '../components/Button';
 
@@ -9,16 +9,13 @@ const Controle = () => {
 
   useEffect(() => {
     const fetchPets = async () => {
-      const petsRef = ref(database, 'pets');
-      const snapshot = await get(petsRef);
-      const petsData = snapshot.val();
-      if (petsData) {
-        const petsArray = Object.keys(petsData).map(key => ({
-          id: key,
-          ...petsData[key]
-        }));
-        setPets(petsArray);
-      }
+      const petsCollection = collection(firestore, 'pets');
+      const petsSnapshot = await getDocs(petsCollection);
+      const petsList = petsSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setPets(petsList);
     };
     fetchPets();
   }, []);
