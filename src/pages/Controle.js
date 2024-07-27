@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { database } from '../firebase';
+import { ref, get } from 'firebase/database';
 import styles from './Controle.module.css';
 import Button from '../components/Button';
 
@@ -8,7 +9,8 @@ const Controle = () => {
 
   useEffect(() => {
     const fetchPets = async () => {
-      const snapshot = await database.ref('pets').once('value');
+      const petsRef = ref(database, 'pets');
+      const snapshot = await get(petsRef);
       const petsData = snapshot.val();
       if (petsData) {
         const petsArray = Object.keys(petsData).map(key => ({
