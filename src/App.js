@@ -8,6 +8,7 @@ import Controle from './pages/Controle';
 import Financas from './pages/Financas';
 import Login from './components/Login';
 import Register from './components/Register';
+import Dashboard from './pages/Dashboard';
 import './styles/global.css';
 
 function App() {
@@ -21,13 +22,14 @@ function App() {
     <div className={theme}>
       <Router>
         <Header toggleTheme={toggleTheme} />
-        <div className="container">
+        <div className="container" style={{ marginTop: '100px', marginBottom: '60px' }}>
           <Routes>
             <Route path="/cadastro" element={<Cadastro />} />
             <Route path="/controle" element={<Controle />} />
             <Route path="/financas" element={<Financas />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/" element={<Home />} />
           </Routes>
         </div>

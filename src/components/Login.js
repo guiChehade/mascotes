@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import { auth } from '../firebase';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styles from './Login.module.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       await auth.signInWithEmailAndPassword(email, password);
       alert("Login bem-sucedido!");
+      navigate('/dashboard');  // Redirecionar após login bem-sucedido
     } catch (error) {
       alert("Erro ao fazer login: " + error.message);
     }
@@ -37,7 +39,7 @@ const Login = () => {
         />
         <button type="submit" className={styles.button}>Login</button>
       </form>
-      <p>Não tem uma conta? <Link to="/register" className={styles.link}>Registrar</Link></p>
+      <p>Não tem uma conta? <a href="/register" className={styles.link}>Registrar</a></p>
     </div>
   );
 };

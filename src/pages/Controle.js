@@ -10,11 +10,13 @@ const Controle = () => {
     const fetchPets = async () => {
       const snapshot = await database.ref('pets').once('value');
       const petsData = snapshot.val();
-      const petsArray = Object.keys(petsData).map(key => ({
-        id: key,
-        ...petsData[key]
-      }));
-      setPets(petsArray);
+      if (petsData) {
+        const petsArray = Object.keys(petsData).map(key => ({
+          id: key,
+          ...petsData[key]
+        }));
+        setPets(petsArray);
+      }
     };
     fetchPets();
   }, []);
