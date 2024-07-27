@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { firestore } from '../firebase';
 import { collection, addDoc } from 'firebase/firestore';
-import '../styles/Cadastro.css';
+import '../styles/cadastro.css';
 
 const Cadastro = () => {
   const [formData, setFormData] = useState({

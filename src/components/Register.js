@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { auth } from '../firebase';
-import styles from './Register.module.css';
+import '../styles/register.css';
 
 const Register = () => {
   const [email, setEmail] = useState('');
@@ -17,24 +17,24 @@ const Register = () => {
   };
 
   return (
-    <div className={styles.registerContainer}>
+    <div className="register-container">
       <h2>Registrar</h2>
-      <form onSubmit={handleRegister} className={styles.form}>
+      <form onSubmit={handleRegister} className="form">
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
-          className={styles.input}
+          className="input"
         />
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Senha"
-          className={styles.input}
+          className="input"
         />
-        <button type="submit" className={styles.button}>Registrar</button>
+        <button type="submit" className="button">Registrar</button>
       </form>
     </div>
   );

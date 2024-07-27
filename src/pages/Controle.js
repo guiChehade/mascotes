@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { firestore } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
-import '../styles/Controle.css';
+import '../styles/controle.css';
 import Button from '../components/Button';
 
 const Controle = () => {

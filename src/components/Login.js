@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { auth } from '../firebase';
 import { useNavigate } from 'react-router-dom';
-import styles from './Login.module.css';
+import '../styles/login.css';
 
 const Login = ({ setAuthenticated }) => {
   const [email, setEmail] = useState('');
@@ -21,26 +21,26 @@ const Login = ({ setAuthenticated }) => {
   };
 
   return (
-    <div className={styles.loginContainer}>
+    <div className="login-container">
       <h2>Login</h2>
-      <form onSubmit={handleLogin} className={styles.form}>
+      <form onSubmit={handleLogin} className="form">
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
-          className={styles.input}
+          className="input"
         />
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Senha"
-          className={styles.input}
+          className="input"
         />
-        <button type="submit" className={styles.button}>Login</button>
+        <button type="submit" className="button">Login</button>
       </form>
-      <p>Não tem uma conta? <a href="/register" className={styles.link}>Registrar</a></p>
+      <p>Não tem uma conta? <a href="/register" className="link">Registrar</a></p>
     </div>
   );
 };

@@ -12,11 +12,11 @@ import Dashboard from './pages/Dashboard';
 import './styles/global.css';
 
 function App() {
-  const [theme, setTheme] = useState('dark-mode');
+  const [theme, setTheme] = useState('light-mode');
   const [isAuthenticated, setAuthenticated] = useState(false);
 
   const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === 'dark-mode' ? 'light-mode' : 'dark-mode'));
+    setTheme((prevTheme) => (prevTheme === 'light-mode' ? 'dark-mode' : 'light-mode'));
   };
 
   return (

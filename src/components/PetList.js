@@ -1,31 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { firestore } from '../firebase';
-import styles from './PetList.module.css';
+import { collection, getDocs } from 'firebase/firestore';
+import '../styles/petlist.css';
+import Button from '../components/Button';
 
-const PetList = () => {
+const PetList = ({ onSelectPet }) => {
   const [pets, setPets] = useState([]);
 
   useEffect(() => {
     const fetchPets = async () => {
-      const snapshot = await firestore.ref('pets').once('value');
-      const petsData = snapshot.val();
-      const petsArray = Object.keys(petsData).map(key => ({
-        id: key,
-        ...petsData[key]
+      const petsCollection = collection(firestore, 'pets');
+      const petsSnapshot = await getDocs(petsCollection);
+      const petsList = petsSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
       }));
-      setPets(petsArray);
+      setPets(petsList);
     };
     fetchPets();
   }, []);
 
   return (
-    <div className={styles.listContainer}>
-      <h2>Lista de Mascotinhos</h2>
+    <div className="petList">
       {pets.map(pet => (
-        <div key={pet.id} className={styles.petItem}>
-          <p><strong>ID:</strong> {pet.id}</p>
-          <p><strong>Nome:</strong> {pet.nome}</p>
+        <div key={pet.id} className="petCard">
+          <p><strong>Mascotinho:</strong> {pet.mascotinho}</p>
           <p><strong>Tutor:</strong> {pet.tutor}</p>
+          <Button onClick={() => onSelectPet(pet.id)}>Selecionar</Button>
         </div>
       ))}
     </div>
