@@ -37,6 +37,7 @@
   cursor: pointer;
   transition: background-color 0.3s;
   grid-column: span 2;
+  justify-self: center;
 }
 
 .button:hover {

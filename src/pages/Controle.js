@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { firestore } from '../firebase';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
 import '../styles/controle.css';
 
 const Controle = () => {
@@ -17,18 +17,25 @@ const Controle = () => {
     fetchPets();
   }, []);
 
+  const handleDelete = async (id) => {
+    try {
+      await deleteDoc(doc(firestore, 'pets', id));
+      setPets(pets.filter(pet => pet.id !== id));
+      alert("Mascotinho excluído com sucesso!");
+    } catch (error) {
+      alert("Erro ao excluir mascotinho: " + error.message);
+    }
+  };
+
   return (
     <div className="controle">
-      <h1>Controle</h1>
-      <div className="pets-list">
-        {pets.map(pet => (
-          <div key={pet.id} className="pet-card">
-            <h2>{pet.mascotinho}</h2>
-            <p>Tutor: {pet.tutor}</p>
-            <button>Selecionar</button>
-          </div>
-        ))}
-      </div>
+      {pets.map((pet) => (
+        <div key={pet.id} className="card">
+          <h3>{pet.mascotinho}</h3>
+          <p>Tutor: {pet.tutor}</p>
+          <button onClick={() => handleDelete(pet.id)} className="button delete-button">Excluir</button>
+        </div>
+      ))}
     </div>
   );
 };
