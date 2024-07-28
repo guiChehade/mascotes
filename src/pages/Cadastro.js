@@ -8,14 +8,6 @@ const Cadastro = () => {
   const [formData, setFormData] = useState({
     mascotinho: '',
     raca: '',
-    frequencia: '',
-    valor: '',
-    inspecao: '',
-    banho: '',
-    hotel: '',
-    passeio: '',
-    adestramento: '',
-    vet: '',
     tutor: '',
     rg: '',
     cpf: '',
@@ -55,94 +47,6 @@ const Cadastro = () => {
       <div className="formGroup">
         <label className="label">Raça</label>
         <input type="text" name="raca" value={formData.raca} onChange={handleChange} className="input" />
-      </div>
-      <div className="formGroup">
-        <label className="label">Frequência Semanal</label>
-        <input type="number" name="frequencia" value={formData.frequencia} onChange={handleChange} className="input" />
-      </div>
-      <div className="formGroup">
-        <label className="label">Valor</label>
-        <InputMask
-          mask="R$ 999,99"
-          maskChar=""
-          type="text"
-          name="valor"
-          value={formData.valor}
-          onChange={handleChange}
-          className="input"
-        />
-      </div>
-      <div className="formGroup">
-        <label className="label">Inspeção</label>
-        <InputMask
-          mask="R$ 999,99"
-          maskChar=""
-          type="text"
-          name="inspecao"
-          value={formData.inspecao}
-          onChange={handleChange}
-          className="input"
-        />
-      </div>
-      <div className="formGroup">
-        <label className="label">Banho</label>
-        <InputMask
-          mask="R$ 999,99"
-          maskChar=""
-          type="text"
-          name="banho"
-          value={formData.banho}
-          onChange={handleChange}
-          className="input"
-        />
-      </div>
-      <div className="formGroup">
-        <label className="label">Hotel</label>
-        <InputMask
-          mask="R$ 999,99"
-          maskChar=""
-          type="text"
-          name="hotel"
-          value={formData.hotel}
-          onChange={handleChange}
-          className="input"
-        />
-      </div>
-      <div className="formGroup">
-        <label className="label">Passeio</label>
-        <InputMask
-          mask="R$ 999,99"
-          maskChar=""
-          type="text"
-          name="passeio"
-          value={formData.passeio}
-          onChange={handleChange}
-          className="input"
-        />
-      </div>
-      <div className="formGroup">
-        <label className="label">Adestramento</label>
-        <InputMask
-          mask="R$ 999,99"
-          maskChar=""
-          type="text"
-          name="adestramento"
-          value={formData.adestramento}
-          onChange={handleChange}
-          className="input"
-        />
-      </div>
-      <div className="formGroup">
-        <label className="label">Vet</label>
-        <InputMask
-          mask="R$ 999,99"
-          maskChar=""
-          type="text"
-          name="vet"
-          value={formData.vet}
-          onChange={handleChange}
-          className="input"
-        />
       </div>
       <div className="formGroup">
         <label className="label">Tutor</label>

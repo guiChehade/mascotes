@@ -1,14 +1,4 @@
 :root {
-  --background-color: #121212;
-  --text-color: #ffffff;
-  --input-background: #1f1f1f;
-  --input-border: #333333;
-  --button-background: #1f1f1f;
-  --button-color: #ffffff;
-  --button-hover-background: #333333;
-}
-
-.light-mode {
   --background-color: #ffffff;
   --text-color: #000000;
   --input-background: #f1f1f1;
@@ -16,6 +6,16 @@
   --button-background: #f1f1f1;
   --button-color: #000000;
   --button-hover-background: #dddddd;
+}
+
+.dark-mode {
+  --background-color: #121212;
+  --text-color: #ffffff;
+  --input-background: #1f1f1f;
+  --input-border: #333333;
+  --button-background: #1f1f1f;
+  --button-color: #ffffff;
+  --button-hover-background: #333333;
 }
 
 body {
