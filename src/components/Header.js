@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/header.css';
 
-const Header = ({ toggleTheme }) => {
+const Header = ({ toggleTheme, isAdmin }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -20,6 +20,7 @@ const Header = ({ toggleTheme }) => {
           <li className="li"><Link className="link" to="/controle">Controle</Link></li>
           <li className="li"><Link className="link" to="/financas">Finanças</Link></li>
           <li className="li"><Link className="link" to="/creche">Creche</Link></li>
+          {isAdmin && <li className="li"><Link className="link" to="/usuarios">Usuários</Link></li>}
         </ul>
       </nav>
       <button className="themeToggle" onClick={toggleTheme}>🌗</button>
