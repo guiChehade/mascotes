@@ -14,7 +14,6 @@ import './styles/global.css';
 function App() {
   const [theme, setTheme] = useState('dark-mode');
   const [isAuthenticated, setAuthenticated] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') || 'dark-mode';
@@ -33,7 +32,7 @@ function App() {
         <Header toggleTheme={toggleTheme} />
         <div className="container" style={{ marginTop: '100px', marginBottom: '60px' }}>
           <Routes>
-            <Route path="/login" element={<Login setAuthenticated={setAuthenticated} setIsAdmin={setIsAdmin} />} />
+            <Route path="/login" element={<Login setAuthenticated={setAuthenticated} />} />
             <Route path="/register" element={<Register />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />

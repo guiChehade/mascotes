@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { auth, firestore } from '../firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { collection, doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom';
 import '../styles/register.css';
 
 const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
+  const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -21,6 +23,7 @@ const Register = () => {
       });
 
       alert("Usuário registrado com sucesso!");
+      navigate('/login');
     } catch (error) {
       alert("Erro ao registrar usuário: " + error.message);
     }

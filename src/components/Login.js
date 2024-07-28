@@ -3,11 +3,13 @@ import { auth } from '../firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { getDoc, doc } from 'firebase/firestore';
 import { firestore } from '../firebase';
+import { useNavigate } from 'react-router-dom';
 import '../styles/login.css';
 
 const Login = ({ setAuthenticated, setIsAdmin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -20,6 +22,7 @@ const Login = ({ setAuthenticated, setIsAdmin }) => {
 
       setAuthenticated(true);
       setIsAdmin(userData.isAdmin);
+      navigate('/');
     } catch (error) {
       alert("Erro ao fazer login: " + error.message);
     }
