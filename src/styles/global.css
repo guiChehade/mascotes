@@ -1,6 +1,8 @@
 :root {
   --background-color: #121212;
   --text-color: #ffffff;
+  --input-background: #1f1f1f;
+  --input-border: #333333;
   --button-background: #1f1f1f;
   --button-color: #ffffff;
   --button-hover-background: #333333;
@@ -9,6 +11,8 @@
 .light-mode {
   --background-color: #ffffff;
   --text-color: #000000;
+  --input-background: #f1f1f1;
+  --input-border: #dddddd;
   --button-background: #f1f1f1;
   --button-color: #000000;
   --button-hover-background: #dddddd;
@@ -43,7 +47,7 @@ button:hover {
 }
 
 .card {
-  background-color: var(--button-background);
+  background-color: var(--input-background);
   padding: 20px;
   border-radius: 10px;
   margin-bottom: 20px;
@@ -60,7 +64,9 @@ input {
   margin-top: 5px;
   margin-bottom: 15px;
   border-radius: 10px;
-  border: 1px solid var(--button-hover-background);
+  border: 1px solid var(--input-border);
+  background-color: var(--input-background);
+  color: var(--text-color);
 }
 
 .header, .footer {
