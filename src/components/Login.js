@@ -3,7 +3,7 @@ import { auth } from '../firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { getDoc, doc } from 'firebase/firestore';
 import { firestore } from '../firebase';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import '../styles/login.css';
 
 const Login = ({ setAuthenticated }) => {
@@ -45,7 +45,6 @@ const Login = ({ setAuthenticated }) => {
         />
         <button type="submit">Login</button>
       </form>
-      <p>Não tem uma conta? <Link to="/register">Registre-se</Link></p>
     </div>
   );
 };
