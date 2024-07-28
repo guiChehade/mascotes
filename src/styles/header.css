@@ -59,10 +59,27 @@
 }
 
 @media (max-width: 768px) {
-  .nav {
+  .logo, .themeToggle {
     display: none;
   }
   .hamburger {
     display: block;
+  }
+  .nav.open {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--button-background);
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+  }
+  .nav {
+    display: none;
+  }
+  .ul {
+    flex-direction: column;
+    gap: 10px;
   }
 }

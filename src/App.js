@@ -5,6 +5,7 @@ import Footer from './components/Footer';
 import Home from './pages/Home';
 import Cadastro from './pages/Cadastro';
 import Controle from './pages/Controle';
+import Creche from './pages/Creche';
 import Financas from './pages/Financas';
 import Login from './components/Login';
 import Register from './components/Register';
@@ -41,6 +42,8 @@ function App() {
             <Route path="/controle" element={isAuthenticated ? <Controle /> : <Navigate to="/login" />} />
             <Route path="/financas" element={isAuthenticated ? <Financas /> : <Navigate to="/login" />} />
             <Route path="/editar-pet/:id" element={isAuthenticated ? <EditarPet /> : <Navigate to="/login" />} />
+            <Route path="/creche" element={isAuthenticated ? <Creche /> : <Navigate to="/login" />} />
+
           </Routes>
         </div>
         <Footer />

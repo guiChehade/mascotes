@@ -11,6 +11,7 @@ const Header = ({ toggleTheme }) => {
 
   return (
     <header className="header">
+      <button className="hamburger" onClick={toggleMenu}>☰</button>
       <div className="logo">🐶</div>
       <nav className={`nav ${menuOpen ? 'open' : ''}`}>
         <ul className="ul">
@@ -18,10 +19,10 @@ const Header = ({ toggleTheme }) => {
           <li className="li"><Link className="link" to="/cadastro">Cadastro</Link></li>
           <li className="li"><Link className="link" to="/controle">Controle</Link></li>
           <li className="li"><Link className="link" to="/financas">Finanças</Link></li>
+          <li className="li"><Link className="link" to="/creche">Creche</Link></li>
         </ul>
       </nav>
       <button className="themeToggle" onClick={toggleTheme}>🌗</button>
-      <button className="hamburger" onClick={toggleMenu}>☰</button>
     </header>
   );
 };
