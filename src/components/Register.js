@@ -1,15 +1,25 @@
 import React, { useState } from 'react';
-import { auth } from '../firebase';
+import { auth, firestore } from '../firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { collection, doc, setDoc } from 'firebase/firestore';
 import '../styles/register.css';
 
 const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      await auth.createUserWithEmailAndPassword(email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      await setDoc(doc(firestore, 'users', user.uid), {
+        email: email,
+        isAdmin: isAdmin
+      });
+
       alert("Usuário registrado com sucesso!");
     } catch (error) {
       alert("Erro ao registrar usuário: " + error.message);
@@ -17,24 +27,30 @@ const Register = () => {
   };
 
   return (
-    <div className="register-container">
+    <div className="register">
       <h2>Registrar</h2>
-      <form onSubmit={handleRegister} className="form">
+      <form onSubmit={handleRegister}>
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
-          className="input"
         />
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Senha"
-          className="input"
         />
-        <button type="submit" className="button">Registrar</button>
+        <label>
+          <input
+            type="checkbox"
+            checked={isAdmin}
+            onChange={() => setIsAdmin(!isAdmin)}
+          />
+          Administrador
+        </label>
+        <button type="submit">Registrar</button>
       </form>
     </div>
   );
