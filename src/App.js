@@ -52,10 +52,10 @@ function App() {
             <Route path="/" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />
             <Route path="/cadastro" element={isAuthenticated ? <Cadastro /> : <Navigate to="/login" />} />
             <Route path="/controle" element={isAuthenticated ? <Controle /> : <Navigate to="/login" />} />
-            <Route path="/financas" element={isAuthenticated ? <Financas /> : <Navigate to="/login" />} />
-            <Route path="/editar-pet/:id" element={isAuthenticated ? <EditarPet /> : <Navigate to="/login" />} />
-            <Route path="/creche" element={isAuthenticated ? <Creche /> : <Navigate to="/login" />} />
-            <Route path="/usuarios" element={isAuthenticated && isAdmin ? <Usuarios /> : <Navigate to="/login" />} />
+            <Route path="/financas" element={isAuthenticated && isAdmin ? <Financas /> : <Navigate to="/login" />} />
+            <Route path="/editar-pet/:id" element={isAuthenticated && isAdmin ? <EditarPet /> : <Navigate to="/login" />} />
+            <Route path="/creche" element={isAuthenticated && isAdmin ? <Creche /> : <Navigate to="/login" />} />
+            <Route path="/usuarios" element={isAuthenticated ? <Usuarios /> : <Navigate to="/login" />} />
           </Routes>
         </div>
         <Footer />
