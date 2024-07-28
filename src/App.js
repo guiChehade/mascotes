@@ -9,6 +9,7 @@ import Financas from './pages/Financas';
 import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './pages/Dashboard';
+import EditarPet from './pages/EditarPet';
 import './styles/global.css';
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
             <Route path="/cadastro" element={isAuthenticated ? <Cadastro /> : <Navigate to="/login" />} />
             <Route path="/controle" element={isAuthenticated ? <Controle /> : <Navigate to="/login" />} />
             <Route path="/financas" element={isAuthenticated ? <Financas /> : <Navigate to="/login" />} />
+            <Route path="/editar-pet/:id" element={isAuthenticated ? <EditarPet /> : <Navigate to="/login" />} />
           </Routes>
         </div>
         <Footer />

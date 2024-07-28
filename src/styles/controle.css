@@ -27,10 +27,13 @@
   background-color: var(--button-hover-background);
 }
 
-.delete-button {
-  background-color: #ff4d4d;
+.select-button {
+  background-color: var(--button-background);
+  color: var(--button-color);
 }
 
-.delete-button:hover {
-  background-color: #ff0000;
+.delete-button {
+  background-color: var(--button-background);
+  color: var(--button-color);
+  margin-left: 10px;
 }
