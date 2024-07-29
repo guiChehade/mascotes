@@ -6,6 +6,9 @@ import '../styles/usuarios.css';
 const Usuarios = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editUser, setEditUser] = useState(null);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -49,6 +52,19 @@ const Usuarios = () => {
     setUsers(users.map(user => user.id === userId ? { ...user, ...updatedRoles } : user));
   };
 
+  const handleEditUser = (user) => {
+    setEditUser(user.id);
+    setUsername(user.username);
+    setPassword(user.password);
+  };
+
+  const handleSaveUser = async () => {
+    const userDoc = doc(firestore, 'users', editUser);
+    await updateDoc(userDoc, { username, password });
+    setUsers(users.map(user => user.id === editUser ? { ...user, username, password } : user));
+    setEditUser(null);
+  };
+
   const handleDeleteUser = async (userId) => {
     if (userId === 'gui_chehade@hotmail.com' || userId === 'dani.maurano74@gmail.com') {
       alert("Não é possível excluir este usuário.");
@@ -70,6 +86,7 @@ const Usuarios = () => {
         <thead>
           <tr>
             <th>Nome de Usuário</th>
+            <th>Senha</th>
             <th>Tipo de Usuário</th>
             <th>Ações</th>
           </tr>
@@ -77,26 +94,61 @@ const Usuarios = () => {
         <tbody>
           {users.map(user => (
             <tr key={user.id}>
-              <td>{user.username}</td>
               <td>
-                <select
-                  value={
-                    user.isOwner ? 'Owner' :
-                    user.isAdmin ? 'Admin' :
-                    user.isEmployee ? 'Employee' :
-                    user.isTutor ? 'Tutor' : 'None'
-                  }
-                  onChange={(e) => handleRoleChange(user.id, e.target.value)}
-                >
-                  <option value="Owner">Proprietário</option>
-                  <option value="Admin">Gerente</option>
-                  <option value="Employee">Funcionário</option>
-                  <option value="Tutor">Tutor</option>
-                  <option value="None">Nenhum</option>
-                </select>
+                {editUser === user.id ? (
+                  <input
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                  />
+                ) : (
+                  user.username
+                )}
               </td>
               <td>
-                <button onClick={() => handleDeleteUser(user.id)}>Excluir</button>
+                {editUser === user.id ? (
+                  <input
+                    type="text"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                ) : (
+                  user.password
+                )}
+              </td>
+              <td>
+                {editUser === user.id ? (
+                  <select
+                    value={
+                      user.isOwner ? 'Owner' :
+                      user.isAdmin ? 'Admin' :
+                      user.isEmployee ? 'Employee' :
+                      user.isTutor ? 'Tutor' : 'None'
+                    }
+                    onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                  >
+                    <option value="Owner">Proprietário</option>
+                    <option value="Admin">Gerente</option>
+                    <option value="Employee">Funcionário</option>
+                    <option value="Tutor">Tutor</option>
+                    <option value="None">Nenhum</option>
+                  </select>
+                ) : (
+                  user.isOwner ? 'Proprietário' :
+                  user.isAdmin ? 'Gerente' :
+                  user.isEmployee ? 'Funcionário' :
+                  user.isTutor ? 'Tutor' : 'Nenhum'
+                )}
+              </td>
+              <td>
+                {editUser === user.id ? (
+                  <button onClick={handleSaveUser}>Salvar</button>
+                ) : (
+                  <>
+                    <button onClick={() => handleEditUser(user)}>Editar</button>
+                    <button onClick={() => handleDeleteUser(user.id)}>Excluir</button>
+                  </>
+                )}
               </td>
             </tr>
           ))}
