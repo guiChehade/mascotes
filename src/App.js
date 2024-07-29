@@ -13,6 +13,7 @@ import EditarPet from './pages/EditarPet';
 import Creche from './pages/Creche';
 import Usuarios from './pages/Usuarios';
 import { auth, firestore } from './firebase';
+import { doc, getDoc } from 'firebase/firestore';
 import './styles/global.css';
 
 function App() {
@@ -27,8 +28,11 @@ function App() {
     auth.onAuthStateChanged(async (user) => {
       if (user) {
         setAuthenticated(true);
-        const userDoc = await firestore.collection('users').doc(user.uid).get();
-        setIsAdmin(userDoc.data().isAdmin);
+        const userDoc = doc(firestore, 'users', user.uid);
+        const userDocSnap = await getDoc(userDoc);
+        if (userDocSnap.exists()) {
+          setIsAdmin(userDocSnap.data().isAdmin);
+        }
       } else {
         setAuthenticated(false);
         setIsAdmin(false);
@@ -55,7 +59,7 @@ function App() {
             <Route path="/financas" element={isAuthenticated && isAdmin ? <Financas /> : <Navigate to="/login" />} />
             <Route path="/editar-pet/:id" element={isAuthenticated ? <EditarPet /> : <Navigate to="/login" />} />
             <Route path="/creche" element={isAuthenticated ? <Creche /> : <Navigate to="/login" />} />
-            <Route path="/usuarios" element={isAuthenticated ? <Usuarios /> : <Navigate to="/login" />} />
+            <Route path="/usuarios" element={isAuthenticated && isAdmin ? <Usuarios /> : <Navigate to="/login" />} />
           </Routes>
         </div>
         <Footer />
