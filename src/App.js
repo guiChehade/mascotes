@@ -55,7 +55,7 @@ function App() {
             <Route path="/financas" element={isAuthenticated ? <Financas /> : <Navigate to="/login" />} />
             <Route path="/editar-pet/:id" element={isAuthenticated ? <EditarPet /> : <Navigate to="/login" />} />
             <Route path="/creche" element={isAuthenticated ? <Creche /> : <Navigate to="/login" />} />
-            <Route path="/usuarios" element={isAuthenticated && isAdmin ? <Usuarios /> : <Navigate to="/login" />} />
+            <Route path="/usuarios" element={isAuthenticated ? <Usuarios /> : <Navigate to="/login" />} />
           </Routes>
         </div>
         <Footer />
