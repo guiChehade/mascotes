@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { firestore, auth } from '../firebase';
-import { collection, getDocs, doc, deleteDoc, updateDoc, setDoc } from 'firebase/firestore';
+import { firestore } from '../firebase';
+import { collection, getDocs, updateDoc, doc, deleteDoc } from 'firebase/firestore';
 import '../styles/usuarios.css';
 
 const Usuarios = () => {
   const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -12,115 +13,95 @@ const Usuarios = () => {
       const usersSnapshot = await getDocs(usersCollection);
       const usersList = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setUsers(usersList);
+      setLoading(false);
     };
-
+    
     fetchUsers();
   }, []);
 
-  const handleAdminChange = async (index) => {
-    const newUsers = [...users];
-    newUsers[index].isAdmin = !newUsers[index].isAdmin;
-    setUsers(newUsers);
-    try {
-      const userDoc = doc(firestore, 'users', newUsers[index].id);
-      await updateDoc(userDoc, { isAdmin: newUsers[index].isAdmin });
-    } catch (error) {
-      alert("Erro ao atualizar permissões de administrador: " + error.message);
+  const handleRoleChange = async (userId, role) => {
+    const userDoc = doc(firestore, 'users', userId);
+    let updatedRoles = {
+      isOwner: false,
+      isAdmin: false,
+      isEmployee: false,
+      isTutor: false
+    };
+
+    switch(role) {
+      case 'Owner':
+        updatedRoles = { isOwner: true, isAdmin: true, isEmployee: true, isTutor: true };
+        break;
+      case 'Admin':
+        updatedRoles = { isOwner: false, isAdmin: true, isEmployee: true, isTutor: true };
+        break;
+      case 'Employee':
+        updatedRoles = { isOwner: false, isAdmin: false, isEmployee: true, isTutor: true };
+        break;
+      case 'Tutor':
+        updatedRoles = { isOwner: false, isAdmin: false, isEmployee: false, isTutor: true };
+        break;
+      default:
+        updatedRoles = { isOwner: false, isAdmin: false, isEmployee: false, isTutor: false };
     }
+
+    await updateDoc(userDoc, updatedRoles);
+    setUsers(users.map(user => user.id === userId ? { ...user, ...updatedRoles } : user));
   };
 
-  const handleDelete = async (id, email) => {
-    if (email === "gui_chehade@hotmail.com" || email === "dani.maurano74@gmail.com") {
+  const handleDeleteUser = async (userId) => {
+    if (userId === 'gui_chehade@hotmail.com' || userId === 'dani.maurano74@gmail.com') {
       alert("Não é possível excluir este usuário.");
       return;
     }
-    const confirmDelete = window.confirm("Tem certeza que deseja excluir este usuário? Esta ação é definitiva.");
-    if (confirmDelete) {
-      try {
-        await deleteDoc(doc(firestore, 'users', id));
-        setUsers(users.filter(user => user.id !== id));
-        alert("Usuário excluído com sucesso!");
-      } catch (error) {
-        alert("Erro ao excluir usuário: " + error.message);
-      }
-    }
+
+    await deleteDoc(doc(firestore, 'users', userId));
+    setUsers(users.filter(user => user.id !== userId));
   };
 
-  const handleRegister = async (email, password) => {
-    try {
-      const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-      const userDoc = doc(firestore, 'users', userCredential.user.uid);
-      await setDoc(userDoc, {
-        email,
-        isAdmin: false
-      });
-      alert("Usuário registrado com sucesso!");
-      const newUser = { id: userCredential.user.uid, email, isAdmin: false };
-      setUsers([...users, newUser]);
-    } catch (error) {
-      alert("Erro ao registrar usuário: " + error.message);
-    }
-  };
-
-  const [newUserEmail, setNewUserEmail] = useState('');
-  const [newUserPassword, setNewUserPassword] = useState('');
-
-  const handleRegisterSubmit = (e) => {
-    e.preventDefault();
-    handleRegister(newUserEmail, newUserPassword);
-    setNewUserEmail('');
-    setNewUserPassword('');
-  };
+  if (loading) {
+    return <div>Carregando...</div>;
+  }
 
   return (
-    <div className="usuarios">
+    <div>
       <h2>Gerenciamento de Usuários</h2>
-      <table className="usuarios-table">
+      <table>
         <thead>
           <tr>
-            <th>Email</th>
-            <th>Admin</th>
+            <th>Nome de Usuário</th>
+            <th>Tipo de Usuário</th>
             <th>Ações</th>
           </tr>
         </thead>
         <tbody>
-          {users.map((user, index) => (
+          {users.map(user => (
             <tr key={user.id}>
-              <td>{user.email}</td>
+              <td>{user.username}</td>
               <td>
-                <input
-                  type="checkbox"
-                  checked={user.isAdmin}
-                  onChange={() => handleAdminChange(index)}
-                />
+                <select
+                  value={
+                    user.isOwner ? 'Owner' :
+                    user.isAdmin ? 'Admin' :
+                    user.isEmployee ? 'Employee' :
+                    user.isTutor ? 'Tutor' : 'None'
+                  }
+                  onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                >
+                  <option value="Owner">Proprietário</option>
+                  <option value="Admin">Gerente</option>
+                  <option value="Employee">Funcionário</option>
+                  <option value="Tutor">Tutor</option>
+                  <option value="None">Nenhum</option>
+                </select>
               </td>
               <td>
-                <button onClick={() => handleDelete(user.id, user.email)} className="button delete-button">Excluir</button>
+                <button onClick={() => handleDeleteUser(user.id)}>Excluir</button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <h3>Registrar Novo Usuário</h3>
-      <form onSubmit={handleRegisterSubmit} className="register-form">
-        <input
-          type="email"
-          value={newUserEmail}
-          onChange={(e) => setNewUserEmail(e.target.value)}
-          placeholder="Email"
-          required
-          className="input"
-        />
-        <input
-          type="password"
-          value={newUserPassword}
-          onChange={(e) => setNewUserPassword(e.target.value)}
-          placeholder="Senha"
-          required
-          className="input"
-        />
-        <button type="submit" className="button">Registrar</button>
-      </form>
     </div>
   );
 };

@@ -19,7 +19,12 @@ import './styles/global.css';
 function App() {
   const [theme, setTheme] = useState('dark-mode');
   const [isAuthenticated, setAuthenticated] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [userRoles, setUserRoles] = useState({
+    isOwner: false,
+    isAdmin: false,
+    isEmployee: false,
+    isTutor: false
+  });
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') || 'dark-mode';
@@ -31,11 +36,22 @@ function App() {
         const userDoc = doc(firestore, 'users', user.uid);
         const userDocSnap = await getDoc(userDoc);
         if (userDocSnap.exists()) {
-          setIsAdmin(userDocSnap.data().isAdmin);
+          const data = userDocSnap.data();
+          setUserRoles({
+            isOwner: data.isOwner,
+            isAdmin: data.isAdmin,
+            isEmployee: data.isEmployee,
+            isTutor: data.isTutor
+          });
         }
       } else {
         setAuthenticated(false);
-        setIsAdmin(false);
+        setUserRoles({
+          isOwner: false,
+          isAdmin: false,
+          isEmployee: false,
+          isTutor: false
+        });
       }
     });
   }, []);
@@ -49,17 +65,18 @@ function App() {
   return (
     <div className={theme}>
       <Router>
-        <Header toggleTheme={toggleTheme} isAdmin={isAdmin} />
+        <Header toggleTheme={toggleTheme} userRoles={userRoles} />
         <div className="container" style={{ marginTop: '100px', marginBottom: '60px' }}>
           <Routes>
             <Route path="/login" element={<Login setAuthenticated={setAuthenticated} />} />
             <Route path="/" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />
             <Route path="/cadastro" element={isAuthenticated ? <Cadastro /> : <Navigate to="/login" />} />
             <Route path="/controle" element={isAuthenticated ? <Controle /> : <Navigate to="/login" />} />
-            <Route path="/financas" element={isAuthenticated && isAdmin ? <Financas /> : <Navigate to="/login" />} />
+            <Route path="/financas" element={isAuthenticated && userRoles.isAdmin ? <Financas /> : <Navigate to="/login" />} />
             <Route path="/editar-pet/:id" element={isAuthenticated ? <EditarPet /> : <Navigate to="/login" />} />
             <Route path="/creche" element={isAuthenticated ? <Creche /> : <Navigate to="/login" />} />
-            <Route path="/usuarios" element={isAuthenticated && isAdmin ? <Usuarios /> : <Navigate to="/login" />} />
+            <Route path="/usuarios" element={isAuthenticated && userRoles.isAdmin ? <Usuarios /> : <Navigate to="/login" />} />
+            <Route path="/register" element={isAuthenticated && userRoles.isOwner ? <Register isOwner={userRoles.isOwner} /> : <Navigate to="/" />} />
           </Routes>
         </div>
         <Footer />
