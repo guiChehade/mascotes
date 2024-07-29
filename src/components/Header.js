@@ -18,7 +18,7 @@ const Header = ({ toggleTheme, isAdmin }) => {
           <li className="li"><Link className="link" to="/">Início</Link></li>
           <li className="li"><Link className="link" to="/cadastro">Cadastro</Link></li>
           <li className="li"><Link className="link" to="/controle">Controle</Link></li>
-          <li className="li"><Link className="link" to="/financas">Finanças</Link></li>
+          {isAdmin && <li className="li"><Link className="link" to="/financas">Finanças</Link></li>}
           <li className="li"><Link className="link" to="/creche">Creche</Link></li>
           <li className="li"><Link className="link" to="/usuarios">Usuários</Link></li>
         </ul>

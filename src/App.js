@@ -5,12 +5,12 @@ import Footer from './components/Footer';
 import Home from './pages/Home';
 import Cadastro from './pages/Cadastro';
 import Controle from './pages/Controle';
-import Creche from './pages/Creche';
 import Financas from './pages/Financas';
 import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './pages/Dashboard';
 import EditarPet from './pages/EditarPet';
+import Creche from './pages/Creche';
 import Usuarios from './pages/Usuarios';
 import { auth, firestore } from './firebase';
 import './styles/global.css';
@@ -52,7 +52,7 @@ function App() {
             <Route path="/" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />
             <Route path="/cadastro" element={isAuthenticated ? <Cadastro /> : <Navigate to="/login" />} />
             <Route path="/controle" element={isAuthenticated ? <Controle /> : <Navigate to="/login" />} />
-            <Route path="/financas" element={isAuthenticated ? <Financas /> : <Navigate to="/login" />} />
+            <Route path="/financas" element={isAuthenticated && isAdmin ? <Financas /> : <Navigate to="/login" />} />
             <Route path="/editar-pet/:id" element={isAuthenticated ? <EditarPet /> : <Navigate to="/login" />} />
             <Route path="/creche" element={isAuthenticated ? <Creche /> : <Navigate to="/login" />} />
             <Route path="/usuarios" element={isAuthenticated ? <Usuarios /> : <Navigate to="/login" />} />
