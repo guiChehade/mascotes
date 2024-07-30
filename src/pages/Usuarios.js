@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { firestore } from '../firebase';
 import { collection, getDocs, updateDoc, doc, deleteDoc } from 'firebase/firestore';
+import Register from '../components/Register';
 import '../styles/usuarios.css';
 
 const Usuarios = () => {
@@ -53,6 +54,7 @@ const Usuarios = () => {
   };
 
   const handleEditUser = (user) => {
+    if (user.username === 'tiaDani' || user.username === 'guiChehade') return;
     setEditUser(user.id);
     setUsername(user.username);
     setPassword(user.password);
@@ -66,7 +68,7 @@ const Usuarios = () => {
   };
 
   const handleDeleteUser = async (userId) => {
-    if (userId === 'gui_chehade@hotmail.com' || userId === 'dani.maurano74@gmail.com') {
+    if (userId === 'tiaDani' || userId === 'guiChehade') {
       alert("Não é possível excluir este usuário.");
       return;
     }
@@ -100,6 +102,7 @@ const Usuarios = () => {
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
+                    readOnly={user.username === 'tiaDani' || user.username === 'guiChehade'}
                   />
                 ) : (
                   user.username
@@ -111,33 +114,36 @@ const Usuarios = () => {
                     type="text"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    readOnly={user.username === 'tiaDani' || user.username === 'guiChehade'}
                   />
                 ) : (
                   user.password
                 )}
               </td>
               <td>
-                {editUser === user.id ? (
-                  <select
-                    value={
-                      user.isOwner ? 'Owner' :
-                      user.isAdmin ? 'Admin' :
-                      user.isEmployee ? 'Employee' :
-                      user.isTutor ? 'Tutor' : 'None'
-                    }
-                    onChange={(e) => handleRoleChange(user.id, e.target.value)}
-                  >
-                    <option value="Owner">Proprietário</option>
-                    <option value="Admin">Gerente</option>
-                    <option value="Employee">Funcionário</option>
-                    <option value="Tutor">Tutor</option>
-                    <option value="None">Nenhum</option>
-                  </select>
-                ) : (
-                  user.isOwner ? 'Proprietário' :
-                  user.isAdmin ? 'Gerente' :
-                  user.isEmployee ? 'Funcionário' :
-                  user.isTutor ? 'Tutor' : 'Nenhum'
+                {user.username === 'tiaDani' || user.username === 'guiChehade' ? 'Proprietário' : (
+                  editUser === user.id ? (
+                    <select
+                      value={
+                        user.isOwner ? 'Owner' :
+                        user.isAdmin ? 'Admin' :
+                        user.isEmployee ? 'Employee' :
+                        user.isTutor ? 'Tutor' : 'None'
+                      }
+                      onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                    >
+                      <option value="Owner">Proprietário</option>
+                      <option value="Admin">Gerente</option>
+                      <option value="Employee">Funcionário</option>
+                      <option value="Tutor">Tutor</option>
+                      <option value="None">Nenhum</option>
+                    </select>
+                  ) : (
+                    user.isOwner ? 'Proprietário' :
+                    user.isAdmin ? 'Gerente' :
+                    user.isEmployee ? 'Funcionário' :
+                    user.isTutor ? 'Tutor' : 'Nenhum'
+                  )
                 )}
               </td>
               <td>
@@ -154,6 +160,8 @@ const Usuarios = () => {
           ))}
         </tbody>
       </table>
+      <h3>Registrar Novo Usuário</h3>
+      <Register isOwner={true} />
     </div>
   );
 };

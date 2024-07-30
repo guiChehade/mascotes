@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { auth } from '../firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth, firestore } from '../firebase';
 import { useNavigate } from 'react-router-dom';
+import { getDoc, doc } from 'firebase/firestore';
 
 const Login = ({ setAuthenticated }) => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -12,7 +12,13 @@ const Login = ({ setAuthenticated }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userDocRef = doc(firestore, 'users', username);
+      const userDoc = await getDoc(userDocRef);
+      if (!userDoc.exists() || userDoc.data().password !== password) {
+        setError('Nome de usuário ou senha incorretos');
+        return;
+      }
+
       setAuthenticated(true);
       navigate('/');
     } catch (error) {
@@ -25,14 +31,14 @@ const Login = ({ setAuthenticated }) => {
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Nome de usuário"
           required
         />
         <input
-          type="password"
+          type="text"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Senha"

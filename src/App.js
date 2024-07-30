@@ -70,12 +70,12 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login setAuthenticated={setAuthenticated} />} />
             <Route path="/" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />
-            <Route path="/cadastro" element={isAuthenticated ? <Cadastro /> : <Navigate to="/login" />} />
-            <Route path="/controle" element={isAuthenticated ? <Controle /> : <Navigate to="/login" />} />
-            <Route path="/financas" element={isAuthenticated && userRoles.isAdmin ? <Financas /> : <Navigate to="/login" />} />
-            <Route path="/editar-pet/:id" element={isAuthenticated ? <EditarPet /> : <Navigate to="/login" />} />
-            <Route path="/creche" element={isAuthenticated ? <Creche /> : <Navigate to="/login" />} />
-            <Route path="/usuarios" element={isAuthenticated && userRoles.isAdmin ? <Usuarios /> : <Navigate to="/login" />} />
+            <Route path="/cadastro" element={isAuthenticated && (userRoles.isAdmin || userRoles.isOwner) ? <Cadastro /> : <Navigate to="/login" />} />
+            <Route path="/controle" element={isAuthenticated && (userRoles.isAdmin || userRoles.isOwner) ? <Controle /> : <Navigate to="/login" />} />
+            <Route path="/financas" element={isAuthenticated && userRoles.isOwner ? <Financas /> : <Navigate to="/login" />} />
+            <Route path="/editar-pet/:id" element={isAuthenticated && (userRoles.isAdmin || userRoles.isOwner) ? <EditarPet /> : <Navigate to="/login" />} />
+            <Route path="/creche" element={isAuthenticated && (userRoles.isEmployee || userRoles.isOwner) ? <Creche /> : <Navigate to="/login" />} />
+            <Route path="/usuarios" element={isAuthenticated && userRoles.isOwner ? <Usuarios /> : <Navigate to="/login" />} />
             <Route path="/register" element={isAuthenticated && userRoles.isOwner ? <Register isOwner={userRoles.isOwner} /> : <Navigate to="/" />} />
           </Routes>
         </div>

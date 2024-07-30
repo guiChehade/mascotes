@@ -1,27 +1,57 @@
 import React, { useState } from 'react';
-import { auth, firestore } from '../firebase';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { firestore } from '../firebase';
 import { doc, setDoc } from 'firebase/firestore';
 
-const Register = () => {
+const Register = ({ isOwner }) => {
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState('None');
   const [error, setError] = useState(null);
 
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      await setDoc(doc(firestore, 'users', user.uid), {
-        username,
+      const usersCollection = firestore.collection('users');
+      const userDoc = await usersCollection.doc(username).get();
+      if (userDoc.exists) {
+        setError('Nome de usuário já existe');
+        return;
+      }
+
+      let roles = {
         isOwner: false,
         isAdmin: false,
         isEmployee: false,
         isTutor: false
+      };
+
+      switch(role) {
+        case 'Owner':
+          roles = { isOwner: true, isAdmin: true, isEmployee: true, isTutor: true };
+          break;
+        case 'Admin':
+          roles = { isOwner: false, isAdmin: true, isEmployee: true, isTutor: true };
+          break;
+        case 'Employee':
+          roles = { isOwner: false, isAdmin: false, isEmployee: true, isTutor: true };
+          break;
+        case 'Tutor':
+          roles = { isOwner: false, isAdmin: false, isEmployee: false, isTutor: true };
+          break;
+        default:
+          roles = { isOwner: false, isAdmin: false, isEmployee: false, isTutor: false };
+      }
+
+      await setDoc(doc(firestore, 'users', username), {
+        username,
+        password,
+        ...roles
       });
+
       alert("Usuário registrado com sucesso!");
+      setUsername('');
+      setPassword('');
+      setRole('None');
     } catch (error) {
       setError(error.message);
     }
@@ -39,19 +69,19 @@ const Register = () => {
           required
         />
         <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-          required
-        />
-        <input
-          type="password"
+          type="text"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Senha"
           required
         />
+        <select value={role} onChange={(e) => setRole(e.target.value)}>
+          <option value="Owner">Proprietário</option>
+          <option value="Admin">Gerente</option>
+          <option value="Employee">Funcionário</option>
+          <option value="Tutor">Tutor</option>
+          <option value="None">Nenhum</option>
+        </select>
         <button type="submit">Registrar</button>
         {error && <p>{error}</p>}
       </form>
