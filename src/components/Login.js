@@ -14,12 +14,18 @@ const Login = ({ setAuthenticated }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const userDocRef = doc(firestore, 'users', username);
-      const userDoc = await getDoc(userDocRef);
-      if (!userDoc.exists() || userDoc.data().password !== password) {
+      const usernameDocRef = doc(firestore, 'usernames', username);
+      const usernameDoc = await getDoc(usernameDocRef);
+      if (!usernameDoc.exists()) {
         setError('Nome de usuário ou senha incorretos');
         return;
       }
+
+      const userDocRef = doc(firestore, 'users', usernameDoc.data().uid);
+      const userDoc = await getDoc(userDocRef);
+      const userData = userDoc.data();
+
+      await auth.signInWithEmailAndPassword(userData.email, password);
 
       setAuthenticated(true);
       navigate('/mascotes');
@@ -54,7 +60,6 @@ const Login = ({ setAuthenticated }) => {
         <button type="submit">Login</button>
         {error && <p>{error}</p>}
       </form>
-      <p>Não tem uma conta? <a href="/register">Registre-se</a></p>
     </div>
   );
 };

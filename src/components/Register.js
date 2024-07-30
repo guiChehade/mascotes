@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { firestore } from '../firebase';
+import { auth, firestore } from '../firebase';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
-import '../styles/register.css';
 
 const Register = ({ isOwner }) => {
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('None');
   const [error, setError] = useState(null);
@@ -12,12 +12,15 @@ const Register = ({ isOwner }) => {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const userDocRef = doc(firestore, 'users', username);
-      const userDoc = await getDoc(userDocRef);
-      if (userDoc.exists()) {
+      const usernameDocRef = doc(firestore, 'usernames', username);
+      const usernameDoc = await getDoc(usernameDocRef);
+      if (usernameDoc.exists()) {
         setError('Nome de usuário já existe');
         return;
       }
+
+      const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+      const user = userCredential.user;
 
       let roles = {
         isOwner: false,
@@ -43,14 +46,19 @@ const Register = ({ isOwner }) => {
           roles = { isOwner: false, isAdmin: false, isEmployee: false, isTutor: false };
       }
 
-      await setDoc(userDocRef, {
+      await setDoc(doc(firestore, 'users', user.uid), {
         username,
-        password,
+        email,
         ...roles
+      });
+
+      await setDoc(usernameDocRef, {
+        uid: user.uid
       });
 
       alert("Usuário registrado com sucesso!");
       setUsername('');
+      setEmail('');
       setPassword('');
       setRole('None');
     } catch (error) {
@@ -67,6 +75,13 @@ const Register = ({ isOwner }) => {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           placeholder="Nome de usuário"
+          required
+        />
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
           required
         />
         <input

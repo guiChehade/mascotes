@@ -4,15 +4,15 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './pages/Home';
 import Cadastro from './pages/Cadastro';
-import Controle from './pages/Creche';
+import Controle from './pages/Controle';
 import Financas from './pages/Financas';
 import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './pages/Dashboard';
 import EditarPet from './pages/EditarPet';
-import Creche from './pages/Contrato'; // Mudar o nome do arquivo
+import Creche from './pages/Creche';
 import Usuarios from './pages/Usuarios';
-import Contrato from './pages/Contrato'; // Novo nome da página de Creche
+import Contrato from './pages/Contrato';
 import { auth, firestore } from './firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import './styles/global.css';
