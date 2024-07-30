@@ -12,7 +12,7 @@ const Header = ({ toggleTheme, userRoles }) => {
   return (
     <header className="header">
       <button className="hamburger" onClick={toggleMenu}>☰</button>
-      <div className="logo">🐶</div>
+      <Link to="/mascotes" className="logo">🐶</Link>
       <nav className={`nav ${menuOpen ? 'open' : ''}`}>
         <ul className="ul">
           <li className="li"><Link className="link" to="/mascotes">Início</Link></li>
@@ -24,7 +24,6 @@ const Header = ({ toggleTheme, userRoles }) => {
         </ul>
       </nav>
       <Link to="/login" className="login-icon">👤</Link>
-      <button className="themeToggle" onClick={toggleTheme}>🌗</button>
     </header>
   );
 };

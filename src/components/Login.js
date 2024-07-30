@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { auth, firestore } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 import { getDoc, doc } from 'firebase/firestore';
+import '../styles/login.css';
 
 const Login = ({ setAuthenticated }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -37,16 +39,22 @@ const Login = ({ setAuthenticated }) => {
           placeholder="Nome de usuário"
           required
         />
-        <input
-          type="text"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Senha"
-          required
-        />
+        <div className="password-container">
+          <input
+            type={showPassword ? "text" : "password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Senha"
+            required
+          />
+          <button type="button" className="toggle-password" onClick={() => setShowPassword(!showPassword)}>
+            {showPassword ? '🙈' : '👁️'}
+          </button>
+        </div>
         <button type="submit">Login</button>
         {error && <p>{error}</p>}
       </form>
+      <p>Não tem uma conta? <a href="/register">Registre-se</a></p>
     </div>
   );
 };

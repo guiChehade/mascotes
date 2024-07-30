@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { firestore } from '../firebase';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
+import '../styles/register.css';
 
 const Register = ({ isOwner }) => {
   const [username, setUsername] = useState('');
@@ -69,7 +70,7 @@ const Register = ({ isOwner }) => {
           required
         />
         <input
-          type="text"
+          type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Senha"
