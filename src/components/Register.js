@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { firestore } from '../firebase';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 const Register = ({ isOwner }) => {
   const [username, setUsername] = useState('');
@@ -11,9 +11,9 @@ const Register = ({ isOwner }) => {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const usersCollection = firestore.collection('users');
-      const userDoc = await usersCollection.doc(username).get();
-      if (userDoc.exists) {
+      const userDocRef = doc(firestore, 'users', username);
+      const userDoc = await getDoc(userDocRef);
+      if (userDoc.exists()) {
         setError('Nome de usuário já existe');
         return;
       }
@@ -42,7 +42,7 @@ const Register = ({ isOwner }) => {
           roles = { isOwner: false, isAdmin: false, isEmployee: false, isTutor: false };
       }
 
-      await setDoc(doc(firestore, 'users', username), {
+      await setDoc(userDocRef, {
         username,
         password,
         ...roles

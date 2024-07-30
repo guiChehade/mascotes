@@ -10,8 +10,9 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './pages/Dashboard';
 import EditarPet from './pages/EditarPet';
-import Creche from './pages/Creche';
+import Creche from './pages/Creche'; // Mudar o nome do arquivo
 import Usuarios from './pages/Usuarios';
+import Contrato from './pages/Contrato'; // Novo nome da página de Creche
 import { auth, firestore } from './firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import './styles/global.css';
@@ -69,12 +70,12 @@ function App() {
         <div className="container" style={{ marginTop: '100px', marginBottom: '60px' }}>
           <Routes>
             <Route path="/login" element={<Login setAuthenticated={setAuthenticated} />} />
-            <Route path="/" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />
+            <Route path="/mascotes" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />
             <Route path="/cadastro" element={isAuthenticated && (userRoles.isAdmin || userRoles.isOwner) ? <Cadastro /> : <Navigate to="/login" />} />
-            <Route path="/controle" element={isAuthenticated && (userRoles.isAdmin || userRoles.isOwner) ? <Controle /> : <Navigate to="/login" />} />
+            <Route path="/creche" element={isAuthenticated && (userRoles.isAdmin || userRoles.isOwner) ? <Creche /> : <Navigate to="/login" />} />
             <Route path="/financas" element={isAuthenticated && userRoles.isOwner ? <Financas /> : <Navigate to="/login" />} />
             <Route path="/editar-pet/:id" element={isAuthenticated && (userRoles.isAdmin || userRoles.isOwner) ? <EditarPet /> : <Navigate to="/login" />} />
-            <Route path="/creche" element={isAuthenticated && (userRoles.isEmployee || userRoles.isOwner) ? <Creche /> : <Navigate to="/login" />} />
+            <Route path="/contrato" element={isAuthenticated && (userRoles.isEmployee || userRoles.isOwner) ? <Contrato /> : <Navigate to="/login" />} />
             <Route path="/usuarios" element={isAuthenticated && userRoles.isOwner ? <Usuarios /> : <Navigate to="/login" />} />
             <Route path="/register" element={isAuthenticated && userRoles.isOwner ? <Register isOwner={userRoles.isOwner} /> : <Navigate to="/" />} />
           </Routes>

@@ -20,7 +20,7 @@ const Login = ({ setAuthenticated }) => {
       }
 
       setAuthenticated(true);
-      navigate('/');
+      navigate('/mascotes');
     } catch (error) {
       setError(error.message);
     }
