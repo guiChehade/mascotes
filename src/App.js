@@ -4,13 +4,13 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './pages/Home';
 import Cadastro from './pages/Cadastro';
-import Controle from './pages/Controle';
+import Controle from './pages/Creche';
 import Financas from './pages/Financas';
 import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './pages/Dashboard';
 import EditarPet from './pages/EditarPet';
-import Creche from './pages/Creche'; // Mudar o nome do arquivo
+import Creche from './pages/Contrato'; // Mudar o nome do arquivo
 import Usuarios from './pages/Usuarios';
 import Contrato from './pages/Contrato'; // Novo nome da página de Creche
 import { auth, firestore } from './firebase';
