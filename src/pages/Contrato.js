@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { firestore } from '../firebase';
 import { collection, getDocs, doc, setDoc } from 'firebase/firestore';
 import InputMask from 'react-input-mask';
-import '../styles/creche.css';
+import '../styles/contrato.css';
 
 const Creche = () => {
   const [ano, setAno] = useState('2023');
