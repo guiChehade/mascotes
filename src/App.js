@@ -53,7 +53,7 @@ function App() {
   return (
     <div className={theme}>
       <Router>
-        <Header toggleTheme={toggleTheme} userRoles={userRoles} />
+        <Header toggleTheme={toggleTheme} isAuthenticated={isAuthenticated} userRoles={userRoles} />
         <div className="container" style={{ marginTop: '100px', marginBottom: '60px' }}>
           <Routes>
             <Route path="/" element={<Home />} />
