@@ -1,52 +1,55 @@
 import React, { useState } from 'react';
-import { firestore } from '../firebase';
-import { collection, doc, setDoc } from 'firebase/firestore';
+import { getFunctions, httpsCallable } from 'firebase/functions';
+import '../styles/register.css';
 
 const Register = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('Nenhum');
-  const [error, setError] = useState(null);
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    setError(null); // Reset error state before new attempt
+    const functions = getFunctions();
+    const createUser = httpsCallable(functions, 'createUser');
+
+    const roles = {
+      isOwner: role === 'Proprietário',
+      isAdmin: role === 'Gerente' || role === 'Proprietário',
+      isEmployee: role === 'Funcionário' || role === 'Gerente' || role === 'Proprietário',
+      isTutor: role === 'Tutor' || 'Funcionário' || role === 'Gerente' || role === 'Proprietário',
+    };
 
     try {
-      const userDocRef = doc(firestore, 'users', username);
-      await setDoc(userDocRef, {
+      const result = await createUser({
+        username,
         password,
-        isOwner: role === 'Proprietário',
-        isAdmin: role === 'Gerente' || role === 'Proprietário',
-        isEmployee: role === 'Funcionário' || role === 'Gerente' || role === 'Proprietário',
-        isTutor: role === 'Tutor' || role === 'Funcionário' || role === 'Gerente' || role === 'Proprietário',
+        ...roles
       });
-      alert('Usuário registrado com sucesso!');
+      alert(result.data.message);
     } catch (error) {
-      console.error("Register Error:", error);
-      setError(error.message);
+      alert(`Erro ao registrar usuário: ${error.message}`);
     }
   };
 
   return (
     <div>
-      <h2>Registrar Usuário</h2>
+      <h2>Registrar</h2>
       <form onSubmit={handleRegister}>
         <input
           type="text"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          placeholder="Nome de usuário"
+          placeholder="Nome de Usuário"
           required
         />
         <input
-          type="password"
+          type="text"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Senha"
           required
         />
-        <select value={role} onChange={(e) => setRole(e.target.value)}>
+        <select value={role} onChange={(e) => setRole(e.target.value)} required>
           <option value="Nenhum">Nenhum</option>
           <option value="Proprietário">Proprietário</option>
           <option value="Gerente">Gerente</option>
@@ -54,7 +57,6 @@ const Register = () => {
           <option value="Tutor">Tutor</option>
         </select>
         <button type="submit">Registrar</button>
-        {error && <p>{error}</p>}
       </form>
     </div>
   );

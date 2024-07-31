@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { firestore } from '../firebase';
-import { collection, addDoc } from 'firebase/firestore';
+import { getFunctions, httpsCallable } from 'firebase/functions';
 import '../styles/cadastro.css';
 
 const Cadastro = () => {
   const [mascotinho, setMascotinho] = useState('');
+  const [aniversario, setAniversario] = useState('');
   const [raca, setRaca] = useState('');
   const [tutor, setTutor] = useState('');
   const [rg, setRg] = useState('');
@@ -16,26 +16,32 @@ const Cadastro = () => {
   const [enderecoVet, setEnderecoVet] = useState('');
   const [celularVetComercial, setCelularVetComercial] = useState('');
   const [celularVetPessoal, setCelularVetPessoal] = useState('');
-  const [aniversario, setAniversario] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await addDoc(collection(firestore, 'pets'), {
-      mascotinho,
-      raca,
-      tutor,
-      rg,
-      cpf,
-      endereco,
-      email,
-      celularTutor,
-      veterinario,
-      enderecoVet,
-      celularVetComercial,
-      celularVetPessoal,
-      aniversario,
-    });
-    alert('Pet cadastrado com sucesso!');
+    const functions = getFunctions();
+    const createPet = httpsCallable(functions, 'createPet');
+
+    try {
+      const result = await createPet({
+        mascotinho,
+        aniversario,
+        raca,
+        tutor,
+        rg,
+        cpf,
+        endereco,
+        email,
+        celularTutor,
+        veterinario,
+        enderecoVet,
+        celularVetComercial,
+        celularVetPessoal,
+      });
+      alert(result.data.message);
+    } catch (error) {
+      alert(`Erro ao cadastrar mascotinho: ${error.message}`);
+    }
   };
 
   return (
@@ -50,17 +56,17 @@ const Cadastro = () => {
           required
         />
         <input
-          type="text"
-          value={raca}
-          onChange={(e) => setRaca(e.target.value)}
-          placeholder="Raça"
-          required
-        />
-        <input
           type="date"
           value={aniversario}
           onChange={(e) => setAniversario(e.target.value)}
           placeholder="Aniversário do Pet"
+          required
+        />
+        <input
+          type="text"
+          value={raca}
+          onChange={(e) => setRaca(e.target.value)}
+          placeholder="Raça"
           required
         />
         <input
