@@ -31,6 +31,7 @@ button {
   color: var(--button-color);
   border: none;
   border-radius: 10px;
+  margin: 10px;
   padding: 10px 20px;
   cursor: pointer;
   transition: background-color 0.3s;
@@ -61,8 +62,7 @@ input, label {
 
 input {
   padding: 10px;
-  margin-top: 5px;
-  margin-bottom: 15px;
+  margin: 10px;
   border-radius: 10px;
   border: 1px solid var(--input-border);
   background-color: var(--input-background);

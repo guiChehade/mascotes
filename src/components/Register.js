@@ -19,7 +19,7 @@ const Register = () => {
         isOwner: role === 'Proprietário',
         isAdmin: role === 'Gerente' || role === 'Proprietário',
         isEmployee: role === 'Funcionário' || role === 'Gerente' || role === 'Proprietário',
-        isTutor: role === 'Tutor',
+        isTutor: role === 'Tutor' || role === 'Funcionário' || role === 'Gerente' || role === 'Proprietário',
       });
       alert('Usuário registrado com sucesso!');
     } catch (error) {

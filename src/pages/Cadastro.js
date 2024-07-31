@@ -1,135 +1,141 @@
 import React, { useState } from 'react';
 import { firestore } from '../firebase';
 import { collection, addDoc } from 'firebase/firestore';
-import InputMask from 'react-input-mask';
 import '../styles/cadastro.css';
 
 const Cadastro = () => {
-  const [formData, setFormData] = useState({
-    mascotinho: '',
-    raca: '',
-    tutor: '',
-    rg: '',
-    cpf: '',
-    endereco: '',
-    email: '',
-    celular_tutor: '',
-    veterinario: '',
-    endereco_vet: '',
-    celular_vet_comercial: '',
-    celular_vet_pessoal: ''
-  });
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
+  const [mascotinho, setMascotinho] = useState('');
+  const [raca, setRaca] = useState('');
+  const [tutor, setTutor] = useState('');
+  const [rg, setRg] = useState('');
+  const [cpf, setCpf] = useState('');
+  const [endereco, setEndereco] = useState('');
+  const [email, setEmail] = useState('');
+  const [celularTutor, setCelularTutor] = useState('');
+  const [veterinario, setVeterinario] = useState('');
+  const [enderecoVet, setEnderecoVet] = useState('');
+  const [celularVetComercial, setCelularVetComercial] = useState('');
+  const [celularVetPessoal, setCelularVetPessoal] = useState('');
+  const [aniversario, setAniversario] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const petsCollection = collection(firestore, 'pets');
-      await addDoc(petsCollection, formData);
-      alert("Mascotinho cadastrado com sucesso!");
-    } catch (error) {
-      alert("Erro ao cadastrar mascotinho: " + error.message);
-    }
+    await addDoc(collection(firestore, 'pets'), {
+      mascotinho,
+      raca,
+      tutor,
+      rg,
+      cpf,
+      endereco,
+      email,
+      celularTutor,
+      veterinario,
+      enderecoVet,
+      celularVetComercial,
+      celularVetPessoal,
+      aniversario,
+    });
+    alert('Pet cadastrado com sucesso!');
   };
 
   return (
-    <form onSubmit={handleSubmit} className="form">
-      <div className="formGroup">
-        <label className="label">Mascotinho</label>
-        <input type="text" name="mascotinho" value={formData.mascotinho} onChange={handleChange} className="input" />
-      </div>
-      <div className="formGroup">
-        <label className="label">Raça</label>
-        <input type="text" name="raca" value={formData.raca} onChange={handleChange} className="input" />
-      </div>
-      <div className="formGroup">
-        <label className="label">Tutor</label>
-        <input type="text" name="tutor" value={formData.tutor} onChange={handleChange} className="input" />
-      </div>
-      <div className="formGroup">
-        <label className="label">RG</label>
-        <InputMask
-          mask="99.999.999-9"
-          maskChar=""
+    <div>
+      <h2>Cadastro de Pet</h2>
+      <form onSubmit={handleSubmit}>
+        <input
           type="text"
-          name="rg"
-          value={formData.rg}
-          onChange={handleChange}
-          className="input"
+          value={mascotinho}
+          onChange={(e) => setMascotinho(e.target.value)}
+          placeholder="Nome do Mascotinho"
+          required
         />
-      </div>
-      <div className="formGroup">
-        <label className="label">CPF</label>
-        <InputMask
-          mask="999.999.999-99"
-          maskChar=""
+        <input
           type="text"
-          name="cpf"
-          value={formData.cpf}
-          onChange={handleChange}
-          className="input"
+          value={raca}
+          onChange={(e) => setRaca(e.target.value)}
+          placeholder="Raça"
+          required
         />
-      </div>
-      <div className="formGroup">
-        <label className="label">Endereço</label>
-        <input type="text" name="endereco" value={formData.endereco} onChange={handleChange} className="input" />
-      </div>
-      <div className="formGroup">
-        <label className="label">Email</label>
-        <input type="email" name="email" value={formData.email} onChange={handleChange} className="input" />
-      </div>
-      <div className="formGroup">
-        <label className="label">Celular Tutor</label>
-        <InputMask
-          mask="(99) 99999-9999"
-          maskChar=""
+        <input
+          type="date"
+          value={aniversario}
+          onChange={(e) => setAniversario(e.target.value)}
+          placeholder="Aniversário do Pet"
+          required
+        />
+        <input
           type="text"
-          name="celular_tutor"
-          value={formData.celular_tutor}
-          onChange={handleChange}
-          className="input"
+          value={tutor}
+          onChange={(e) => setTutor(e.target.value)}
+          placeholder="Nome do Tutor"
+          required
         />
-      </div>
-      <div className="formGroup">
-        <label className="label">Veterinário</label>
-        <input type="text" name="veterinario" value={formData.veterinario} onChange={handleChange} className="input" />
-      </div>
-      <div className="formGroup">
-        <label className="label">Endereço Veterinário</label>
-        <input type="text" name="endereco_vet" value={formData.endereco_vet} onChange={handleChange} className="input" />
-      </div>
-      <div className="formGroup">
-        <label className="label">Celular Vet Comercial</label>
-        <InputMask
-          mask="(99) 99999-9999"
-          maskChar=""
+        <input
           type="text"
-          name="celular_vet_comercial"
-          value={formData.celular_vet_comercial}
-          onChange={handleChange}
-          className="input"
+          value={rg}
+          onChange={(e) => setRg(e.target.value)}
+          placeholder="RG"
+          required
         />
-      </div>
-      <div className="formGroup">
-        <label className="label">Celular Vet Pessoal</label>
-        <InputMask
-          mask="(99) 99999-9999"
-          maskChar=""
+        <input
           type="text"
-          name="celular_vet_pessoal"
-          value={formData.celular_vet_pessoal}
-          onChange={handleChange}
-          className="input"
+          value={cpf}
+          onChange={(e) => setCpf(e.target.value)}
+          placeholder="CPF"
+          required
         />
-      </div>
-      <button type="submit" className="button">Inserir</button>
-    </form>
+        <input
+          type="text"
+          value={endereco}
+          onChange={(e) => setEndereco(e.target.value)}
+          placeholder="Endereço"
+          required
+        />
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+          required
+        />
+        <input
+          type="text"
+          value={celularTutor}
+          onChange={(e) => setCelularTutor(e.target.value)}
+          placeholder="Celular do Tutor"
+          required
+        />
+        <input
+          type="text"
+          value={veterinario}
+          onChange={(e) => setVeterinario(e.target.value)}
+          placeholder="Veterinário"
+          required
+        />
+        <input
+          type="text"
+          value={enderecoVet}
+          onChange={(e) => setEnderecoVet(e.target.value)}
+          placeholder="Endereço do Veterinário"
+          required
+        />
+        <input
+          type="text"
+          value={celularVetComercial}
+          onChange={(e) => setCelularVetComercial(e.target.value)}
+          placeholder="Celular Comercial do Veterinário"
+          required
+        />
+        <input
+          type="text"
+          value={celularVetPessoal}
+          onChange={(e) => setCelularVetPessoal(e.target.value)}
+          placeholder="Celular Pessoal do Veterinário"
+          required
+        />
+        <button type="submit">Cadastrar</button>
+      </form>
+    </div>
   );
 };
 

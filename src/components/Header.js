@@ -4,7 +4,7 @@ import '../styles/header.css';
 import logoLarge from '../assets/logo-large.png'; // Adicione sua imagem para telas grandes
 import logoSmall from '../assets/logo-small.png'; // Adicione sua imagem para telas pequenas
 
-const Header = ({ toggleTheme, isAuthenticated, userRoles }) => (
+const Header = ({ isAuthenticated, userRoles }) => (
   <header className="header">
     <div className="logo">
       <img src={window.innerWidth > 768 ? logoLarge : logoSmall} alt="Logo" />
@@ -15,8 +15,9 @@ const Header = ({ toggleTheme, isAuthenticated, userRoles }) => (
         {isAuthenticated && (
           <>
             {(userRoles.isAdmin || userRoles.isOwner) && <li className="li"><Link className="link" to="/cadastro">Cadastro</Link></li>}
-            {(userRoles.isAdmin || userRoles.isOwner) && <li className="li"><Link className="link" to="/creche">Creche</Link></li>}
             {(userRoles.isEmployee || userRoles.isOwner) && <li className="li"><Link className="link" to="/contrato">Contrato</Link></li>}
+            {(userRoles.isEmployee || userRoles.isOwner) && <li className="li"><Link className="link" to="/creche">Creche</Link></li>}
+            {(userRoles.isEmployee || userRoles.isOwner) && <li className="li"><Link className="link" to="/hotel">Hotel</Link></li>}
             {userRoles.isOwner && <li className="li"><Link className="link" to="/financas">Finanças</Link></li>}
             {userRoles.isOwner && <li className="li"><Link className="link" to="/usuarios">Usuários</Link></li>}
           </>
@@ -24,7 +25,6 @@ const Header = ({ toggleTheme, isAuthenticated, userRoles }) => (
         {!isAuthenticated && <li className="li"><Link className="link" to="/login">Login</Link></li>}
       </ul>
     </nav>
-    <button className="themeToggle" onClick={toggleTheme}>🌗</button>
   </header>
 );
 
