@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth, firestore } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import { auth, firestore } from '../firebase';
 import '../styles/login.css';
 
 const Login = ({ setIsAuthenticated, setUserRoles }) => {
