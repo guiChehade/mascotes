@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import '../styles/Header.css';
+import '../styles/header.css';
 import logoLarge from '../assets/logo-large.png'; // Adicione sua imagem para telas grandes
 import logoSmall from '../assets/logo-small.png'; // Adicione sua imagem para telas pequenas
 
