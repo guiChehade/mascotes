@@ -18,6 +18,8 @@
 .nav {
   display: flex;
   align-items: center;
+  justify-content: center; /* Centralizar itens */
+  width: 100%; /* Ocupa 100% da largura */
 }
 
 .ul {

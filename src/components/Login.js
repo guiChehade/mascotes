@@ -16,8 +16,15 @@ const Login = ({ setAuthenticated, fetchUserRoles }) => {
     try {
       const userDocRef = doc(firestore, 'users', username);
       const userDoc = await getDoc(userDocRef);
-      
-      if (!userDoc.exists() || userDoc.data().password !== password) {
+      console.log("User Document:", userDoc);
+
+      if (!userDoc.exists()) {
+        setError('Nome de usuário ou senha incorretos');
+        return;
+      }
+
+      const userData = userDoc.data();
+      if (userData.password !== password) {
         setError('Nome de usuário ou senha incorretos');
         return;
       }
