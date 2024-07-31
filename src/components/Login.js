@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { firestore, auth } from '../firebase';
+import { auth, firestore } from '../firebase';
+import { doc, getDoc } from 'firebase/firestore';
 import '../styles/login.css';
 
 const Login = ({ setIsAuthenticated, setUserRoles }) => {
@@ -17,8 +18,8 @@ const Login = ({ setIsAuthenticated, setUserRoles }) => {
       setIsAuthenticated(true);
 
       // Fetch roles from Firestore
-      const userDoc = await firestore.collection('users').doc(user.uid).get();
-      if (userDoc.exists) {
+      const userDoc = await getDoc(doc(firestore, 'users', user.uid));
+      if (userDoc.exists()) {
         setUserRoles(userDoc.data());
       } else {
         console.log('No such document!');
