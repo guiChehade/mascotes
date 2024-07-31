@@ -24,7 +24,7 @@ const Login = ({ setAuthenticated, fetchUserRoles }) => {
 
       await fetchUserRoles(username);
       setAuthenticated(true); // Definindo isAuthenticated como true
-      navigate('/mascotes');
+      navigate('/');
     } catch (error) {
       console.log("Login Error: ", error);
       setError(error.message);
