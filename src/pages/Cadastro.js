@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { addDoc, collection } from 'firebase/firestore';
-import { firestore, auth } from '../firebase';
+import { firestore, storage } from '../firebase';
+import { collection, addDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import '../styles/cadastro.css';
 
 const Cadastro = () => {
@@ -17,10 +18,17 @@ const Cadastro = () => {
   const [enderecoVet, setEnderecoVet] = useState('');
   const [celularVetComercial, setCelularVetComercial] = useState('');
   const [celularVetPessoal, setCelularVetPessoal] = useState('');
+  const [foto, setFoto] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const user = auth.currentUser;
+
+    let fotoURL = '';
+    if (foto) {
+      const fotoRef = ref(storage, `pets/${foto.name}`);
+      await uploadBytes(fotoRef, foto);
+      fotoURL = await getDownloadURL(fotoRef);
+    }
 
     try {
       await addDoc(collection(firestore, 'pets'), {
@@ -37,7 +45,7 @@ const Cadastro = () => {
         enderecoVet,
         celularVetComercial,
         celularVetPessoal,
-        createdBy: user.uid
+        foto: fotoURL
       });
       alert('Pet cadastrado com sucesso!');
     } catch (error) {
@@ -46,9 +54,10 @@ const Cadastro = () => {
   };
 
   return (
-    <div>
+    <div className="cadastro-container">
       <h2>Cadastro de Pet</h2>
       <form onSubmit={handleSubmit}>
+        <label>Nome do Mascotinho</label>
         <input
           type="text"
           value={mascotinho}
@@ -56,20 +65,21 @@ const Cadastro = () => {
           placeholder="Nome do Mascotinho"
           required
         />
+        <label>Aniversário</label>
         <input
           type="date"
           value={aniversario}
           onChange={(e) => setAniversario(e.target.value)}
-          placeholder="Aniversário do Pet"
-          required
+          placeholder="Aniversário"
         />
+        <label>Raça</label>
         <input
           type="text"
           value={raca}
           onChange={(e) => setRaca(e.target.value)}
           placeholder="Raça"
-          required
         />
+        <label>Nome do Tutor</label>
         <input
           type="text"
           value={tutor}
@@ -77,68 +87,73 @@ const Cadastro = () => {
           placeholder="Nome do Tutor"
           required
         />
+        <label>RG</label>
         <input
           type="text"
           value={rg}
           onChange={(e) => setRg(e.target.value)}
           placeholder="RG"
-          required
         />
+        <label>CPF</label>
         <input
           type="text"
           value={cpf}
           onChange={(e) => setCpf(e.target.value)}
           placeholder="CPF"
-          required
         />
+        <label>Endereço</label>
         <input
           type="text"
           value={endereco}
           onChange={(e) => setEndereco(e.target.value)}
           placeholder="Endereço"
-          required
         />
+        <label>Email</label>
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
-          required
         />
+        <label>Celular do Tutor</label>
         <input
-          type="text"
+          type="tel"
           value={celularTutor}
           onChange={(e) => setCelularTutor(e.target.value)}
           placeholder="Celular do Tutor"
-          required
         />
+        <label>Veterinário</label>
         <input
           type="text"
           value={veterinario}
           onChange={(e) => setVeterinario(e.target.value)}
           placeholder="Veterinário"
-          required
         />
+        <label>Endereço do Veterinário</label>
         <input
           type="text"
           value={enderecoVet}
           onChange={(e) => setEnderecoVet(e.target.value)}
           placeholder="Endereço do Veterinário"
-          required
         />
+        <label>Celular Comercial do Veterinário</label>
         <input
-          type="text"
+          type="tel"
           value={celularVetComercial}
           onChange={(e) => setCelularVetComercial(e.target.value)}
           placeholder="Celular Comercial do Veterinário"
-          required
         />
+        <label>Celular Pessoal do Veterinário</label>
         <input
-          type="text"
+          type="tel"
           value={celularVetPessoal}
           onChange={(e) => setCelularVetPessoal(e.target.value)}
           placeholder="Celular Pessoal do Veterinário"
-          required
+        />
+        <label>Foto do Pet</label>
+        <input
+          type="file"
+          onChange={(e) => setFoto(e.target.files[0])}
         />
         <button type="submit">Cadastrar</button>
       </form>
