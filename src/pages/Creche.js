@@ -17,8 +17,8 @@ const Creche = () => {
     fetchPets();
   }, []);
 
-  const handleEdit = (id) => {
-    navigate(`/editar/${id}`);
+  const handleSelect = (id) => {
+    navigate(`/controle/${id}`);
   };
 
   return (
@@ -28,8 +28,7 @@ const Creche = () => {
           <div className="pet-info">
             <h3>{pet.mascotinho}</h3>
             <p>{pet.tutor}</p>
-            <button onClick={() => handleEdit(pet.id)} className="edit-button">Editar</button>
-            <Link to={`/opcoes/${pet.id}`} className="select-button">Selecionar</Link>
+            <button onClick={() => handleSelect(pet.id)} className="select-button">Selecionar</button>
           </div>
           {pet.foto && <img src={pet.foto} alt={pet.mascotinho} className="pet-foto" />}
         </div>

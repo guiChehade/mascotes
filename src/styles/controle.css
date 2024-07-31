@@ -1,0 +1,30 @@
+.controle-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: var(--button-background);
+    color: var(--text-color);
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .controle-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  button {
+    background-color: var(--button-background);
+    color: var(--text-color);
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  button:hover {
+    background-color: var(--button-hover-background);
+  }
+  

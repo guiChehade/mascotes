@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Creche from './pages/Creche';
 import Financas from './pages/Financas';
 import Usuarios from './pages/Usuarios';
+import Controle from './pages/Controle';
 import './styles/global.css';
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
           <Route path="/creche" element={isAuthenticated ? <Creche /> : <Navigate to="/login" />} />
           <Route path="/financas" element={isAuthenticated && userRoles.isOwner ? <Financas /> : <Navigate to="/login" />} />
           <Route path="/usuarios" element={isAuthenticated && userRoles.isOwner ? <Usuarios /> : <Navigate to="/login" />} />
+          <Route path="/controle/:id" element={isAuthenticated ? <Controle /> : <Navigate to="/login" />} />
         </Routes>
       </div>
     </Router>
