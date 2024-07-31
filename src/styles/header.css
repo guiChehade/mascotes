@@ -12,23 +12,36 @@
   height: 60px;
 }
 
+.logo {
+  flex: 1;
+  text-align: center;
+}
+
 .logo img {
   height: 40px;
-  display: block;
-  margin: 0 auto;
 }
 
 .nav {
+  display: none;
+}
+
+.nav.open {
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: var(--button-background);
+  position: absolute;
+  top: 60px;
+  left: 0;
+  width: 100%;
+  padding: 10px 0;
 }
 
 .ul {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
 }
 
 .li {
@@ -48,12 +61,14 @@
   border: none;
   color: var(--button-color);
   cursor: pointer;
+  z-index: 1001;
 }
 
 @media (min-width: 768px) {
   .nav {
     flex-direction: row;
-    align-items: center;
+    position: static;
+    display: flex;
   }
 
   .ul {
