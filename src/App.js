@@ -4,7 +4,6 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './pages/Home';
 import Cadastro from './pages/Cadastro';
-import Controle from './pages/Controle';
 import Financas from './pages/Financas';
 import Login from './components/Login';
 import Register from './components/Register';
