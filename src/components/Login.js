@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { auth, firestore } from '../firebase';
+import { firestore } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 import { getDoc, doc } from 'firebase/firestore';
 import '../styles/login.css';
 
-const Login = ({ setAuthenticated }) => {
+const Login = ({ setAuthenticated, fetchUserRoles }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -14,19 +14,14 @@ const Login = ({ setAuthenticated }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const usernameDocRef = doc(firestore, 'usernames', username);
-      const usernameDoc = await getDoc(usernameDocRef);
-      if (!usernameDoc.exists()) {
+      const userDocRef = doc(firestore, 'users', username);
+      const userDoc = await getDoc(userDocRef);
+      if (!userDoc.exists() || userDoc.data().password !== password) {
         setError('Nome de usuário ou senha incorretos');
         return;
       }
 
-      const userDocRef = doc(firestore, 'users', usernameDoc.data().uid);
-      const userDoc = await getDoc(userDocRef);
-      const userData = userDoc.data();
-
-      await auth.signInWithEmailAndPassword(userData.email, password);
-
+      await fetchUserRoles(username);
       setAuthenticated(true);
       navigate('/mascotes');
     } catch (error) {
