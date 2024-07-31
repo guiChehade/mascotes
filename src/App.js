@@ -4,7 +4,7 @@ import Header from './components/Header';
 import Home from './pages/Home';
 import Cadastro from './pages/Cadastro';
 import Login from './pages/Login';
-import Creche from './pages/Controle';
+import Creche from './pages/Creche';
 import Financas from './pages/Financas';
 import Usuarios from './pages/Usuarios';
 import Register from './components/Register';
