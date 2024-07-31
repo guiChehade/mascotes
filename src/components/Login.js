@@ -16,17 +16,16 @@ const Login = ({ setAuthenticated, fetchUserRoles }) => {
     try {
       const userDocRef = doc(firestore, 'users', username);
       const userDoc = await getDoc(userDocRef);
-      console.log("User Document: ", userDoc.data());
+      
       if (!userDoc.exists() || userDoc.data().password !== password) {
         setError('Nome de usuário ou senha incorretos');
         return;
       }
 
       await fetchUserRoles(username);
-      setAuthenticated(true); // Definindo isAuthenticated como true
+      setAuthenticated(true);
       navigate('/');
     } catch (error) {
-      console.log("Login Error: ", error);
       setError(error.message);
     }
   };

@@ -1,68 +1,30 @@
 import React, { useState } from 'react';
-import { auth, firestore } from '../firebase';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { firestore } from '../firebase';
+import { useNavigate } from 'react-router-dom';
+import { doc, setDoc } from 'firebase/firestore';
+import '../styles/register.css';
 
-const Register = ({ isOwner }) => {
+const Register = () => {
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('None');
+  const [role, setRole] = useState('none');
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const usernameDocRef = doc(firestore, 'usernames', username);
-      const usernameDoc = await getDoc(usernameDocRef);
-      if (usernameDoc.exists()) {
-        setError('Nome de usuário já existe');
-        return;
-      }
-
-      const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-      const user = userCredential.user;
-
-      let roles = {
-        isOwner: false,
-        isAdmin: false,
-        isEmployee: false,
-        isTutor: false
-      };
-
-      switch(role) {
-        case 'Owner':
-          roles = { isOwner: true, isAdmin: true, isEmployee: true, isTutor: true };
-          break;
-        case 'Admin':
-          roles = { isOwner: false, isAdmin: true, isEmployee: true, isTutor: true };
-          break;
-        case 'Employee':
-          roles = { isOwner: false, isAdmin: false, isEmployee: true, isTutor: true };
-          break;
-        case 'Tutor':
-          roles = { isOwner: false, isAdmin: false, isEmployee: false, isTutor: true };
-          break;
-        default:
-          roles = { isOwner: false, isAdmin: false, isEmployee: false, isTutor: false };
-      }
-
-      await setDoc(doc(firestore, 'users', user.uid), {
-        username,
-        email,
-        ...roles
+      await setDoc(doc(firestore, 'users', username), {
+        password,
+        isOwner: role === 'owner',
+        isAdmin: role === 'admin',
+        isEmployee: role === 'employee',
+        isTutor: role === 'tutor'
       });
-
-      await setDoc(usernameDocRef, {
-        uid: user.uid
-      });
-
-      alert("Usuário registrado com sucesso!");
-      setUsername('');
-      setEmail('');
-      setPassword('');
-      setRole('None');
+      alert('Usuário registrado com sucesso!');
+      navigate('/usuarios');
     } catch (error) {
-      setError(error.message);
+      setError('Erro ao registrar usuário: ' + error.message);
     }
   };
 
@@ -78,25 +40,18 @@ const Register = ({ isOwner }) => {
           required
         />
         <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-          required
-        />
-        <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Senha"
           required
         />
-        <select value={role} onChange={(e) => setRole(e.target.value)}>
-          <option value="Owner">Proprietário</option>
-          <option value="Admin">Gerente</option>
-          <option value="Employee">Funcionário</option>
-          <option value="Tutor">Tutor</option>
-          <option value="None">Nenhum</option>
+        <select value={role} onChange={(e) => setRole(e.target.value)} required>
+          <option value="none">Selecione o tipo de usuário</option>
+          <option value="owner">Proprietário</option>
+          <option value="admin">Gerente</option>
+          <option value="employee">Funcionário</option>
+          <option value="tutor">Tutor</option>
         </select>
         <button type="submit">Registrar</button>
         {error && <p>{error}</p>}

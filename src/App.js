@@ -7,7 +7,6 @@ import Cadastro from './pages/Cadastro';
 import Financas from './pages/Financas';
 import Login from './components/Login';
 import Register from './components/Register';
-import Dashboard from './pages/Dashboard';
 import EditarPet from './pages/EditarPet';
 import Creche from './pages/Creche';
 import Usuarios from './pages/Usuarios';
