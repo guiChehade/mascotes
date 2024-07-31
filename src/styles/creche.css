@@ -1,39 +1,51 @@
-.controle {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+.creche-container {
+  display: flex;
+  flex-wrap: wrap;
   gap: 20px;
+  justify-content: center;
   padding: 20px;
 }
 
-.card {
-  background-color: var(--input-background);
-  padding: 20px;
+.pet-card {
+  background-color: var(--button-background);
+  color: var(--text-color);
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 300px;
   position: relative;
 }
 
-.button {
+.pet-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pet-foto {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.edit-button,
+.select-button {
   background-color: var(--button-background);
-  color: var(--button-color);
+  color: var(--text-color);
+  padding: 10px;
   border: none;
-  border-radius: 10px;
-  padding: 10px 20px;
+  border-radius: 5px;
+  text-align: center;
   cursor: pointer;
+  margin-top: 10px;
   transition: background-color 0.3s;
 }
 
-.button:hover {
+.edit-button:hover,
+.select-button:hover {
   background-color: var(--button-hover-background);
-}
-
-.select-button {
-  background-color: var(--button-background);
-  color: var(--button-color);
-}
-
-.delete-button {
-  background-color: var(--button-background);
-  color: var(--button-color);
-  margin-left: 10px;
 }

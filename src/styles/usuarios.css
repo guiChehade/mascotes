@@ -1,19 +1,35 @@
-table {
+.usuarios-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.usuarios-table {
   width: 100%;
   border-collapse: collapse;
-  margin: 20px 0;
+  background-color: var(--button-background);
+  color: var(--text-color);
 }
 
-th, td {
-  border: 1px solid #ddd;
-  padding: 8px;
+.usuarios-table th,
+.usuarios-table td {
+  padding: 10px;
+  border: 1px solid var(--button-hover-background);
 }
 
-th {
-  background-color: #f2f2f2;
-  text-align: left;
+.usuarios-table th {
+  background-color: var(--button-hover-background);
 }
 
-select, button {
-  margin: 10px;
+button {
+  background-color: var(--button-background);
+  color: var(--text-color);
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--button-hover-background);
 }

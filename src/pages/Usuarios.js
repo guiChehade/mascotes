@@ -1,83 +1,82 @@
 import React, { useState, useEffect } from 'react';
+import { collection, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { firestore } from '../firebase';
-import { collection, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import '../styles/usuarios.css';
 
 const Usuarios = () => {
   const [users, setUsers] = useState([]);
-  const [selectedRole, setSelectedRole] = useState({});
+  const [editUserId, setEditUserId] = useState(null);
+  const [newUserRole, setNewUserRole] = useState('');
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const usersCollection = collection(firestore, 'users');
-      const userSnapshot = await getDocs(usersCollection);
-      const userList = userSnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setUsers(userList);
+      const querySnapshot = await getDocs(collection(firestore, 'users'));
+      const usersList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setUsers(usersList);
     };
     fetchUsers();
   }, []);
 
-  const handleRoleChange = async (userId, role) => {
-    const userDocRef = doc(firestore, 'users', userId);
-    const updatedData = {
-      isOwner: role === 'Proprietário',
-      isAdmin: role === 'Gerente' || role === 'Proprietário',
-      isEmployee: role === 'Funcionário' || role === 'Gerente' || role === 'Proprietário',
-      isTutor: role === 'Tutor',
-    };
-    await updateDoc(userDocRef, updatedData);
-    setSelectedRole({ ...selectedRole, [userId]: role });
+  const handleDelete = async (id) => {
+    if (window.confirm('Você tem certeza que quer excluir este usuário?')) {
+      await deleteDoc(doc(firestore, 'users', id));
+      setUsers(users.filter(user => user.id !== id));
+    }
   };
 
-  const handleDeleteUser = async (userId) => {
-    if (userId === 'tiaDani' || userId === 'guiChehade') {
-      alert("Não é possível excluir este usuário.");
-      return;
-    }
-    const userDocRef = doc(firestore, 'users', userId);
-    await deleteDoc(userDocRef);
-    setUsers(users.filter(user => user.id !== userId));
+  const handleEdit = (id) => {
+    setEditUserId(id);
+  };
+
+  const handleUpdateRole = async (id) => {
+    await updateDoc(doc(firestore, 'users', id), {
+      role: newUserRole
+    });
+    setEditUserId(null);
   };
 
   return (
-    <div>
-      <h2>Usuários</h2>
-      <table>
+    <div className="usuarios-container">
+      <h2>Gerenciamento de Usuários</h2>
+      <table className="usuarios-table">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Role</th>
+            <th>Nome do Usuário</th>
+            <th>Email</th>
+            <th>Tipo de Usuário</th>
             <th>Ações</th>
           </tr>
         </thead>
         <tbody>
-          {users.map(user => (
+          {users.map((user) => (
             <tr key={user.id}>
-              <td>{user.id}</td>
+              <td>{user.name}</td>
+              <td>{user.email}</td>
               <td>
-                <select
-                  value={selectedRole[user.id] || (user.isOwner ? 'Proprietário' : user.isAdmin ? 'Gerente' : user.isEmployee ? 'Funcionário' : user.isTutor ? 'Tutor' : 'Nenhum')}
-                  onChange={(e) => handleRoleChange(user.id, e.target.value)}
-                  disabled={user.id === 'tiaDani' || user.id === 'guiChehade'}
-                >
-                  <option value="Nenhum">Nenhum</option>
-                  <option value="Proprietário">Proprietário</option>
-                  <option value="Gerente">Gerente</option>
-                  <option value="Funcionário">Funcionário</option>
-                  <option value="Tutor">Tutor</option>
-                </select>
+                {editUserId === user.id ? (
+                  <select value={newUserRole} onChange={(e) => setNewUserRole(e.target.value)}>
+                    <option value="isOwner">Proprietário</option>
+                    <option value="isAdmin">Gerente</option>
+                    <option value="isEmployee">Funcionário</option>
+                    <option value="isTutor">Tutor</option>
+                    <option value="">Nenhum</option>
+                  </select>
+                ) : user.role}
               </td>
               <td>
-                <button onClick={() => handleDeleteUser(user.id)} disabled={user.id === 'tiaDani' || user.id === 'guiChehade'}>Excluir</button>
+                {editUserId === user.id ? (
+                  <button onClick={() => handleUpdateRole(user.id)}>Salvar</button>
+                ) : (
+                  <>
+                    <button onClick={() => handleEdit(user.id)}>Editar</button>
+                    <button onClick={() => handleDelete(user.id)}>Excluir</button>
+                  </>
+                )}
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <button onClick={() => window.location.href = '/register'}>Registrar Novo Usuário</button>
     </div>
   );
 };

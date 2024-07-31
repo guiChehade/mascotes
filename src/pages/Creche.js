@@ -1,53 +1,36 @@
 import React, { useState, useEffect } from 'react';
+import { collection, getDocs } from 'firebase/firestore';
 import { firestore } from '../firebase';
-import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import '../styles/creche.css';
 
-const Controle = () => {
+const Creche = () => {
   const [pets, setPets] = useState([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPets = async () => {
-      const petsCollection = collection(firestore, 'pets');
-      const petsSnapshot = await getDocs(petsCollection);
-      const petsList = petsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const querySnapshot = await getDocs(collection(firestore, 'pets'));
+      const petsList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setPets(petsList);
     };
-
     fetchPets();
   }, []);
 
-  const handleDelete = async (id) => {
-    const confirmDelete = window.confirm("Tem certeza que deseja excluir este mascote? Esta ação é definitiva.");
-    if (confirmDelete) {
-      try {
-        await deleteDoc(doc(firestore, 'pets', id));
-        setPets(pets.filter(pet => pet.id !== id));
-        alert("Mascotinho excluído com sucesso!");
-      } catch (error) {
-        alert("Erro ao excluir mascotinho: " + error.message);
-      }
-    }
-  };
-
-  const handleSelect = (id) => {
-    navigate(`/editar-pet/${id}`);
-  };
-
   return (
-    <div className="controle">
+    <div className="creche-container">
       {pets.map((pet) => (
-        <div key={pet.id} className="card">
-          <h3>{pet.mascotinho}</h3>
-          <p>Tutor: {pet.tutor}</p>
-          <button onClick={() => handleSelect(pet.id)} className="button select-button">Selecionar</button>
-          <button onClick={() => handleDelete(pet.id)} className="button delete-button">Excluir</button>
+        <div key={pet.id} className="pet-card">
+          <div className="pet-info">
+            <h3>{pet.mascotinho}</h3>
+            <p>{pet.tutor}</p>
+            <Link to={`/editar/${pet.id}`} className="edit-button">Editar</Link>
+            <Link to={`/opcoes/${pet.id}`} className="select-button">Selecionar</Link>
+          </div>
+          {pet.foto && <img src={pet.foto} alt={pet.mascotinho} className="pet-foto" />}
         </div>
       ))}
     </div>
   );
 };
 
-export default Controle;
+export default Creche;
