@@ -4,7 +4,8 @@ import { auth, firestore } from '../firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import '../styles/register.css';
 
-const Register = () => {
+const Register = ({ currentUser }) => {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -23,9 +24,10 @@ const Register = () => {
       };
 
       await setDoc(doc(firestore, 'users', user.uid), {
+        name,
         email,
         ...roles,
-        createdBy: user.uid
+        createdBy: currentUser ? currentUser.name : 'Site'
       });
 
       alert('Usuário registrado com sucesso!');
@@ -38,6 +40,13 @@ const Register = () => {
     <div>
       <h2>Registrar</h2>
       <form onSubmit={handleRegister}>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Nome"
+          required
+        />
         <input
           type="email"
           value={email}

@@ -16,6 +16,12 @@
   max-height: 40px;
 }
 
+.nav {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+}
+
 .nav .ul {
   list-style-type: none;
   margin: 0;
