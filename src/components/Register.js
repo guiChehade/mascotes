@@ -7,7 +7,6 @@ import '../styles/register.css';
 const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('Nenhum');
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -17,10 +16,10 @@ const Register = () => {
       const user = userCredential.user;
 
       const roles = {
-        isOwner: role === 'Proprietário',
-        isAdmin: role === 'Gerente' || role === 'Proprietário',
-        isEmployee: role === 'Funcionário' || role === 'Gerente' || role === 'Proprietário',
-        isTutor: role === 'Tutor',
+        isOwner: true,
+        isAdmin: true,
+        isEmployee: true,
+        isTutor: true,
       };
 
       await setDoc(doc(firestore, 'users', user.uid), {
@@ -53,13 +52,6 @@ const Register = () => {
           placeholder="Senha"
           required
         />
-        <select value={role} onChange={(e) => setRole(e.target.value)} required>
-          <option value="Nenhum">Nenhum</option>
-          <option value="Proprietário">Proprietário</option>
-          <option value="Gerente">Gerente</option>
-          <option value="Funcionário">Funcionário</option>
-          <option value="Tutor">Tutor</option>
-        </select>
         <button type="submit">Registrar</button>
       </form>
     </div>
