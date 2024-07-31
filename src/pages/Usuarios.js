@@ -6,6 +6,7 @@ import '../styles/usuarios.css';
 const Usuarios = () => {
   const [users, setUsers] = useState([]);
   const [editUserId, setEditUserId] = useState(null);
+  const [editUserName, setEditUserName] = useState('');
   const [newUserRole, setNewUserRole] = useState('');
 
   useEffect(() => {
@@ -24,12 +25,15 @@ const Usuarios = () => {
     }
   };
 
-  const handleEdit = (id) => {
-    setEditUserId(id);
+  const handleEdit = (user) => {
+    setEditUserId(user.id);
+    setEditUserName(user.name);
+    setNewUserRole(user.role);
   };
 
   const handleUpdateRole = async (id) => {
     await updateDoc(doc(firestore, 'users', id), {
+      name: editUserName,
       role: newUserRole
     });
     setEditUserId(null);
@@ -50,7 +54,17 @@ const Usuarios = () => {
         <tbody>
           {users.map((user) => (
             <tr key={user.id}>
-              <td>{user.name}</td>
+              <td>
+                {editUserId === user.id ? (
+                  <input
+                    type="text"
+                    value={editUserName}
+                    onChange={(e) => setEditUserName(e.target.value)}
+                  />
+                ) : (
+                  user.name
+                )}
+              </td>
               <td>{user.email}</td>
               <td>
                 {editUserId === user.id ? (
@@ -61,14 +75,19 @@ const Usuarios = () => {
                     <option value="isTutor">Tutor</option>
                     <option value="">Nenhum</option>
                   </select>
-                ) : user.role}
+                ) : (
+                  user.role === 'isOwner' ? 'Proprietário' :
+                  user.role === 'isAdmin' ? 'Gerente' :
+                  user.role === 'isEmployee' ? 'Funcionário' :
+                  user.role === 'isTutor' ? 'Tutor' : 'Nenhum'
+                )}
               </td>
               <td>
                 {editUserId === user.id ? (
                   <button onClick={() => handleUpdateRole(user.id)}>Salvar</button>
                 ) : (
                   <>
-                    <button onClick={() => handleEdit(user.id)}>Editar</button>
+                    <button onClick={() => handleEdit(user)}>Editar</button>
                     <button onClick={() => handleDelete(user.id)}>Excluir</button>
                   </>
                 )}
