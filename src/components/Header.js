@@ -7,10 +7,6 @@ import logoSmall from '../assets/logo-small.png';
 const Header = ({ isAuthenticated, userRoles }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
-
   return (
     <header className="header">
       <div className="logo">
@@ -31,8 +27,10 @@ const Header = ({ isAuthenticated, userRoles }) => {
           )}
           {!isAuthenticated && <li className="li"><Link className="link" to="/login">Login</Link></li>}
         </ul>
-        <button className="hamburger" onClick={toggleMenu}>☰</button>
       </nav>
+      <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
+        ☰
+      </button>
     </header>
   );
 };

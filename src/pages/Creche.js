@@ -27,7 +27,7 @@ const Creche = () => {
       {pets.map((pet) => (
         <div key={pet.id} className="pet-card">
           <div className="pet-info">
-            <p><strong>Mascotinho:</strong> {pet.mascotinho}</p>
+            <p className="mascotinho"><strong>{pet.mascotinho}</strong></p>
             <p><strong>Tutor:</strong> {pet.tutor}</p>
             <p><strong>Raça:</strong> {pet.raca}</p>
           </div>
@@ -35,7 +35,7 @@ const Creche = () => {
             {pet.foto ? (
               <img src={pet.foto} alt={pet.mascotinho} className="pet-foto" />
             ) : (
-              <img src={logoLarge} alt="Logo" className="pet-foto" />
+              <img src={logoLarge} alt="Logo" className="pet-foto grayscale" />
             )}
             <button onClick={() => handleSelect(pet.id)} className="select-button">Selecionar</button>
           </div>
