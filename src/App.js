@@ -12,6 +12,7 @@ import './styles/global.css';
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRoles, setUserRoles] = useState({});
+  const [currentUser, setCurrentUser] = useState(null);
 
   return (
     <Router>
