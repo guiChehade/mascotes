@@ -7,15 +7,15 @@ const Controle = () => {
   const navigate = useNavigate();
 
   const handleEntrada = () => {
-    navigate(`/controle/entrada/${id}`);
+    // lógica para entrada
   };
 
   const handleSaida = () => {
-    navigate(`/controle/saida/${id}`);
+    // lógica para saída
   };
 
   const handleComentario = () => {
-    navigate(`/controle/comentario/${id}`);
+    // lógica para comentário
   };
 
   const handleEditar = () => {

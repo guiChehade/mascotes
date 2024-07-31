@@ -11,25 +11,23 @@ const Login = ({ setIsAuthenticated, setUserRoles, setCurrentUser }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
 
-      setIsAuthenticated(true);
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
 
-      // Fetch roles from Firestore
-      const userDoc = await getDoc(doc(firestore, 'users', user.uid));
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-        setUserRoles(userData);
-        setCurrentUser(userData);
-      } else {
-        console.log('No such document!');
-      }
-    } catch (error) {
-      alert(`Erro ao fazer login: ${error.message}`);
+    setIsAuthenticated(true);
+
+    // Fetch roles from Firestore
+    const userDoc = await getDoc(doc(firestore, 'users', user.uid));
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      setUserRoles(userData);
+      setCurrentUser(userData);
+    } else {
+      console.log('No such document!');
     }
-  };
+    }
+
 
   return (
     <div>

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { firestore } from '../firebase';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import '../styles/creche.css';
+import logoLarge from '../assets/logo-large.png';
 
 const Creche = () => {
   const [pets, setPets] = useState([]);
@@ -26,11 +27,18 @@ const Creche = () => {
       {pets.map((pet) => (
         <div key={pet.id} className="pet-card">
           <div className="pet-info">
-            <h3>{pet.mascotinho}</h3>
-            <p>{pet.tutor}</p>
+            <p><strong>Mascotinho:</strong> {pet.mascotinho}</p>
+            <p><strong>Tutor:</strong> {pet.tutor}</p>
+            <p><strong>Raça:</strong> {pet.raca}</p>
+          </div>
+          <div className="pet-photo-select">
+            {pet.foto ? (
+              <img src={pet.foto} alt={pet.mascotinho} className="pet-foto" />
+            ) : (
+              <img src={logoLarge} alt="Logo" className="pet-foto" />
+            )}
             <button onClick={() => handleSelect(pet.id)} className="select-button">Selecionar</button>
           </div>
-          {pet.foto && <img src={pet.foto} alt={pet.mascotinho} className="pet-foto" />}
         </div>
       ))}
     </div>
