@@ -13,16 +13,19 @@ const Login = ({ setAuthenticated, fetchUserRoles }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null); // Reset error state before new attempt
     try {
       const userDocRef = doc(firestore, 'users', username);
       const userDoc = await getDoc(userDocRef);
 
+      console.log("User Document:", userDoc);
       if (!userDoc.exists()) {
         setError('Nome de usuário ou senha incorretos');
         return;
       }
 
       const userData = userDoc.data();
+      console.log("User Data:", userData);
       if (userData.password !== password) {
         setError('Nome de usuário ou senha incorretos');
         return;
@@ -32,6 +35,7 @@ const Login = ({ setAuthenticated, fetchUserRoles }) => {
       setAuthenticated(true);
       navigate('/');
     } catch (error) {
+      console.error("Login Error:", error);
       setError(error.message);
     }
   };
@@ -51,10 +55,10 @@ const Login = ({ setAuthenticated, fetchUserRoles }) => {
           <input
             type={showPassword ? "text" : "password"}
             value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Senha"
-          required
-        />
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Senha"
+            required
+          />
           <button type="button" className="toggle-password" onClick={() => setShowPassword(!showPassword)}>
             {showPassword ? '🙈' : '👁️'}
           </button>
