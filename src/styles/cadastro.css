@@ -2,24 +2,19 @@
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
-  background-color: var(--button-background);
-  color: var(--text-color);
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 form {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 20px;
+  gap: 10px;
 }
 
 label {
   font-size: 14px;
 }
 
-input,
-button {
+input, button {
   padding: 10px;
   border-radius: 5px;
   border: 1px solid var(--button-hover-background);
@@ -39,5 +34,29 @@ button:hover {
 @media (min-width: 768px) {
   form {
     grid-template-columns: 1fr 1fr;
+    gap: 20px;
   }
+}
+
+input[type="file"] {
+  grid-column: span 2;
+}
+
+button {
+  grid-column: span 2;
+}
+
+.photo-editor-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--button-background);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }

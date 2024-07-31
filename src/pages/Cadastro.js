@@ -1,76 +1,94 @@
 import React, { useState } from 'react';
-import { collection, addDoc } from 'firebase/firestore';
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { firestore } from '../firebase';
+import { firestore, storage } from '../firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { addDoc, collection } from 'firebase/firestore';
+import PhotoEditor from '../components/PhotoEditor';
 import '../styles/cadastro.css';
 
 const Cadastro = () => {
-  const [mascotinho, setMascotinho] = useState('');
-  const [tutor, setTutor] = useState('');
-  const [raca, setRaca] = useState('');
-  const [foto, setFoto] = useState(null);
-  const [aniversario, setAniversario] = useState('');
+  const [pet, setPet] = useState({
+    mascotinho: '',
+    aniversario: '',
+    raca: '',
+    tutor: '',
+    rg: '',
+    cpf: '',
+    endereco: '',
+    email: '',
+    celularTutor: '',
+    veterinario: '',
+    enderecoVet: '',
+    celularVetComercial: '',
+    celularVetPessoal: '',
+    foto: ''
+  });
+
+  const [image, setImage] = useState(null);
+  const [editorOpen, setEditorOpen] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setPet((prevPet) => ({
+      ...prevPet,
+      [name]: value
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      let fotoURL = '';
-      if (foto) {
-        const storage = getStorage();
-        const storageRef = ref(storage, `pets/${foto.name}`);
-        await uploadBytes(storageRef, foto);
-        fotoURL = await getDownloadURL(storageRef);
-      }
-      const docRef = await addDoc(collection(firestore, 'pets'), {
-        mascotinho,
-        tutor,
-        raca,
-        foto: fotoURL,
-        aniversario,
-      });
-      console.log('Document written with ID: ', docRef.id);
-    } catch (e) {
-      console.error('Error adding document: ', e);
+
+    let fotoURL = '';
+    if (image) {
+      const fotoRef = ref(storage, `pets/${Date.now()}_${image.name}`);
+      await uploadBytes(fotoRef, image);
+      fotoURL = await getDownloadURL(fotoRef);
     }
+
+    await addDoc(collection(firestore, 'pets'), {
+      ...pet,
+      foto: fotoURL
+    });
+
+    alert('Pet cadastrado com sucesso!');
+    setPet({
+      mascotinho: '',
+      aniversario: '',
+      raca: '',
+      tutor: '',
+      rg: '',
+      cpf: '',
+      endereco: '',
+      email: '',
+      celularTutor: '',
+      veterinario: '',
+      enderecoVet: '',
+      celularVetComercial: '',
+      celularVetPessoal: '',
+      foto: ''
+    });
   };
 
   return (
     <div className="cadastro-container">
-      <h2>Cadastro de Mascotinho</h2>
+      <h2>Cadastro de Pet</h2>
       <form onSubmit={handleSubmit}>
         <label>Nome do Mascotinho</label>
-        <input
-          type="text"
-          value={mascotinho}
-          onChange={(e) => setMascotinho(e.target.value)}
-          required
-        />
-        <label>Nome do Tutor</label>
-        <input
-          type="text"
-          value={tutor}
-          onChange={(e) => setTutor(e.target.value)}
-          required
-        />
-        <label>Raça</label>
-        <input
-          type="text"
-          value={raca}
-          onChange={(e) => setRaca(e.target.value)}
-        />
+        <input type="text" name="mascotinho" value={pet.mascotinho} onChange={handleChange} required />
         <label>Aniversário</label>
-        <input
-          type="date"
-          value={aniversario}
-          onChange={(e) => setAniversario(e.target.value)}
-        />
-        <label>Foto do Mascotinho</label>
-        <input
-          type="file"
-          onChange={(e) => setFoto(e.target.files[0])}
-        />
+        <input type="date" name="aniversario" value={pet.aniversario} onChange={handleChange} />
+        <label>Raça</label>
+        <input type="text" name="raca" value={pet.raca} onChange={handleChange} />
+        <label>Tutor</label>
+        <input type="text" name="tutor" value={pet.tutor} onChange={handleChange} required />
+        {/* Adicione os demais campos aqui */}
+        <label>Foto do Pet</label>
+        <input type="file" accept="image/*" onChange={(e) => {
+          setImage(e.target.files[0]);
+          setEditorOpen(true);
+        }} />
         <button type="submit">Cadastrar</button>
       </form>
+      {editorOpen && <PhotoEditor image={image} setImage={(img) => setPet((prevPet) => ({ ...prevPet, foto: img }))} setEditorOpen={setEditorOpen} />}
     </div>
   );
 };

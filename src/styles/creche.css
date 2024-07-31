@@ -3,7 +3,7 @@
   flex-wrap: wrap;
   gap: 20px;
   justify-content: center;
-  padding-top: 100px; /* Ajuste para dar espaço ao header */
+  padding-top: 100px; /* Espaço para o Header */
 }
 
 .pet-card {
@@ -16,18 +16,18 @@
   justify-content: space-between;
   width: 300px;
   max-width: 100%;
-  margin-top: 20px; /* Espaço adicional para não colar no header */
-}
-
-.mascotinho-name {
-  text-align: center;
-  font-size: 1.2em;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .pet-info {
   flex: 1;
   margin-right: 20px;
+}
+
+.pet-name {
+  font-weight: bold;
+  font-size: 18px;
+  text-align: center;
 }
 
 .pet-photo-select {
@@ -44,7 +44,7 @@
   margin-bottom: 10px;
 }
 
-.bw {
+.bw-photo {
   filter: grayscale(100%);
 }
 
