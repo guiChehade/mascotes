@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { collection, addDoc } from 'firebase/firestore';
-import { firestore, storage } from '../firebase';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { firestore } from '../firebase';
 import '../styles/cadastro.css';
 
 const Cadastro = () => {
@@ -13,11 +14,18 @@ const Cadastro = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      let fotoURL = '';
+      if (foto) {
+        const storage = getStorage();
+        const storageRef = ref(storage, `pets/${foto.name}`);
+        await uploadBytes(storageRef, foto);
+        fotoURL = await getDownloadURL(storageRef);
+      }
       const docRef = await addDoc(collection(firestore, 'pets'), {
         mascotinho,
         tutor,
         raca,
-        foto,
+        foto: fotoURL,
         aniversario,
       });
       console.log('Document written with ID: ', docRef.id);

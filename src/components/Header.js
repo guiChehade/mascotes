@@ -9,6 +9,9 @@ const Header = ({ isAuthenticated, userRoles }) => {
 
   return (
     <header className="header">
+      <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
+        ☰
+      </button>
       <div className="logo">
         <img src={window.innerWidth > 768 ? logoLarge : logoSmall} alt="Logo" />
       </div>
@@ -28,9 +31,6 @@ const Header = ({ isAuthenticated, userRoles }) => {
           {!isAuthenticated && <li className="li"><Link className="link" to="/login">Login</Link></li>}
         </ul>
       </nav>
-      <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
-        ☰
-      </button>
     </header>
   );
 };
