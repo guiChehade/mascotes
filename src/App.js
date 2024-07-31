@@ -56,8 +56,8 @@ function App() {
         <Header toggleTheme={toggleTheme} userRoles={userRoles} />
         <div className="container" style={{ marginTop: '100px', marginBottom: '60px' }}>
           <Routes>
+            <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login setAuthenticated={setAuthenticated} fetchUserRoles={fetchUserRoles} />} />
-            <Route path="/" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />
             <Route path="/cadastro" element={isAuthenticated && (userRoles.isAdmin || userRoles.isOwner) ? <Cadastro /> : <Navigate to="/login" />} />
             <Route path="/creche" element={isAuthenticated && (userRoles.isAdmin || userRoles.isOwner) ? <Creche /> : <Navigate to="/login" />} />
             <Route path="/financas" element={isAuthenticated && userRoles.isOwner ? <Financas /> : <Navigate to="/login" />} />
