@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { getFunctions, httpsCallable } from 'firebase/functions';
+import { addDoc, collection } from 'firebase/firestore';
+import { firestore, auth } from '../firebase';
 import '../styles/cadastro.css';
 
 const Cadastro = () => {
@@ -19,11 +20,10 @@ const Cadastro = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const functions = getFunctions();
-    const createPet = httpsCallable(functions, 'createPet');
+    const user = auth.currentUser;
 
     try {
-      const result = await createPet({
+      await addDoc(collection(firestore, 'pets'), {
         mascotinho,
         aniversario,
         raca,
@@ -37,10 +37,11 @@ const Cadastro = () => {
         enderecoVet,
         celularVetComercial,
         celularVetPessoal,
+        createdBy: user.uid
       });
-      alert(result.data.message);
+      alert('Pet cadastrado com sucesso!');
     } catch (error) {
-      alert(`Erro ao cadastrar mascotinho: ${error.message}`);
+      alert(`Erro ao cadastrar pet: ${error.message}`);
     }
   };
 

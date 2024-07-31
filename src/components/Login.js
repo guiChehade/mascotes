@@ -1,70 +1,52 @@
 import React, { useState } from 'react';
-import { firestore } from '../firebase';
-import { useNavigate } from 'react-router-dom';
-import { getDoc, doc } from 'firebase/firestore';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { firestore, auth } from '../firebase';
 import '../styles/login.css';
 
-const Login = ({ setAuthenticated, fetchUserRoles }) => {
-  const [username, setUsername] = useState('');
+const Login = ({ setIsAuthenticated, setUserRoles }) => {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState(null);
-  const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setError(null); // Reset error state before new attempt
+
     try {
-      const userDocRef = doc(firestore, 'users', username);
-      const userDoc = await getDoc(userDocRef);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
-      console.log("User Document:", userDoc);
-      if (!userDoc.exists()) {
-        setError('Nome de usuário ou senha incorretos');
-        return;
+      setIsAuthenticated(true);
+
+      // Fetch roles from Firestore
+      const userDoc = await firestore.collection('users').doc(user.uid).get();
+      if (userDoc.exists) {
+        setUserRoles(userDoc.data());
+      } else {
+        console.log('No such document!');
       }
-
-      const userData = userDoc.data();
-      console.log("User Data:", userData);
-      if (userData.password !== password) {
-        setError('Nome de usuário ou senha incorretos');
-        return;
-      }
-
-      await fetchUserRoles(username);
-      setAuthenticated(true);
-      navigate('/');
     } catch (error) {
-      console.error("Login Error:", error);
-      setError(error.message);
+      alert(`Erro ao fazer login: ${error.message}`);
     }
   };
 
   return (
     <div>
       <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleLogin}>
         <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Nome de usuário"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
           required
         />
-        <div className="password-container">
-          <input
-            type={showPassword ? "text" : "password"}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Senha"
-            required
-          />
-          <button type="button" className="toggle-password" onClick={() => setShowPassword(!showPassword)}>
-            {showPassword ? '🙈' : '👁️'}
-          </button>
-        </div>
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Senha"
+          required
+        />
         <button type="submit">Login</button>
-        {error && <p>{error}</p>}
       </form>
     </div>
   );

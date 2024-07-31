@@ -1,31 +1,35 @@
 import React, { useState } from 'react';
-import { getFunctions, httpsCallable } from 'firebase/functions';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth, firestore } from '../firebase';
+import { doc, setDoc } from 'firebase/firestore';
 import '../styles/register.css';
 
 const Register = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('Nenhum');
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    const functions = getFunctions();
-    const createUser = httpsCallable(functions, 'createUser');
-
-    const roles = {
-      isOwner: role === 'Proprietário',
-      isAdmin: role === 'Gerente' || role === 'Proprietário',
-      isEmployee: role === 'Funcionário' || role === 'Gerente' || role === 'Proprietário',
-      isTutor: role === 'Tutor' || 'Funcionário' || role === 'Gerente' || role === 'Proprietário',
-    };
 
     try {
-      const result = await createUser({
-        username,
-        password,
-        ...roles
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      const roles = {
+        isOwner: role === 'Proprietário',
+        isAdmin: role === 'Gerente' || role === 'Proprietário',
+        isEmployee: role === 'Funcionário' || role === 'Gerente' || role === 'Proprietário',
+        isTutor: role === 'Tutor',
+      };
+
+      await setDoc(doc(firestore, 'users', user.uid), {
+        email,
+        ...roles,
+        createdBy: user.uid
       });
-      alert(result.data.message);
+
+      alert('Usuário registrado com sucesso!');
     } catch (error) {
       alert(`Erro ao registrar usuário: ${error.message}`);
     }
@@ -36,14 +40,14 @@ const Register = () => {
       <h2>Registrar</h2>
       <form onSubmit={handleRegister}>
         <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Nome de Usuário"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
           required
         />
         <input
-          type="text"
+          type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Senha"
