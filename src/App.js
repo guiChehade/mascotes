@@ -16,12 +16,7 @@ import './styles/global.css';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userRoles, setUserRoles] = useState({
-    isOwner: false,
-    isAdmin: false,
-    isEmployee: false,
-    isTutor: false,
-  });
+  const [userRoles, setUserRoles] = useState(null);  // Inicialize com null
 
   const fetchUserRoles = async (userId) => {
     try {
