@@ -1,35 +1,66 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
+import Menu from './components/Menu';
 import Home from './pages/Home';
 import Cadastro from './pages/Cadastro';
-import Login from './pages/Login';
+import Contrato from './pages/Contrato';
 import Creche from './pages/Creche';
+import Hotel from './pages/Hotel';
 import Financas from './pages/Financas';
 import Usuarios from './pages/Usuarios';
-import Controle from './pages/Controle';
-import EditarPet from './pages/EditarPet';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import { auth } from './firebase';
 import './styles/global.css';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userRoles, setUserRoles] = useState({});
+  const [userRoles, setUserRoles] = useState({
+    isOwner: false,
+    isAdmin: false,
+    isEmployee: false,
+    isTutor: false,
+  });
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setIsAuthenticated(true);
+        // Aqui você deve buscar os roles do usuário a partir do banco de dados
+        // Exemplo:
+        // fetchUserRoles(user.uid).then(setUserRoles);
+      } else {
+        setIsAuthenticated(false);
+        setUserRoles({
+          isOwner: false,
+          isAdmin: false,
+          isEmployee: false,
+          isTutor: false,
+        });
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   return (
     <Router>
-      <Header isAuthenticated={isAuthenticated} userRoles={userRoles} />
-      <div style={{ paddingTop: '80px' }}> {/* Espaço para o Header */}
+      <Header />
+      <Menu isAuthenticated={isAuthenticated} userRoles={userRoles} />
+      <main className="container">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/cadastro" element={isAuthenticated ? <Cadastro /> : <Navigate to="/login" />} />
+          <Route path="/cadastro" element={<Cadastro />} />
+          <Route path="/contrato" element={<Contrato />} />
+          <Route path="/creche" element={<Creche />} />
+          <Route path="/hotel" element={<Hotel />} />
+          <Route path="/financas" element={isAuthenticated && userRoles.isOwner ? <Financas /> : <Home />} />
+          <Route path="/usuarios" element={isAuthenticated && userRoles.isOwner ? <Usuarios /> : <Home />} />
           <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} setUserRoles={setUserRoles} />} />
-          <Route path="/creche" element={isAuthenticated ? <Creche /> : <Navigate to="/login" />} />
-          <Route path="/financas" element={isAuthenticated && userRoles.isOwner ? <Financas /> : <Navigate to="/login" />} />
-          <Route path="/usuarios" element={isAuthenticated && userRoles.isOwner ? <Usuarios /> : <Navigate to="/login" />} />
-          <Route path="/controle/:id" element={isAuthenticated ? <Controle /> : <Navigate to="/login" />} />
-          <Route path="/editar/:id" element={isAuthenticated ? <EditarPet /> : <Navigate to="/login" />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
-      </div>
+      </main>
     </Router>
   );
 }

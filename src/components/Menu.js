@@ -23,10 +23,10 @@ const Menu = ({ isAuthenticated, userRoles }) => {
           <li className="li"><Link className="link" to="/" onClick={handleLinkClick}>Início</Link></li>
           {isAuthenticated && (
             <>
-              {(userRoles.isAdmin || userRoles.isOwner) && <li className="li"><Link className="link" to="/cadastro" onClick={handleLinkClick}>Cadastro</Link></li>}
-              {(userRoles.isEmployee || userRoles.isOwner) && <li className="li"><Link className="link" to="/contrato" onClick={handleLinkClick}>Contrato</Link></li>}
-              {(userRoles.isEmployee || userRoles.isOwner) && <li className="li"><Link className="link" to="/creche" onClick={handleLinkClick}>Creche</Link></li>}
-              {(userRoles.isEmployee || userRoles.isOwner) && <li className="li"><Link className="link" to="/hotel" onClick={handleLinkClick}>Hotel</Link></li>}
+              {(userRoles.isAdmin) && <li className="li"><Link className="link" to="/cadastro" onClick={handleLinkClick}>Cadastro</Link></li>}
+              {(userRoles.isAdmin) && <li className="li"><Link className="link" to="/contrato" onClick={handleLinkClick}>Contrato</Link></li>}
+              {(userRoles.isEmployee) && <li className="li"><Link className="link" to="/creche" onClick={handleLinkClick}>Creche</Link></li>}
+              {(userRoles.isEmployee) && <li className="li"><Link className="link" to="/hotel" onClick={handleLinkClick}>Hotel</Link></li>}
               {userRoles.isOwner && <li className="li"><Link className="link" to="/financas" onClick={handleLinkClick}>Finanças</Link></li>}
               {userRoles.isOwner && <li className="li"><Link className="link" to="/usuarios" onClick={handleLinkClick}>Usuários</Link></li>}
             </>
