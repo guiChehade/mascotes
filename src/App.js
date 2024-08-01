@@ -54,6 +54,10 @@ function App() {
     return () => unsubscribe();
   }, []);
 
+  if (userRoles === null) {
+    return <div>Loading...</div>;  // Renderize um carregador enquanto os roles estão sendo buscados
+  }
+
   return (
     <Router>
       <Header />
