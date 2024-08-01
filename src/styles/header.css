@@ -9,16 +9,4 @@
   top: 0;
   width: 100%;
   z-index: 1000;
-  height: 60px;
-}
-
-.logo {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-}
-
-.logo img {
-  height: 40px;
 }

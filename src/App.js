@@ -47,7 +47,7 @@ const App = () => {
           {isAuthenticated && userRoles && (
             <>
               {userRoles.isAdmin && <Route path="/cadastro" element={<Cadastro />} />}
-              {userRoles.isAdmin && <Route path="/contrato" element={<Contrato />} />}
+              {userRoles.isOwner && <Route path="/contrato" element={<Contrato />} />}
               {userRoles.isEmployee && <Route path="/creche" element={<Creche />} />}
               {userRoles.isEmployee && <Route path="/hotel" element={<Hotel />} />}
               {userRoles.isOwner && <Route path="/financas" element={<Financas />} />}
