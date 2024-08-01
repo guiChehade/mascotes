@@ -1,56 +1,60 @@
 import React, { useState } from 'react';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { auth, firestore } from '../firebase';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import '../styles/login.css';
 
-const Login = ({ setIsAuthenticated, setUserRoles }) => {
+const Login = ({ setIsAuthenticated, setUserRoles, setCurrentUser }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    try {
-      const userCredential = await auth.signInWithEmailAndPassword(email, password);
-      const user = userCredential.user;
 
-      const q = query(collection(firestore, 'users'), where('email', '==', user.email));
-      const querySnapshot = await getDocs(q);
-      if (!querySnapshot.empty) {
-        const userData = querySnapshot.docs[0].data();
-        setUserRoles(userData.roles);
-      }
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
       setIsAuthenticated(true);
       navigate('/');
-    } catch (error) {
-      alert('Erro ao fazer login: ' + error.message);
-    }
-  };
-
-  return (
-    <div className="login-container">
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <label>Email</label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <label>Senha</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit">Login</button>
-      </form>
-    </div>
-  );
-};
-
-export default Login;
+       // Fetch roles from Firestore
+       const userDoc = await getDoc(doc(firestore, 'users', user.uid));
+       if (userDoc.exists()) {
+         const userData = userDoc.data();
+         setUserRoles(userData);
+         setCurrentUser(userData);
+       } else {
+         console.log('No such document!');
+       }
+     } catch (error) {
+       alert(`Erro ao fazer login: ${error.message}`);
+     }
+   };
+ 
+   return (
+     <div>
+       <h2>Login</h2>
+       <form onSubmit={handleLogin}>
+         <input
+           type="email"
+           value={email}
+           onChange={(e) => setEmail(e.target.value)}
+           placeholder="Email"
+           required
+         />
+         <input
+           type="password"
+           value={password}
+           onChange={(e) => setPassword(e.target.value)}
+           placeholder="Senha"
+           required
+         />
+         <button type="submit">Login</button>
+       </form>
+     </div>
+   );
+ };
+ 
+ export default Login;
