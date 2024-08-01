@@ -10,7 +10,6 @@ import Hotel from './pages/Hotel';
 import Financas from './pages/Financas';
 import Usuarios from './pages/Usuarios';
 import Login from './pages/Login';
-import Register from './pages/Register';
 import { auth, firestore } from './firebase';  
 import { doc, getDoc } from "firebase/firestore"; 
 import './styles/global.css';
@@ -69,7 +68,6 @@ function App() {
           <Route path="/financas" element={isAuthenticated && userRoles.isOwner ? <Financas /> : <Home />} />
           <Route path="/usuarios" element={isAuthenticated && userRoles.isOwner ? <Usuarios /> : <Home />} />
           <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} setUserRoles={setUserRoles} />} />
-          <Route path="/register" element={<Register />} />
         </Routes>
       </main>
     </Router>
