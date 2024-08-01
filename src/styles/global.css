@@ -40,6 +40,11 @@ button:hover {
   background-color: var(--button-hover-background);
 }
 
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
 .container {
   max-width: 1200px;
   margin: 0 auto;

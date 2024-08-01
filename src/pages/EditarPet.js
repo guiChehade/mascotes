@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { storage, firestore } from '../firebase';
-import './EditarPet.css';
+import '../styles/EditarPet.css';
 
 const EditarPet = ({ petId }) => {
   const [formData, setFormData] = useState({

@@ -1,19 +1,20 @@
 import React from 'react';
-import '../styles/crecheCard.css';
-
+import './CrecheCard.css';
+import logoLarge from '../assets/logo-large.png';
 const CrecheCard = ({ pet, onSelect }) => {
   return (
     <div className="card">
-      <div className="pet-name">{pet.name}</div>
+      <div className="pet-name">{pet.mascotinho}</div>
       <img
         className="pet-photo"
-        src={pet.photoURL || '../assets/logo-large.png'}
-        alt={pet.name}
+        src={pet.photoURL || logoLarge}
+        alt={pet.mascotinho}
+        style={pet.photoURL ? {} : { filter: 'grayscale(100%)' }}
       />
-      <div className="label">Tutor</div>
+      <div className="label">Tutor:</div>
       <div className="value">{pet.tutor}</div>
-      <div className="label">Raça</div>
-      <div className="value">{pet.breed}</div>
+      <div className="label">Raça:</div>
+      <div className="value">{pet.raca}</div>
       <button className="select-button" onClick={onSelect}>Selecionar</button>
     </div>
   );

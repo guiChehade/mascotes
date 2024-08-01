@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
 import { firestore } from '../firebase';
 import { useNavigate } from 'react-router-dom';
-import '../styles/creche.css';
-import logoLarge from '../assets/logo-large.png';
+import CrecheCard from '../components/CrecheCard';
+import './Creche.css';
 
 const Creche = () => {
   const [pets, setPets] = useState([]);
@@ -11,10 +10,18 @@ const Creche = () => {
 
   useEffect(() => {
     const fetchPets = async () => {
-      const querySnapshot = await getDocs(collection(firestore, 'pets'));
-      const petsList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setPets(petsList);
+      try {
+        const petsSnapshot = await firestore.collection('pets').get();
+        const petsData = petsSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setPets(petsData);
+      } catch (error) {
+        console.error("Erro ao buscar pets:", error);
+      }
     };
+
     fetchPets();
   }, []);
 
@@ -24,22 +31,8 @@ const Creche = () => {
 
   return (
     <div className="creche-container">
-      {pets.map((pet) => (
-        <div key={pet.id} className="pet-card">
-          <div className="pet-info">
-            <p className="pet-name">{pet.mascotinho}</p>
-            <p><strong>Tutor:</strong> {pet.tutor}</p>
-            <p><strong>Raça:</strong> {pet.raca}</p>
-          </div>
-          <div className="pet-photo-select">
-            {pet.foto ? (
-              <img src={pet.foto} alt={pet.mascotinho} className="pet-foto" />
-            ) : (
-              <img src={logoLarge} alt="Logo" className="pet-foto bw-photo" />
-            )}
-            <button onClick={() => handleSelect(pet.id)} className="select-button">Selecionar</button>
-          </div>
-        </div>
+      {pets.map(pet => (
+        <CrecheCard key={pet.id} pet={pet} onSelect={() => handleSelect(pet.id)} />
       ))}
     </div>
   );
