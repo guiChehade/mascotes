@@ -1,13 +1,38 @@
-.password-container {
-  position: relative;
+.login-container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: var(--button-background);
+  color: var(--text-color);
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
-.toggle-password {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+label {
+  font-size: 14px;
+}
+
+input,
+button {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid var(--button-hover-background);
+}
+
+button {
+  background-color: var(--button-background);
+  color: var(--text-color);
   cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: var(--button-hover-background);
 }

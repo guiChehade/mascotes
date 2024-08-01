@@ -2,7 +2,7 @@
   background-color: var(--button-background);
   color: var(--button-color);
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   padding: 20px;
   position: fixed;
@@ -12,71 +12,6 @@
   height: 60px;
 }
 
-.logo {
-  flex: 1;
-  text-align: center;
-}
-
 .logo img {
   height: 40px;
-}
-
-.nav {
-  display: none;
-}
-
-.nav.open {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: var(--button-background);
-  position: absolute;
-  top: 60px;
-  left: 0;
-  width: 100%;
-  padding: 10px 0;
-}
-
-.ul {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.li {
-  position: relative;
-}
-
-.link {
-  color: var(--button-color);
-  text-decoration: none;
-  font-size: 1rem;
-}
-
-.hamburger {
-  display: block;
-  font-size: 1.5rem;
-  background: none;
-  border: none;
-  color: var(--button-color);
-  cursor: pointer;
-  z-index: 1001;
-}
-
-@media (min-width: 768px) {
-  .nav {
-    flex-direction: row;
-    position: static;
-    display: flex;
-  }
-
-  .ul {
-    flex-direction: row;
-    gap: 20px;
-  }
-
-  .hamburger {
-    display: none;
-  }
 }

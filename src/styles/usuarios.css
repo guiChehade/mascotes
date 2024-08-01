@@ -50,6 +50,11 @@ button:hover {
   background-color: var(--button-hover-background);
 }
 
+button:disabled {
+  background-color: grey;
+  cursor: not-allowed;
+}
+
 @media (min-width: 768px) {
   form {
     grid-template-columns: 1fr 1fr;

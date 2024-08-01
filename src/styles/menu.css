@@ -1,0 +1,56 @@
+.hamburger {
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    color: var(--button-color);
+    cursor: pointer;
+  }
+  
+  .nav {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--button-background);
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    padding: 10px 0;
+    transition: transform 0.3s ease-in-out;
+    transform: translateY(-100%);
+  }
+  
+  .nav.open {
+    display: flex;
+    transform: translateY(0);
+  }
+  
+  .ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    border-top: 1px solid var(--button-hover-background);
+  }
+  
+  .li {
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--button-hover-background);
+  }
+  
+  .link {
+    color: var(--button-color);
+    text-decoration: none;
+    font-size: 1rem;
+  }
+  
+  .hamburger.open {
+    transform: rotate(90deg);
+  }
+  

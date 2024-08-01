@@ -1,8 +1,6 @@
 :root {
   --background-color: #121212;
   --text-color: #ffffff;
-  --input-background: #1f1f1f;
-  --input-border: #333333;
   --button-background: #1f1f1f;
   --button-color: #ffffff;
   --button-hover-background: #333333;
@@ -11,8 +9,6 @@
 .light-mode {
   --background-color: #ffffff;
   --text-color: #000000;
-  --input-background: #f1f1f1;
-  --input-border: #dddddd;
   --button-background: #f1f1f1;
   --button-color: #000000;
   --button-hover-background: #dddddd;
@@ -31,7 +27,6 @@ button {
   color: var(--button-color);
   border: none;
   border-radius: 10px;
-  margin: 10px;
   padding: 10px 20px;
   cursor: pointer;
   transition: background-color 0.3s;
@@ -48,7 +43,7 @@ button:hover {
 }
 
 .card {
-  background-color: var(--input-background);
+  background-color: var(--button-background);
   padding: 20px;
   border-radius: 10px;
   margin-bottom: 20px;
@@ -62,11 +57,10 @@ input, label {
 
 input {
   padding: 10px;
-  margin: 10px;
+  margin-top: 5px;
+  margin-bottom: 15px;
   border-radius: 10px;
-  border: 1px solid var(--input-border);
-  background-color: var(--input-background);
-  color: var(--text-color);
+  border: 1px solid var(--button-hover-background);
 }
 
 .header, .footer {
