@@ -17,7 +17,7 @@ import './styles/global.css';
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRoles, setUserRoles] = useState(null);
-  const [loading, setLoading] = useState(true); // Adicionado estado de carregamento
+  const [loading, setLoading] = useState(true);
 
   const fetchUserRoles = async (userId) => {
     try {
@@ -36,7 +36,7 @@ function App() {
     } catch (error) {
       console.error("Erro ao buscar papéis do usuário:", error);
     } finally {
-      setLoading(false); // Finaliza o carregamento após buscar os papéis do usuário
+      setLoading(false);
     }
   };
 
@@ -47,13 +47,8 @@ function App() {
         fetchUserRoles(user.uid);
       } else {
         setIsAuthenticated(false);
-        setUserRoles({
-          isOwner: false,
-          isAdmin: false,
-          isEmployee: false,
-          isTutor: false,
-        });
-        setLoading(false); // Finaliza o carregamento quando o usuário não está autenticado
+        setUserRoles(null);
+        setLoading(false);
       }
     });
 
@@ -61,7 +56,7 @@ function App() {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>; // Renderize um carregador enquanto os papéis estão sendo buscados
+    return <div>Loading...</div>;
   }
 
   return (
