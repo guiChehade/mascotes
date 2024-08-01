@@ -6,7 +6,6 @@ import Home from './pages/Home';
 import Cadastro from './pages/Cadastro';
 import Contrato from './pages/Contrato';
 import Creche from './pages/Creche';
-import Hotel from './pages/Hotel';
 import Financas from './pages/Financas';
 import Usuarios from './pages/Usuarios';
 import Login from './pages/Login';
@@ -54,7 +53,6 @@ function App() {
           <Route path="/cadastro" element={<Cadastro />} />
           <Route path="/contrato" element={<Contrato />} />
           <Route path="/creche" element={<Creche />} />
-          <Route path="/hotel" element={<Hotel />} />
           <Route path="/financas" element={isAuthenticated && userRoles.isOwner ? <Financas /> : <Home />} />
           <Route path="/usuarios" element={isAuthenticated && userRoles.isOwner ? <Usuarios /> : <Home />} />
           <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} setUserRoles={setUserRoles} />} />
