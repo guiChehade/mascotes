@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Header from './components/Header';
+import Menu from './components/Menu';
 import Home from './pages/Home';
 import Cadastro from './pages/Cadastro';
 import Login from './pages/Login';
@@ -17,8 +18,9 @@ function App() {
 
   return (
     <Router>
+      <Menu isAuthenticated={isAuthenticated} userRoles={userRoles} />
       <Header isAuthenticated={isAuthenticated} userRoles={userRoles} />
-      <div style={{ paddingTop: '80px' }}> {/* Espaço para o Header */}
+      <div style={{ paddingTop: '80px' }}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/cadastro" element={isAuthenticated ? <Cadastro /> : <Navigate to="/login" />} />
