@@ -16,27 +16,25 @@ import './styles/global.css';
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRoles, setUserRoles] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        setIsAuthenticated(true);
-        const userDoc = await firestore.collection('users').doc(user.uid).get();
-        setUserRoles(userDoc.data().roles);
-      } else {
-        setIsAuthenticated(false);
-        setUserRoles(null);
+      try {
+        if (user) {
+          setIsAuthenticated(true);
+          const userDoc = await firestore.collection('users').doc(user.uid).get();
+          setUserRoles(userDoc.data().roles);
+        } else {
+          setIsAuthenticated(false);
+          setUserRoles(null);
+        }
+      } catch (error) {
+        console.error("Erro ao acessar o Firestore:", error);
       }
-      setLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <Router>
