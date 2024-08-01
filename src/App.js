@@ -9,7 +9,7 @@ import Creche from './pages/Creche';
 import Financas from './pages/Financas';
 import Usuarios from './pages/Usuarios';
 import Login from './pages/Login';
-import Register from './pages/Register';
+import Register from './components/Register';
 import { auth } from './firebase';
 import './styles/global.css';
 
