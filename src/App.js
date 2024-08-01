@@ -10,7 +10,8 @@ import Hotel from './pages/Hotel';
 import Financas from './pages/Financas';
 import Usuarios from './pages/Usuarios';
 import Login from './pages/Login';
-import auth from './firebase';
+import { auth, firestore } from './firebase';
+import { doc, getDoc } from "firebase/firestore";
 import './styles/global.css';
 
 function App() {
@@ -21,6 +22,18 @@ function App() {
     isEmployee: false,
     isTutor: false,
   });
+
+  const fetchUserRoles = async (userId) => {
+    try {
+      const userDoc = await getDoc(doc(firestore, 'users', userId));
+      if (userDoc.exists()) {
+        const roles = userDoc.data().roles;
+        setUserRoles(roles);
+      }
+    } catch (error) {
+      console.error("Erro ao buscar papéis do usuário:", error);
+    }
+  };
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
