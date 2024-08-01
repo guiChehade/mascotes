@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
 import Menu from './components/Menu';
@@ -10,8 +10,9 @@ import Hotel from './pages/Hotel';
 import Financas from './pages/Financas';
 import Usuarios from './pages/Usuarios';
 import Login from './pages/Login';
-import { auth, firestore } from './firebase';
-import { doc, getDoc } from "firebase/firestore";
+import Register from './pages/Register';
+import { auth, firestore } from './firebase';  
+import { doc, getDoc } from "firebase/firestore"; 
 import './styles/global.css';
 
 function App() {
@@ -39,7 +40,7 @@ function App() {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         setIsAuthenticated(true);
-        fetchUserRoles(user.uid).then(setUserRoles);
+        fetchUserRoles(user.uid);
       } else {
         setIsAuthenticated(false);
         setUserRoles({
@@ -68,6 +69,7 @@ function App() {
           <Route path="/financas" element={isAuthenticated && userRoles.isOwner ? <Financas /> : <Home />} />
           <Route path="/usuarios" element={isAuthenticated && userRoles.isOwner ? <Usuarios /> : <Home />} />
           <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} setUserRoles={setUserRoles} />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
       </main>
     </Router>

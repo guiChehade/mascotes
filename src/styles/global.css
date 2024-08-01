@@ -22,6 +22,10 @@ body {
   color: var(--text-color);
 }
 
+.container {
+  padding-top: 60px;
+}
+
 button {
   background-color: var(--button-background);
   color: var(--button-color);
