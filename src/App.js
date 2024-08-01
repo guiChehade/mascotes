@@ -63,7 +63,7 @@ function App() {
     <Router>
       <Header />
       <Menu isAuthenticated={isAuthenticated} userRoles={userRoles} />
-      <main className="container">
+      <main className="container" style={{ marginTop: '80px' }}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/cadastro" element={isAuthenticated && userRoles ? <Cadastro /> : <Home />} />

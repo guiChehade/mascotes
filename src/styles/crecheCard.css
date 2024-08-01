@@ -1,0 +1,41 @@
+.card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .card .pet-name {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .card .pet-photo {
+    border: 3px solid #DFA430;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    margin-bottom: 10px;
+  }
+  
+  .card .label {
+    font-weight: normal;
+    margin-bottom: 5px;
+  }
+  
+  .card .value {
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .card .select-button {
+    margin-top: 10px;
+  }
+  
