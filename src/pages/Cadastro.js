@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { storage, firestore } from '../firebase';
-import './Cadastro.css';
+import '../styles/cadastro.css';
 
 const Cadastro = () => {
   const [formData, setFormData] = useState({
