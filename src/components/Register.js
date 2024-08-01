@@ -8,6 +8,7 @@ const Register = ({ currentUser }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [newUserRoleSelect, setNewUserRoleSelect] = useState('');
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -61,6 +62,13 @@ const Register = ({ currentUser }) => {
           placeholder="Senha"
           required
         />
+        <select value={newUserRoleSelect} onChange={(e) => setNewUserRoleSelect(e.target.value)}>
+          <option value="">Selecione o tipo de usuário</option>
+          <option value="isOwner">Dono</option>
+          <option value="isAdmin">Administrador</option>
+          <option value="isEmployee">Funcionário</option>
+          <option value="isTutor">Tutor</option>
+        </select>
         <button type="submit">Registrar</button>
       </form>
     </div>

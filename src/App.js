@@ -1,63 +1,37 @@
-import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { auth, firestore } from './firebase';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Header from './components/Header';
-import Menu from './components/Menu';
 import Home from './pages/Home';
 import Cadastro from './pages/Cadastro';
-import Contrato from './pages/Contrato';
+import Login from './pages/Login';
 import Creche from './pages/Creche';
-import Hotel from './pages/Hotel';
 import Financas from './pages/Financas';
 import Usuarios from './pages/Usuarios';
-import Login from './pages/Login';
+import Controle from './pages/Controle';
+import EditarPet from './pages/EditarPet';
 import './styles/global.css';
 
-const App = () => {
+function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userRoles, setUserRoles] = useState(null);
-
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
-      try {
-        if (user) {
-          setIsAuthenticated(true);
-          const userDoc = await firestore.collection('users').doc(user.uid).get();
-          setUserRoles(userDoc.data().roles);
-        } else {
-          setIsAuthenticated(false);
-          setUserRoles(null);
-        }
-      } catch (error) {
-        console.error("Erro ao acessar o Firestore:", error);
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
+  const [userRoles, setUserRoles] = useState({});
 
   return (
     <Router>
-      <Header />
-      <Menu isAuthenticated={isAuthenticated} userRoles={userRoles} />
-      <div style={{ paddingTop: '100px' }}>
+      <Header isAuthenticated={isAuthenticated} userRoles={userRoles} />
+      <div style={{ paddingTop: '80px' }}> {/* Espaço para o Header */}
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          {isAuthenticated && userRoles && (
-            <>
-              {userRoles.isAdmin && <Route path="/cadastro" element={<Cadastro />} />}
-              {userRoles.isOwner && <Route path="/contrato" element={<Contrato />} />}
-              {userRoles.isEmployee && <Route path="/creche" element={<Creche />} />}
-              {userRoles.isEmployee && <Route path="/hotel" element={<Hotel />} />}
-              {userRoles.isOwner && <Route path="/financas" element={<Financas />} />}
-              {userRoles.isOwner && <Route path="/usuarios" element={<Usuarios />} />}
-            </>
-          )}
+          <Route path="/cadastro" element={isAuthenticated ? <Cadastro /> : <Navigate to="/login" />} />
+          <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} setUserRoles={setUserRoles} />} />
+          <Route path="/creche" element={isAuthenticated ? <Creche /> : <Navigate to="/login" />} />
+          <Route path="/financas" element={isAuthenticated && userRoles.isOwner ? <Financas /> : <Navigate to="/login" />} />
+          <Route path="/usuarios" element={isAuthenticated && userRoles.isOwner ? <Usuarios /> : <Navigate to="/login" />} />
+          <Route path="/controle/:id" element={isAuthenticated ? <Controle /> : <Navigate to="/login" />} />
+          <Route path="/editar/:id" element={isAuthenticated ? <EditarPet /> : <Navigate to="/login" />} />
         </Routes>
       </div>
     </Router>
   );
-};
+}
 
 export default App;
