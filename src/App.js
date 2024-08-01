@@ -10,13 +10,14 @@ import Hotel from './pages/Hotel';
 import Financas from './pages/Financas';
 import Usuarios from './pages/Usuarios';
 import Login from './pages/Login';
-import { auth, firestore } from './firebase';  
-import { doc, getDoc } from "firebase/firestore"; 
+import { auth, firestore } from './firebase';
+import { doc, getDoc } from "firebase/firestore";
 import './styles/global.css';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userRoles, setUserRoles] = useState(null);  // Inicialize com null
+  const [userRoles, setUserRoles] = useState(null);
+  const [loading, setLoading] = useState(true); // Adicionado estado de carregamento
 
   const fetchUserRoles = async (userId) => {
     try {
@@ -24,9 +25,18 @@ function App() {
       if (userDoc.exists()) {
         const roles = userDoc.data().roles;
         setUserRoles(roles);
+      } else {
+        setUserRoles({
+          isOwner: false,
+          isAdmin: false,
+          isEmployee: false,
+          isTutor: false,
+        });
       }
     } catch (error) {
       console.error("Erro ao buscar papéis do usuário:", error);
+    } finally {
+      setLoading(false); // Finaliza o carregamento após buscar os papéis do usuário
     }
   };
 
@@ -43,14 +53,15 @@ function App() {
           isEmployee: false,
           isTutor: false,
         });
+        setLoading(false); // Finaliza o carregamento quando o usuário não está autenticado
       }
     });
 
     return () => unsubscribe();
   }, []);
 
-  if (userRoles === null) {
-    return <div>Loading...</div>;  // Renderize um carregador enquanto os roles estão sendo buscados
+  if (loading) {
+    return <div>Loading...</div>; // Renderize um carregador enquanto os papéis estão sendo buscados
   }
 
   return (
@@ -60,12 +71,12 @@ function App() {
       <main className="container">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/cadastro" element={<Cadastro />} />
-          <Route path="/contrato" element={<Contrato />} />
-          <Route path="/creche" element={<Creche />} />
-          <Route path="/hotel" element={<Hotel />} />
-          <Route path="/financas" element={isAuthenticated && userRoles.isOwner ? <Financas /> : <Home />} />
-          <Route path="/usuarios" element={isAuthenticated && userRoles.isOwner ? <Usuarios /> : <Home />} />
+          <Route path="/cadastro" element={isAuthenticated && userRoles ? <Cadastro /> : <Home />} />
+          <Route path="/contrato" element={isAuthenticated && userRoles ? <Contrato /> : <Home />} />
+          <Route path="/creche" element={isAuthenticated && userRoles ? <Creche /> : <Home />} />
+          <Route path="/hotel" element={isAuthenticated && userRoles ? <Hotel /> : <Home />} />
+          <Route path="/financas" element={isAuthenticated && userRoles?.isOwner ? <Financas /> : <Home />} />
+          <Route path="/usuarios" element={isAuthenticated && userRoles?.isOwner ? <Usuarios /> : <Home />} />
           <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} setUserRoles={setUserRoles} />} />
         </Routes>
       </main>
