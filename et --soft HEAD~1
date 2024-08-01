@@ -1,0 +1,641 @@
+[33mcommit 571dd583ed8c9615611078cdd5c230ca66915be1[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Thu Aug 1 10:09:08 2024 -0300
+
+    Implementar lógica de autenticação no Menu e ajustes de estilo
+
+[33mcommit 08295de2be159ad08ca9a03c87080be59023dae1[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Thu Aug 1 01:57:26 2024 -0300
+
+    Implementar componente CrecheCard e ajustes de estilo
+
+[33mcommit 4857abac54ebd6fcac6e18869e61ffee356d0d82[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Thu Aug 1 01:55:28 2024 -0300
+
+    Implementar componente CrecheCard e ajustes de estilo
+
+[33mcommit 4a8852fa1abbeb81a826f8b41ff3556ea6089512[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Thu Aug 1 01:46:04 2024 -0300
+
+    Implementações de estilização e funcionalidades
+
+[33mcommit 6f59e16f9d4532a87d736a57276c7c4d7e6659f9[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Thu Aug 1 01:44:27 2024 -0300
+
+    Implementações de estilização e funcionalidades
+
+[33mcommit 63485ba258505a3b0e4e7ede0abf345fff931b47[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Thu Aug 1 01:27:03 2024 -0300
+
+    Adicionar estado de carregamento e verificação para userRoles no Menu
+
+[33mcommit 2bec3329e9710caf3edc5cc6a88ba2c0e276a9a4[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Thu Aug 1 01:22:47 2024 -0300
+
+    Adicionar estado de carregamento e verificação para userRoles no Menu
+
+[33mcommit 2894e0a2b84a18025804c99352a824d1563f7db5[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Thu Aug 1 01:16:13 2024 -0300
+
+    Adicionar estado de carregamento e verificação para userRoles
+
+[33mcommit 739cb2fd5748da3e11dcebadb909e0abb527ab58[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Thu Aug 1 01:05:48 2024 -0300
+
+    Adicionar estado de carregamento e verificação para userRoles
+
+[33mcommit 0a90862bc722da833617859d8b16bc916fe809d2[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Thu Aug 1 00:56:27 2024 -0300
+
+    Adicionar verificação para userRoles
+
+[33mcommit ea26340002db4362d1be581f853db4860673f883[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Thu Aug 1 00:54:26 2024 -0300
+
+    Adicionar verificação para userRoles
+
+[33mcommit d6a5e076292458180e5fb3c3f72fa83773727ef9[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Thu Aug 1 00:51:54 2024 -0300
+
+    Ajustar renderização e estilo do Menu e Header
+
+[33mcommit 50597fcf44d470770f44dc957b615facad99efad[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Thu Aug 1 00:50:32 2024 -0300
+
+    Ajustar renderização e estilo do Menu e Header
+
+[33mcommit e11a5451815e8febd32e294db343d82e36cec354[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Thu Aug 1 00:43:29 2024 -0300
+
+    Ajustar layout do header e menu hamburguer
+
+[33mcommit 4795f8c972166b99edd96fe24b7717c467b4de4b[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Thu Aug 1 00:31:26 2024 -0300
+
+    Ajustar layout do header e menu hamburguer
+
+[33mcommit 18351a32c173d5cf3ba688228c51b9fea76432a5[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Thu Aug 1 00:26:52 2024 -0300
+
+    Ajustar layout do header e menu hamburguer
+
+[33mcommit 8432f9ce0ee85317fd97265be80829d92e95d8cb[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Thu Aug 1 00:12:48 2024 -0300
+
+    Importar Menu no App.js e ajustar layout
+
+[33mcommit 2e1eecfab64aac8c09beb537f55f250907f8ba22[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Thu Aug 1 00:08:56 2024 -0300
+
+    Importar Menu no App.js e ajustar layout
+
+[33mcommit 5ff31c2cb9cc5e749d1756d6fb769560eb43ac4e[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Thu Aug 1 00:07:35 2024 -0300
+
+    Importar Menu no App.js e ajustar layout
+
+[33mcommit aaf92c603bfc80978a7b3d69897d9332265884bc[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 23:52:57 2024 -0300
+
+    Melhorias no layout do menu, cards e responsividade
+
+[33mcommit c0e0afa01e2ff50369a1fe4d53834be2b17ed582[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 23:17:33 2024 -0300
+
+    Corrigir Login
+
+[33mcommit f306b29f838f69762e179c2f798c727bf13a0049[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 20:22:40 2024 -0300
+
+    Ajustar layout do card dos pets, adicionar editor de fotos, melhorias no cadastro e página de usuários
+
+[33mcommit bdb699b9e48caf3d5fae09ad0c956475469bd609[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 19:29:46 2024 -0300
+
+    Atualizar layout do Header e menu hamburguer para todas as telas
+
+[33mcommit 632011045fa1667dd73d984c4eddb23a20e75677[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 19:12:52 2024 -0300
+
+    Correções de layout, uso do Storage para fotos, e ajuste de login
+
+[33mcommit cbf0c9ea8cb9a39eb97594bdb667e432485ad795[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 16:44:41 2024 -0300
+
+    Atualizar layout dos cards, adicionar editor de fotos, melhorar responsividade
+
+[33mcommit bab8ccfd464d01f7aea3972766abc9cfe8137b2b[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 14:46:55 2024 -0300
+
+    Atualizar layout do card dos pets e configurar rota para EditarPet
+
+[33mcommit 66a739b1cba860e859b2d982b6f5f664512461a2[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 14:27:35 2024 -0300
+
+    Adicionar componente Controle e corrigir bugs
+
+[33mcommit 66e496b3b24e07e0ae283e6ba737b5a11d13e886[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 14:02:12 2024 -0300
+
+    Atualizar componentes e corrigir bugs
+
+[33mcommit ae0b1be6e86c42041918638cdb24ff7d6fefe8cd[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 13:24:50 2024 -0300
+
+    Atualizar formulário de cadastro e usuários
+
+[33mcommit ca1a81491b04c5e5d6c5392735e4e1f7b7ecd5d6[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 13:15:42 2024 -0300
+
+    Atualizar formulário de cadastro e centralizar container
+
+[33mcommit 6a5f71c3c23d07ce289d9c01a29cc7bdd768ca37[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 12:40:08 2024 -0300
+
+    Atualizar formulário de cadastro e centralizar container
+
+[33mcommit cfe975c09b35865e8e688a23b694565f98007474[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 12:38:00 2024 -0300
+
+    Atualizar formulário de cadastro e centralizar container
+
+[33mcommit aae7ffc2c4bdda5db44201bd657c08ecb6ec3bc9[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 12:16:49 2024 -0300
+
+    Adicionar campos Nome e createdBy no registro e centralizar menu no Header
+
+[33mcommit 66f71eb8631b4df39fbe6c81e4ebe949a550bef0[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 11:56:40 2024 -0300
+
+    Ajustar CSS do Header e adicionar menu responsivo
+
+[33mcommit 819a1cfc30dd5d311a441b2e0e8599242a49c236[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 11:21:51 2024 -0300
+
+    Corrigir caminho do arquivo Login.js
+
+[33mcommit 28318687fecf3af7a07a5d4ba25b5d19c314adf9[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 11:11:08 2024 -0300
+
+    Corrigir caminho do arquivo Login.js
+
+[33mcommit 543dd2e74e4c6cc3c457da1f8d33a9b1512d2fd7[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 11:06:51 2024 -0300
+
+    Corrigir caminho do arquivo Login.js
+
+[33mcommit 23aa75946534f0763754fca5dd52822ff039ca29[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 11:02:33 2024 -0300
+
+    Adicionar página de registro como inicial e conceder privilégios de Proprietário
+
+[33mcommit 32e4fc7f710f20de695e27a4e33ee8e37130ed8f[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 10:52:33 2024 -0300
+
+    Corrigir importações e funções de autenticação
+
+[33mcommit bb522f2053bdc1bf2cb8bfc81e643a98274e86b1[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 10:40:13 2024 -0300
+
+    Reverter para Firebase Auth com e-mail e senha, ajustar regras de segurança e corrigir bugs
+
+[33mcommit 07f61bec66e903f0741c73667ed1ed6dfe3988c6[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 10:34:40 2024 -0300
+
+    Reverter para Firebase Auth com e-mail e senha, remover funções cloud
+
+[33mcommit df6c0fa8d0cb9c602935d3e63ea181e83d9fd0ea[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 01:57:25 2024 -0300
+
+    Adicionar campo createdBy e ajustar regras de segurança
+
+[33mcommit 0222d6a7c31757dbda040c326cf261d0b988bd1b[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 01:31:02 2024 -0300
+
+    Ajustar funcionalidades de usuário, adicionar campo de aniversário e corrigir estilos
+
+[33mcommit 4c3eb3afaba6b462842e012c308ea4b1375e0538[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 01:11:41 2024 -0300
+
+    Garantir que as permissões do usuário são corretamente verificadas
+
+[33mcommit c737e8611d996ff4f027a2166e1f64c7b17f71df[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 01:07:18 2024 -0300
+
+    Ajustar login e registro para usar ID do documento como nome de usuário
+
+[33mcommit f0c96b1e4daf81e97f2937683e19d3aebb2e9c70[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 00:56:01 2024 -0300
+
+    Atualizar regras de segurança e corrigir login
+
+[33mcommit 76201875bee7fde19231f0827ae6fd09b4161588[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 00:49:39 2024 -0300
+
+    Corrigir layout do header e lógica de login
+
+[33mcommit 56f0de0847717ed2a5fb6db02553cdd530705d43[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 00:38:24 2024 -0300
+
+    Logo e path
+
+[33mcommit 48fae7591fcaf897f8658d57be53a26fc8a79753[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 00:36:51 2024 -0300
+
+    Logo e path
+
+[33mcommit 26ddbbf57a797df51cc156a01a0b9005f3654577[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Wed Jul 31 00:14:10 2024 -0300
+
+    Remover referências ao auth e usar Firestore para autenticação
+
+[33mcommit 844a5e3f29f2996126ac292ecc64daa3b1553666[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Tue Jul 30 23:57:02 2024 -0300
+
+    Corrigir rotas do Início
+
+[33mcommit 7e1bfb068b1ff8f98ad0c1b7ce03c7d4645a0120[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Tue Jul 30 23:49:56 2024 -0300
+
+    Corrigir autenticação de login
+
+[33mcommit 3725b6bed1905c8af9203bf14157cfd4c2edbd5a[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Tue Jul 30 23:08:49 2024 -0300
+
+    Ajustar autenticação de login e verificar Firestore
+
+[33mcommit 2c640ecb40f0a38f5a7cfd74ae776c11011af54a[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Tue Jul 30 22:48:30 2024 -0300
+
+    Corrigir configuração do Vercel
+
+[33mcommit 6bc60d4e8cbf4a2908ef2efbd06b7d318352dd3d[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Tue Jul 30 22:20:11 2024 -0300
+
+    Ajustar autenticação de login
+
+[33mcommit e24f9142dfd08c7eda28b9199bc773bba36e1479[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Mon Jul 29 22:06:40 2024 -0300
+
+    Corrigir login e remover redirecionamento para registro na página de login
+
+[33mcommit 6b4b8c94a6b209e63cdb29a20c1d6e01b5eb6fc0[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Mon Jul 29 22:05:31 2024 -0300
+
+    Corrigir login e remover redirecionamento para registro na página de login
+
+[33mcommit c5b3b055e66b61c07f6b2d7e82f34c38c9fd47ca[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Mon Jul 29 21:54:49 2024 -0300
+
+    Atualizar layout do header, adicionar funcionalidade de mostrar/ocultar senha e corrigir login
+
+[33mcommit 68aa63e4663734c62b74def07057ad2496a9f983[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Mon Jul 29 21:38:07 2024 -0300
+
+    Atualizar rotas, nomes de páginas e lógica de login/registro
+
+[33mcommit f399a09f92afdff95abdc43aee5f28db19e19939[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Mon Jul 29 21:37:20 2024 -0300
+
+    Atualizar rotas, nomes de páginas e lógica de login/registro
+
+[33mcommit d7c92650066314dcdba1cacdba4e97d1b0830298[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Mon Jul 29 21:36:21 2024 -0300
+
+    Atualizar rotas, nomes de páginas e lógica de login/registro
+
+[33mcommit 6e33fe740991e7f8c4f97139cfdb741dd68be212[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Mon Jul 29 21:34:55 2024 -0300
+
+    Atualizar rotas, nomes de páginas e lógica de login/registro
+
+[33mcommit 1ce4e1e453d5dd38da9d7d9ff58851b99b217f27[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Mon Jul 29 21:21:17 2024 -0300
+
+    Atualizar gerenciamento de usuários e permissões de acesso
+
+[33mcommit 63ce334ad079871ea84d8580e42a6bcdf73f8213[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Mon Jul 29 20:57:22 2024 -0300
+
+    Adicionar funcionalidade de edição de nome de usuário e senha
+
+[33mcommit 49694d2ed0e8cacd6ab603aa94c5f5329d19f465[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Mon Jul 29 20:52:02 2024 -0300
+
+    Atualizar gerenciamento de usuários com seleção de tipos de usuário
+
+[33mcommit 7a2c7505f4b5a46e423d6c4680426812e08a1c07[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Mon Jul 29 20:30:03 2024 -0300
+
+    Corrigir lógica de verificação de administrador
+
+[33mcommit b1e3663f391e48c884586a379292c91f8d52f601[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Mon Jul 29 19:37:13 2024 -0300
+
+    Usuários públicos
+
+[33mcommit 30d0f91c6d326e4d50cd2bbd4a09891f35584a7e[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Mon Jul 29 19:30:07 2024 -0300
+
+    Usuários públicos
+
+[33mcommit 9f9f53c9f3765b8a46ff62cc72187fbdaf30089b[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Mon Jul 29 19:28:44 2024 -0300
+
+    Adicionar menu Usuários para administradores e ajustes no menu hamburguer
+
+[33mcommit b26f9b03ed39a28770c94c1e5b2886a4aa5513f9[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Mon Jul 29 14:44:26 2024 -0300
+
+    header
+
+[33mcommit e9d0cecbceeff799d08f0a922ee1093a33134d0d[m
+Author: Guilherme Chehade Mohamad     (LATAM) <4653766@inet.tam.com.br>
+Date:   Mon Jul 29 14:06:07 2024 -0300
+
+    header
+
+[33mcommit fffcd3d8799f9ba6d7604fb6430f9849bfc49163[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Sun Jul 28 20:46:12 2024 -0300
+
+    Adicionar página de gerenciamento de usuários, ajuste de menus para admins
+
+[33mcommit 899d97b271a49a2bac4fe1c4c88a200d09208e16[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Sun Jul 28 20:40:49 2024 -0300
+
+    Adicionar página de gerenciamento de usuários, ajuste de menus para admins
+
+[33mcommit 734f00b123f7c09f6efe58e3f95472b8df095b44[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Sun Jul 28 20:38:18 2024 -0300
+
+    Adicionar página de gerenciamento de usuários, ajuste de menus para admins
+
+[33mcommit 41815c78fe4fe43e3fb590b8d9f105203dbe32c5[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Sun Jul 28 20:14:14 2024 -0300
+
+    Adicionar página Creche, ajustes no header e footer, modo mobile
+
+[33mcommit a719a7d899feb6a06bb0d06be4c9c0104d51125b[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Sun Jul 28 18:47:14 2024 -0300
+
+    Ajustes no controle, botão de exclusão com confirmação e página de edição de pet
+
+[33mcommit b5e8c21c115df6c9eb2e670dd9b0af372880932a[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Sun Jul 28 18:40:28 2024 -0300
+
+    Adicionado botão de exclusão para pets no controle
+
+[33mcommit 8719ebcba1a9f1d7f6e76fd9de8241657823c7df[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Sun Jul 28 18:34:01 2024 -0300
+
+    Ajustes no formulário de cadastro, tema claro padrão, gap entre colunas e menu hamburguer
+
+[33mcommit dcd5a4da24167e421b56250ad59721af3b1e4b9b[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Sun Jul 28 18:12:46 2024 -0300
+
+    Implementação de modo light e dark, ajustes nos inputs e menu hamburguer
+
+[33mcommit 96070d12c6a16cd4966da9016d8d08a731099c13[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Sun Jul 28 18:05:02 2024 -0300
+
+    login adm
+
+[33mcommit 0a32f7b09b3b6efc49b4f0d5e2b20d4b93d67d42[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Sun Jul 28 17:15:45 2024 -0300
+
+    login adm
+
+[33mcommit 1ad1a03e4c7eb274a96f0941ccc3b9f0564cce77[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Sun Jul 28 16:48:05 2024 -0300
+
+    login adm
+
+[33mcommit 867ce5814cbd78d845030efda33eeb30aa4c8b95[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Sat Jul 27 02:49:17 2024 -0300
+
+    styles
+
+[33mcommit 57c73abcf57d7465eff682daa24bc7b8a3e5eee7[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Sat Jul 27 02:43:54 2024 -0300
+
+    styles
+
+[33mcommit 07fe5f377fcaf986916a109b7465b32191ce7d49[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Sat Jul 27 02:41:05 2024 -0300
+
+    styles
+
+[33mcommit bfb384b033e0dc992f1b1d32f45e170ffa7641c5[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Sat Jul 27 02:31:18 2024 -0300
+
+    styles
+
+[33mcommit eb757baee4c68f44b4823481e8d6c055861eae65[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Sat Jul 27 02:19:59 2024 -0300
+
+    styles
+
+[33mcommit be425dbb845abed7289b76b5018d3f4352267904[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Sat Jul 27 02:15:50 2024 -0300
+
+    styles
+
+[33mcommit 258c2960c989279e7b834846ab21af5d253d5da5[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Sat Jul 27 02:14:01 2024 -0300
+
+    styles
+
+[33mcommit f2e42f29cc75dd8e380aaf9eb6880919b4dcc445[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Sat Jul 27 02:04:48 2024 -0300
+
+    styles
+
+[33mcommit e830e0628f4fe3a02335d13bb4f8a47d8c2178ae[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Sat Jul 27 02:03:49 2024 -0300
+
+    styles
+
+[33mcommit 1c231c566f73b16071d32844a477cd8ac09403c9[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Sat Jul 27 02:02:21 2024 -0300
+
+    styles
+
+[33mcommit f7b4b09f4cc381cf8b4d2dd3cfe015ec89e31a58[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Sat Jul 27 01:51:47 2024 -0300
+
+    styles
+
+[33mcommit d4e9463bec5ea6df602ab7c08d2202574b63388d[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Sat Jul 27 01:44:15 2024 -0300
+
+    update frontend to use Firestore and fix image path
+
+[33mcommit 088156ce50246b5b985acb91096de454aeea8de3[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Sat Jul 27 01:39:59 2024 -0300
+
+    light mode
+
+[33mcommit 7aaec10c88791fc198d5163a30504a24ec3441a7[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Sat Jul 27 01:32:50 2024 -0300
+
+    update frontend
+
+[33mcommit 711b0f28c46b5cafedeca6a65119f4be80a4f925[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Sat Jul 27 01:13:06 2024 -0300
+
+    correção firestore
+
+[33mcommit 2a60b8a61cb551fca588ab6716c43170d1c3852e[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Sat Jul 27 01:09:46 2024 -0300
+
+    correção firestore
+
+[33mcommit 8016c184556d2667c1b78e6ddf97a98f617def7a[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Sat Jul 27 00:51:49 2024 -0300
+
+    Add frontend
+
+[33mcommit a4c0092be48652677280b0138c273081534e75e4[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Sat Jul 27 00:44:46 2024 -0300
+
+    Add frontend
+
+[33mcommit 2bef191123a1a48c966a6e8f5f09f18a3b8435d8[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Sat Jul 27 00:23:53 2024 -0300
+
+    Add frontend with React setup and theming
+
+[33mcommit 30fa59a266eb561f6c49cbc8312dd44c71cee528[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Fri Jul 26 18:05:32 2024 -0300
+
+    pacotes
+
+[33mcommit e521e052df2f8c3329031a5a755cae9f4f76b608[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Fri Jul 26 17:59:44 2024 -0300
+
+    update
+
+[33mcommit 2854053f039e2b5b9e4387c28053068fb7c24359[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Fri Jul 26 17:59:34 2024 -0300
+
+    update
+
+[33mcommit a1220476bc7b2a026dcf0206a3c1aa479eb79ef9[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Fri Jul 26 17:18:01 2024 -0300
+
+    Initial commit
+
+[33mcommit 99c133b535fa123f7fdaeb88c6da0431e50d878b[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Fri Jul 26 16:47:49 2024 -0300
+
+    Initial commit
+
+[33mcommit e9e52e99347438b1c07bf6fec3585b05b352fa51[m
+Author: Guilherme Chehade <gui_chehade@hotmail.com>
+Date:   Fri Jul 26 16:11:15 2024 -0300
+
+    Initial commit

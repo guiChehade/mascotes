@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { firestore } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 import CrecheCard from '../components/CrecheCard';
-import './Creche.css';
+import '../styles/creche.css';
 
 const Creche = () => {
   const [pets, setPets] = useState([]);
