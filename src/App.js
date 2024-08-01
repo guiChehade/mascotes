@@ -23,7 +23,7 @@ function App() {
     try {
       const userDoc = await getDoc(doc(firestore, 'users', userId));
       if (userDoc.exists()) {
-        const roles = userDoc.data().roles;
+        const roles = userDoc.data();
         setUserRoles(roles);
       } else {
         setUserRoles({
