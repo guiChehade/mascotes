@@ -18,8 +18,8 @@ function App() {
 
   return (
     <Router>
-      <Menu isAuthenticated={isAuthenticated} userRoles={userRoles} />
       <Header isAuthenticated={isAuthenticated} userRoles={userRoles} />
+      <Menu isAuthenticated={isAuthenticated} userRoles={userRoles} />
       <div style={{ paddingTop: '80px' }}>
         <Routes>
           <Route path="/" element={<Home />} />

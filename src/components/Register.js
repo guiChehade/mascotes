@@ -64,8 +64,8 @@ const Register = ({ currentUser }) => {
         />
         <select value={newUserRoleSelect} onChange={(e) => setNewUserRoleSelect(e.target.value)}>
           <option value="">Selecione o tipo de usuário</option>
-          <option value="isOwner">Dono</option>
-          <option value="isAdmin">Administrador</option>
+          <option value="isOwner">Proprietário</option>
+          <option value="isAdmin">Gerente</option>
           <option value="isEmployee">Funcionário</option>
           <option value="isTutor">Tutor</option>
         </select>

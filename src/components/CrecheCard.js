@@ -9,7 +9,7 @@ const CrecheCard = ({ pet, onSelect }) => {
         className="pet-photo"
         src={pet.foto || logoLarge}
         alt={pet.mascotinho}
-        style={pet.photoURL ? {} : { filter: 'grayscale(100%)' }}
+        style={pet.foto ? {} : { filter: 'grayscale(100%)' }}
       />
       <div className="label">Tutor</div>
       <div className="value">{pet.tutor}</div>

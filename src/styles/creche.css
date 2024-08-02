@@ -3,7 +3,6 @@
   flex-wrap: wrap;
   gap: 20px;
   justify-content: center;
-  padding-top: 100px; /* Ajuste para dar espaço ao header */
 }
 
 .pet-card {
@@ -50,10 +49,13 @@
 
 .select-button {
   background-color: var(--button-background);
+  font-size: 1rem;
+
   color: var(--text-color);
-  padding: 10px;
+  padding: 0.6rem;
   border: none;
-  border-radius: 5px;
+  border-radius: 1.2rem;
+  margin-top: 0.5rem;
   cursor: pointer;
   transition: background-color 0.3s;
 }
