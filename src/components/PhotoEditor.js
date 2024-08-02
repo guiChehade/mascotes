@@ -21,6 +21,11 @@ const PhotoEditor = ({ image, setImage, setEditorOpen }) => {
     }
   };
 
+  const handleBackClick = () => {
+    setImage('');
+    setEditorOpen(false);
+  };
+
   return (
     <div className={styles.photoEditorContainer}>
       <AvatarEditor
@@ -40,7 +45,10 @@ const PhotoEditor = ({ image, setImage, setEditorOpen }) => {
         value={scale}
         onChange={(e) => setScale(parseFloat(e.target.value))}
       />
-      <Button onClick={handleSave}>Salvar</Button>
+      <div className={styles.buttonsContainer}>
+        <Button onClick={handleBackClick}>Voltar</Button>
+        <Button onClick={handleSave}>Salvar</Button>
+      </div>
     </div>
   );
 };

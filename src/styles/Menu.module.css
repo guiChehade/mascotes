@@ -18,8 +18,8 @@
   cursor: pointer;
   transition: transform 0.3s ease-in-out;
   position: fixed;
-  left: 4vh; /* Ajustar conforme necessário */
-  top: 4vh; /* Ajustar conforme necessário */
+  left: 4vh;
+  top: 4vh;
 }
 
 .hamburgerOpen {
@@ -27,22 +27,23 @@
 }
 
 .nav {
-  display: flex;
+  display: none;
   flex-direction: column;
   align-items: flex-start;
   background-color: var(--button-background);
   position: fixed;
-  top: 13vh; /* Ajustar conforme necessário */
-  left: 4vh; /* Ajustar conforme necessário */
+  top: 13vh;
+  left: 4vh;
   min-width: 20vh;
   padding: 0.5rem 1rem;
-  border-radius: 10px;
+  border-radius: 0.5rem;
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.5s ease-in-out;
 }
 
 .navOpen {
+  display: flex;
   max-height: 50vh;
 }
 
@@ -62,5 +63,5 @@
 .link {
   color: var(--text-color);
   text-decoration: none;
-  font-size: 1rem; /* Usa 1rem para tamanho da fonte */
+  font-size: 1rem;
 }

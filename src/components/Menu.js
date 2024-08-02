@@ -13,6 +13,36 @@ const Menu = ({ isAuthenticated, userRoles }) => {
     setMenuOpen(false);
   };
 
+  const userRole = userRoles?.role || 'none';
+
+  const rolePages = {
+    isOwner: [
+      { to: "/", label: "Início" },
+      { to: "/cadastro", label: "Cadastro" },
+      { to: "/contrato", label: "Contrato" },
+      { to: "/creche", label: "Creche" },
+      { to: "/hotel", label: "Hotel" },
+      { to: "/financas", label: "Financas" },
+      { to: "/usuarios", label: "Usuários" },
+    ],
+    isAdmin: [
+      { to: "/", label: "Início" },
+      { to: "/creche", label: "Creche" },
+      { to: "/cadastro", label: "Cadastro" },
+    ],
+    isEmployee: [
+      { to: "/", label: "Início" },
+      { to: "/creche", label: "Creche" },
+    ],
+    isTutor: [
+      { to: "/", label: "Início" },
+    ],
+    none: [
+      { to: "/", label: "Início" },
+      { to: "/login", label: "Login" },
+    ],
+  };
+
   return (
     <div className={styles.menuContainer}>
       <button className={`${styles.hamburger} ${menuOpen ? styles.hamburgerOpen : ''}`} onClick={handleMenuClick}>
@@ -20,19 +50,13 @@ const Menu = ({ isAuthenticated, userRoles }) => {
       </button>
       <nav className={`${styles.nav} ${menuOpen ? styles.navOpen : ''}`}>
         <ul className={styles.ul}>
-          <li className={styles.li}><Link className={styles.link} to="/" onClick={handleLinkClick}>Início</Link></li>
-          {isAuthenticated && userRoles ? (
-            <>
-              {userRoles.isAdmin && <li className={styles.li}><Link className={styles.link} to="/cadastro" onClick={handleLinkClick}>Cadastro</Link></li>}
-              {userRoles.isOwner && <li className={styles.li}><Link className={styles.link} to="/contrato" onClick={handleLinkClick}>Contrato</Link></li>}
-              {userRoles.isEmployee && <li className={styles.li}><Link className={styles.link} to="/creche" onClick={handleLinkClick}>Creche</Link></li>}
-              {userRoles.isEmployee && <li className={styles.li}><Link className={styles.link} to="/hotel" onClick={handleLinkClick}>Hotel</Link></li>}
-              {userRoles.isOwner && <li className={styles.li}><Link className={styles.link} to="/financas" onClick={handleLinkClick}>Finanças</Link></li>}
-              {userRoles.isOwner && <li className={styles.li}><Link className={styles.link} to="/usuarios" onClick={handleLinkClick}>Usuários</Link></li>}
-            </>
-          ) : (
-            <li className={styles.li}><Link className={styles.link} to="/login" onClick={handleLinkClick}>Login</Link></li>
-          )}
+          {rolePages[userRole]?.map((page) => (
+            <li className={styles.li} key={page.to}>
+              <Link className={styles.link} to={page.to} onClick={handleLinkClick}>
+                {page.label}
+              </Link>
+            </li>
+          ))}
         </ul>
       </nav>
     </div>

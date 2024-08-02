@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, firestore } from '../firebase';
 import { doc, setDoc } from 'firebase/firestore';
+import Container from '../components/Container';
+import Input from '../components/Input';
 import styles from '../styles/Register.module.css';
 
 const Register = ({ currentUser }) => {
@@ -31,31 +33,40 @@ const Register = ({ currentUser }) => {
   };
 
   return (
-    <div className={styles.registerContainer}>
+    <Container className={styles.registerContainer}>
       <h2>Registrar</h2>
       <form onSubmit={handleRegister}>
-        <input
+        <Input
+          label="Nome"
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Ex: João da Silva"
+          placeholder="Digite o nome"
           required
         />
-        <input
+        <Input
+          label="Email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Ex: joao@gmail.com"
+          placeholder="Digite o email"
           required
         />
-        <input
+        <Input
+          label="Senha"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Senha"
+          placeholder="Digite a senha"
           required
         />
-        <select value={newUserRole} onChange={(e) => setNewUserRole(e.target.value)}>
+        <label className={styles.label}>Tipo de Usuário</label>
+        <select
+          className={styles.select}
+          value={newUserRole}
+          onChange={(e) => setNewUserRole(e.target.value)}
+          required
+        >
           <option value="">Selecione o tipo de usuário</option>
           <option value="isOwner">Proprietário</option>
           <option value="isAdmin">Gerente</option>
@@ -64,7 +75,7 @@ const Register = ({ currentUser }) => {
         </select>
         <button type="submit">Registrar</button>
       </form>
-    </div>
+    </Container>
   );
 };
 

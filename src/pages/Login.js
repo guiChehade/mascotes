@@ -21,13 +21,12 @@ const Login = ({ setIsAuthenticated, setUserRoles, setCurrentUser }) => {
       const user = userCredential.user;
 
       setIsAuthenticated(true);
-      navigate('/');
-      // Fetch roles from Firestore
       const userDoc = await getDoc(doc(firestore, 'users', user.uid));
       if (userDoc.exists()) {
         const userData = userDoc.data();
         setUserRoles(userData);
         setCurrentUser(userData);
+        navigate('/');
       } else {
         console.log('No such document!');
       }
@@ -39,11 +38,10 @@ const Login = ({ setIsAuthenticated, setUserRoles, setCurrentUser }) => {
   return (
     <Container className={styles.loginContainer}>
       <h2>Login</h2>
-      <form onSubmit={handleLogin} className={styles.form}>
+      <form onSubmit={handleLogin}>
         <Input
           label="Email"
           type="email"
-          name="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Digite seu email"
@@ -52,13 +50,13 @@ const Login = ({ setIsAuthenticated, setUserRoles, setCurrentUser }) => {
         <Input
           label="Senha"
           type="password"
-          name="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Digite sua senha"
           required
         />
-        <Button type="submit">Entrar</Button>
+        <Button type="submit">Entrar
+        </Button>
       </form>
     </Container>
   );

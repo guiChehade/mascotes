@@ -1,0 +1,14 @@
+.header {
+    height: 16vh;
+    margin: 1rem;
+}
+
+.main {
+    display: flex;
+    justify-content: center;
+}
+
+.footer {
+    margin: 2rem;
+    height: 4vh;
+}

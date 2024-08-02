@@ -1,6 +1,5 @@
 .cadastroContainer {
-  max-width: 800px;
-  margin: 0 auto;
+  max-width: 1200px;
   padding: 40px;
   background-color: var(--container-background);
   border-radius: 20px;

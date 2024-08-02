@@ -1,8 +1,6 @@
 .registerContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  max-width: 400px;
+  margin: 0 auto;
   padding: 20px;
   background-color: var(--container-background);
   color: var(--text-color);
@@ -10,32 +8,32 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.registerContainer h2 {
-  margin-bottom: 20px;
-}
-
-.registerContainer form {
+form {
   display: flex;
   flex-direction: column;
-  width: 300px;
+  gap: 10px;
 }
 
-.registerContainer input,
-.registerContainer select,
-.registerContainer button {
+.label {
+  font-size: 14px;
+}
+
+.select {
   padding: 10px;
-  margin-bottom: 15px;
-  border-radius: 10px;
+  border-radius: 5px;
   border: 1px solid var(--button-hover-background);
 }
 
-.registerContainer button {
+button {
+  padding: 10px;
   background-color: var(--button-background);
-  color: var(--button-color);
+  color: var(--text-color);
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s ease;
 }
 
-.registerContainer button:hover {
+button:hover {
   background-color: var(--button-hover-background);
 }

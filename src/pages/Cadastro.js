@@ -7,7 +7,7 @@ import Container from '../components/Container';
 import Input from '../components/Input';
 import styles from '../styles/Cadastro.module.css';
 
-const Cadastro = () => {
+const Cadastro = ({ currentUser }) => {
   const [pet, setPet] = useState({
     mascotinho: '',
     aniversario: '',
@@ -53,7 +53,8 @@ const Cadastro = () => {
 
     await addDoc(collection(firestore, 'pets'), {
       ...pet,
-      foto: fotoURL
+      foto: fotoURL,
+      createdBy: currentUser.name,
     });
 
     alert('Pet cadastrado com sucesso!');
@@ -77,20 +78,21 @@ const Cadastro = () => {
 
   return (
     <Container className={styles.cadastroContainer}>
+      <h2>Cadastro de Mascotinhos</h2>
       <form onSubmit={handleSubmit}>
-        <Input label="Nome do Mascotinho" type="text" name="mascotinho" value={pet.mascotinho} onChange={handleChange} required placeholder="Max" />
+        <Input label="Nome do Mascotinho" type="text" name="mascotinho" value={pet.mascotinho} onChange={handleChange} required placeholder="Max, Preta, Luna..." />
         <Input label="Aniversário" type="date" name="aniversario" value={pet.aniversario} onChange={handleChange} placeholder="01/01/2020" />
-        <Input label="Raça" type="text" name="raca" value={pet.raca} onChange={handleChange} placeholder="Labrador" />
-        <Input label="Tutor" type="text" name="tutor" value={pet.tutor} onChange={handleChange} required placeholder="José Silva" />
-        <Input label="RG" type="text" name="rg" value={pet.rg} onChange={handleChange} placeholder="35.025.428-4" mask="99.999.999-9" />
-        <Input label="CPF" type="text" name="cpf" value={pet.cpf} onChange={handleChange} placeholder="458.025.268-17" mask="999.999.999-99" />
-        <Input label="Endereço" type="text" name="endereco" value={pet.endereco} onChange={handleChange} placeholder="Rua dos Bobos, 0" />
-        <Input label="Email" type="email" name="email" value={pet.email} onChange={handleChange} placeholder="email@exemplo.com" />
-        <Input label="Celular do Tutor" type="text" name="celularTutor" value={pet.celularTutor} onChange={handleChange} placeholder="(11) 95032-0714" mask="(99) 99999-9999" />
+        <Input label="Raça" type="text" name="raca" value={pet.raca} onChange={handleChange} placeholder="Border Collie, SRD, Labrador..." />
+        <Input label="Tutor" type="text" name="tutor" value={pet.tutor} onChange={handleChange} required placeholder="José da Silva" />
+        <Input label="RG" type="text" name="rg" value={pet.rg} onChange={handleChange} placeholder="99.999.999-9" mask="99.999.999-9" />
+        <Input label="CPF" type="text" name="cpf" value={pet.cpf} onChange={handleChange} placeholder="999.999.999-99" mask="999.999.999-99" />
+        <Input label="Endereço" type="text" name="endereco" value={pet.endereco} onChange={handleChange} placeholder="Rua dos Mascotes, 10" />
+        <Input label="Email" type="email" name="email" value={pet.email} onChange={handleChange} placeholder="tutor@exemplo.com" />
+        <Input label="Celular do Tutor" type="text" name="celularTutor" value={pet.celularTutor} onChange={handleChange} placeholder="(11) 99999-9999" mask="(99) 99999-9999" />
         <Input label="Veterinário" type="text" name="veterinario" value={pet.veterinario} onChange={handleChange} placeholder="Dr. Vet" />
         <Input label="Endereço do Vet" type="text" name="enderecoVet" value={pet.enderecoVet} onChange={handleChange} placeholder="Rua Veterinária, 123" />
-        <Input label="Celular Vet Comercial" type="text" name="celularVetComercial" value={pet.celularVetComercial} onChange={handleChange} placeholder="(11) 95032-0714" mask="(99) 99999-9999" />
-        <Input label="Celular Vet Pessoal" type="text" name="celularVetPessoal" value={pet.celularVetPessoal} onChange={handleChange} placeholder="(11) 95032-0714" mask="(99) 99999-9999" />
+        <Input label="Celular Vet Comercial" type="text" name="celularVetComercial" value={pet.celularVetComercial} onChange={handleChange} placeholder="(11) 99999-9999" mask="(99) 99999-9999" />
+        <Input label="Celular Vet Pessoal" type="text" name="celularVetPessoal" value={pet.celularVetPessoal} onChange={handleChange} placeholder="(11) 99999-9999" mask="(99) 99999-9999" />
         <Input label="Foto do Pet" type="file" accept="image/*" onChange={handleFileChange} />
         <button className={styles.button} type="submit">Cadastrar</button>
       </form>
