@@ -1,56 +1,63 @@
-.hamburger {
-  position: absolute;
-  left: 20px;
-  top: 20px;
-  font-size: 1.5rem;
-  background: none;
-  border: none;
-  color: var(--button-color);
-  cursor: pointer;
+.menu-container {
+  position: relative;
   z-index: 9999;
+}
+
+.hamburger {
+  background-color: var(--button-background);
+  color: var(--text-color);
+  border: none;
+  border-radius: 50%;
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+}
+
+.hamburger.open {
+  transform: rotate(90deg);
 }
 
 .nav {
   display: none;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   background-color: var(--button-background);
   position: absolute;
-  top: 60px;
+  top: 3rem;
   left: 0;
-  width: 100%;
-  padding: 10px 0;
-  transition: transform 0.3s ease-in-out;
-  transform: translateY(-100%);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
 }
 
 .nav.open {
   display: flex;
-  transform: translateY(0);
+  max-height: 50vh;
+  opacity: 1;
 }
 
 .ul {
-  list-style: none;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  /* width: 100%; */
-  border-top: 1px solid var(--button-hover-background);
+  gap: 0.5rem;
 }
 
 .li {
-  width: 100%;
-  text-align: center;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--button-hover-background);
+  padding: 0.5rem 0;
 }
 
 .link {
-  color: var(--button-color);
+  color: var(--text-color);
   text-decoration: none;
-  font-size: 1rem;
-}
-
-.hamburger.open {
-  transform: rotate(90deg);
+  font-size: 1rem; /* Usa 1rem para tamanho da fonte */
 }

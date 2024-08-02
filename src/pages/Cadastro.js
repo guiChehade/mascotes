@@ -17,6 +17,7 @@ const Cadastro = () => {
     endereco_vet: '',
     celular_vet_comercial: '',
     celular_vet_pessoal: '',
+    foto: '',
   });
 
   const [photo, setPhoto] = useState(null);
