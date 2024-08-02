@@ -1,61 +1,46 @@
-import React, { useState } from 'react';
-import ReactCrop from 'react-image-crop';
-import 'react-image-crop/dist/ReactCrop.css';
+import React, { useState, useEffect } from 'react';
+import AvatarEditor from 'react-avatar-editor';
+import Button from './Button';
+import styles from '../styles/PhotoEditor.module.css';
 
 const PhotoEditor = ({ image, setImage, setEditorOpen }) => {
-  const [crop, setCrop] = useState({ aspect: 1 });
-  const [completedCrop, setCompletedCrop] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
-
-  const handleImageLoaded = (image) => {
-    setPreviewUrl(image);
-  };
-
-  const handleCropComplete = (crop) => {
-    setCompletedCrop(crop);
-  };
+  const [editor, setEditor] = useState(null);
+  const [scale, setScale] = useState(1);
 
   const handleSave = () => {
-    if (completedCrop && previewUrl) {
-      const canvas = document.createElement('canvas');
-      const scaleX = previewUrl.naturalWidth / previewUrl.width;
-      const scaleY = previewUrl.naturalHeight / previewUrl.height;
-      canvas.width = completedCrop.width;
-      canvas.height = completedCrop.height;
-      const ctx = canvas.getContext('2d');
-
-      ctx.drawImage(
-        previewUrl,
-        completedCrop.x * scaleX,
-        completedCrop.y * scaleY,
-        completedCrop.width * scaleX,
-        completedCrop.height * scaleY,
-        0,
-        0,
-        completedCrop.width,
-        completedCrop.height
-      );
-
-      canvas.toBlob((blob) => {
-        const file = new File([blob], 'cropped_image.png', { type: 'image/png' });
-        setImage(file);
-        setEditorOpen(false);
-      }, 'image/png');
+    if (editor) {
+      const canvas = editor.getImageScaledToCanvas();
+      const imgData = canvas.toDataURL('image/jpeg');
+      fetch(imgData)
+        .then(res => res.blob())
+        .then(blob => {
+          const file = new File([blob], "photo.jpg", { type: 'image/jpeg' });
+          setImage(file);
+          setEditorOpen(false);
+        });
     }
   };
 
   return (
-    <div>
-      <ReactCrop
-        src={URL.createObjectURL(image)}
-        crop={crop}
-        ruleOfThirds
-        onImageLoaded={handleImageLoaded}
-        onComplete={handleCropComplete}
-        onChange={(newCrop) => setCrop(newCrop)}
+    <div className={styles.photoEditorContainer}>
+      <AvatarEditor
+        ref={setEditor}
+        image={image}
+        width={250}
+        height={250}
+        border={50}
+        borderRadius={125}
+        scale={scale}
       />
-      <button onClick={handleSave}>Salvar</button>
-      <button onClick={() => setEditorOpen(false)}>Cancelar</button>
+      <input
+        type="range"
+        min="1"
+        max="2"
+        step="0.01"
+        value={scale}
+        onChange={(e) => setScale(parseFloat(e.target.value))}
+      />
+      <Button onClick={handleSave}>Salvar</Button>
     </div>
   );
 };

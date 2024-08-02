@@ -1,4 +1,4 @@
-.usuarios-container {
+.usuariosContainer {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
@@ -8,14 +8,14 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.usuarios-table {
+.usuariosTable {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
 }
 
-.usuarios-table th,
-.usuarios-table td {
+.usuariosTable th,
+.usuariosTable td {
   border: 1px solid var(--button-hover-background);
   padding: 10px;
   text-align: left;

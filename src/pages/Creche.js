@@ -26,21 +26,25 @@ const Creche = () => {
   };
 
   const filteredPets = pets.filter(pet =>
-    pet.nome && pet.nome.toLowerCase().includes(searchTerm.toLowerCase())
+    pet.mascotinho && pet.mascotinho.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <Container className={styles.crecheContainer}>
-      <Input
+      <Container className={styles.searchContainer}>
+        <Input
         label="Buscar Mascotinho"
         type="text"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         placeholder="Digite o nome do mascotinho"
-      />
-      {filteredPets.map(pet => (
-        <CrecheCard key={pet.id} pet={pet} onSelect={() => handleSelect(pet.id)} />
-      ))}
+        />
+      </Container>
+      <Container className={styles.cardsContainer}>
+        {filteredPets.map(pet => (
+          <CrecheCard key={pet.id} pet={pet} onSelect={() => handleSelect(pet.id)} />
+        ))}
+      </Container>
     </Container>
   );
 };

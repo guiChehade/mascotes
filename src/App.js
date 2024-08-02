@@ -20,9 +20,10 @@ function App() {
     <Router>
       <Header isAuthenticated={isAuthenticated} userRoles={userRoles} />
       <Menu isAuthenticated={isAuthenticated} userRoles={userRoles} />
-      <div style={{ paddingTop: '14vh' }}>
+      <div style={{ marginTop: '20vh' }}>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Navigate to="/" />} />
+          <Route path="/home" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />
           <Route path="/cadastro" element={isAuthenticated ? <Cadastro /> : <Navigate to="/login" />} />
           <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} setUserRoles={setUserRoles} />} />
           <Route path="/creche" element={isAuthenticated ? <Creche /> : <Navigate to="/login" />} />

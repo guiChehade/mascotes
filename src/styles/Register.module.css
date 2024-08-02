@@ -1,38 +1,41 @@
-.register {
+.registerContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  padding: 20px;
+  background-color: var(--container-background);
+  color: var(--text-color);
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.register h2 {
+.registerContainer h2 {
   margin-bottom: 20px;
 }
 
-.register form {
+.registerContainer form {
   display: flex;
   flex-direction: column;
   width: 300px;
 }
 
-.register input {
+.registerContainer input,
+.registerContainer select,
+.registerContainer button {
   padding: 10px;
   margin-bottom: 15px;
   border-radius: 10px;
   border: 1px solid var(--button-hover-background);
 }
 
-.register button {
+.registerContainer button {
   background-color: var(--button-background);
   color: var(--button-color);
-  border: none;
-  border-radius: 10px;
-  padding: 10px 20px;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
-.register button:hover {
+.registerContainer button:hover {
   background-color: var(--button-hover-background);
 }

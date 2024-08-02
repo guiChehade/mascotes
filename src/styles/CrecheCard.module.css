@@ -9,15 +9,16 @@
   align-items: center;
   width: 18rem;
   max-width: 100%;
+  margin: 10px;
 }
 
-.card .pet-name {
+.petName {
   font-size: 2rem;
   font-weight: bold;
   margin-bottom: 10px;
 }
 
-.card .pet-photo {
+.petPhoto {
   border: 0.3rem solid #DFA430;
   box-shadow: 0 0 8px #DFA430;
   border-radius: 50%;
@@ -27,16 +28,30 @@
   margin-bottom: 10px;
 }
 
-.card .label {
+.label {
   font-size: 1rem;
   font-weight: bold;
   margin-bottom: 0.1rem;
 }
 
-.card .value {
+.value {
   font-size: 1.2rem;
   margin-bottom: 1rem;
   /* background-color: var(--button-background); */
   border-radius: 1rem;
   padding: 0.1rem 0.5rem;
+}
+
+.selectButton {
+  background-color: var(--button-background);
+  color: var(--text-color);
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.selectButton:hover {
+  background-color: var(--button-hover-background);
 }

@@ -8,7 +8,7 @@ const Register = ({ currentUser }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [newUserRoleSelect, setNewUserRoleSelect] = useState('');
+  const [newUserRole, setNewUserRole] = useState('');
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -17,17 +17,10 @@ const Register = ({ currentUser }) => {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      const roles = {
-        isOwner: true,
-        isAdmin: true,
-        isEmployee: true,
-        isTutor: true,
-      };
-
       await setDoc(doc(firestore, 'users', user.uid), {
         name,
         email,
-        ...roles,
+        role: newUserRole,
         createdBy: currentUser ? currentUser.name : 'Site'
       });
 
@@ -38,21 +31,21 @@ const Register = ({ currentUser }) => {
   };
 
   return (
-    <div>
+    <div className={styles.registerContainer}>
       <h2>Registrar</h2>
       <form onSubmit={handleRegister}>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Nome"
+          placeholder="Ex: João da Silva"
           required
         />
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
+          placeholder="Ex: joao@gmail.com"
           required
         />
         <input
@@ -62,7 +55,7 @@ const Register = ({ currentUser }) => {
           placeholder="Senha"
           required
         />
-        <select value={newUserRoleSelect} onChange={(e) => setNewUserRoleSelect(e.target.value)}>
+        <select value={newUserRole} onChange={(e) => setNewUserRole(e.target.value)}>
           <option value="">Selecione o tipo de usuário</option>
           <option value="isOwner">Proprietário</option>
           <option value="isAdmin">Gerente</option>

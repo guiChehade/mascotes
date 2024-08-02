@@ -3,8 +3,9 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: var(--button-background);
+  background-color: var(--container-background);
   padding: 20px;
+  margin-top: 8vh;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;

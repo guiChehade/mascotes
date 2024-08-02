@@ -1,8 +1,6 @@
 .menuContainer {
   position: relative;
   z-index: 9999;
-  margin: 2vh;
-  padding: 2vh;
   width: 8vh;
 }
 
@@ -19,8 +17,8 @@
   align-items: center;
   cursor: pointer;
   transition: transform 0.3s ease-in-out;
-  position: fixed; /* Fixar o botão */
-  left: 8vh; /* Ajustar conforme necessário */
+  position: fixed;
+  left: 4vh; /* Ajustar conforme necessário */
   top: 4vh; /* Ajustar conforme necessário */
 }
 
@@ -33,11 +31,12 @@
   flex-direction: column;
   align-items: flex-start;
   background-color: var(--button-background);
-  position: fixed; /* Fixar o menu */
-  top: 12vh; /* Ajustar conforme necessário */
+  position: fixed;
+  top: 13vh; /* Ajustar conforme necessário */
   left: 4vh; /* Ajustar conforme necessário */
+  min-width: 20vh;
   padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
+  border-radius: 10px;
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.5s ease-in-out;

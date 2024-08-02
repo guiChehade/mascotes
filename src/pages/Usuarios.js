@@ -41,9 +41,9 @@ const Usuarios = () => {
   };
 
   return (
-    <div className="usuarios-container">
+    <div className={styles.usuariosContainer}>
       <h2>Gerenciamento de Usuários</h2>
-      <table className="usuarios-table">
+      <table className={styles.usuariosTable}>
         <thead>
           <tr>
             <th>Nome do Usuário</th>
@@ -86,8 +86,8 @@ const Usuarios = () => {
               <td>
                 {user.role === 'isOwner' ? (
                   <>
-                    <button disabled title="Não é possível editar Proprietários, caso seja necessário contate o Guilherme Chehade">Editar</button>
-                    <button disabled title="Não é possível excluir Proprietários, caso seja necessário contate o Guilherme Chehade">Excluir</button>
+                    <button className={styles.disabledButton} disabled title="Não é possível editar Proprietários, caso seja necessário contate o Guilherme Chehade">Editar</button>
+                    <button className={styles.disabledButton} disabled title="Não é possível excluir Proprietários, caso seja necessário contate o Guilherme Chehade">Excluir</button>
                   </>
                 ) : (
                   editUserId === user.id ? (

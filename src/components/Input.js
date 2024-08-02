@@ -22,10 +22,14 @@ const applyMask = (value, mask) => {
   return maskedValue;
 };
 
-const Input = ({ label, type, name, value, onChange, placeholder, required, mask }) => {
+const Input = ({ label, type, name, value, onChange, placeholder, required = false, mask, accept }) => {
   const handleChange = (e) => {
-    const maskedValue = applyMask(e.target.value, mask);
-    onChange({ target: { name, value: maskedValue } });
+    if (type === 'file') {
+      onChange(e);
+    } else {
+      const maskedValue = applyMask(e.target.value, mask);
+      onChange({ target: { name, value: maskedValue } });
+    }
   };
 
   return (
@@ -35,10 +39,11 @@ const Input = ({ label, type, name, value, onChange, placeholder, required, mask
         className={styles.input}
         type={type}
         name={name}
-        value={value}
+        value={type !== 'file' ? value : undefined}
         onChange={handleChange}
         placeholder={placeholder}
         required={required}
+        accept={accept}
       />
     </div>
   );
