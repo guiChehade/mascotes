@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { firestore } from '../firebase';
 import { useNavigate } from 'react-router-dom';
-import '../styles/creche.css';
 import logoLarge from '../assets/logo-large.png';
+import styles from '../styles/Creche.module.css';
 
 const Creche = () => {
   const [pets, setPets] = useState([]);

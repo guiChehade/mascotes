@@ -19,7 +19,6 @@
 
 .card .pet-photo {
   border: 0.3rem solid #DFA430;
-  /* adicionar box-shadow, mas fazendo uma sombra clara, um glow */
   box-shadow: 0 0 8px #DFA430;
   border-radius: 50%;
   width: 150px;

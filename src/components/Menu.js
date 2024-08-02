@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import '../styles/menu.css';
+import styles from '../styles/Menu.module.css';
 
 const Menu = ({ isAuthenticated, userRoles }) => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -14,24 +14,24 @@ const Menu = ({ isAuthenticated, userRoles }) => {
   };
 
   return (
-    <div className="menu-container">
-      <button className={`hamburger ${menuOpen ? 'open' : ''}`} onClick={handleMenuClick}>
+    <div className={styles.menuContainer}>
+      <button className={`${styles.hamburger} ${menuOpen ? styles.hamburgerOpen : ''}`} onClick={handleMenuClick}>
         ☰
       </button>
-      <nav className={`nav ${menuOpen ? 'open' : ''}`}>
-        <ul className="ul">
-          <li className="li"><Link className="link" to="/" onClick={handleLinkClick}>Início</Link></li>
+      <nav className={`${styles.nav} ${menuOpen ? styles.navOpen : ''}`}>
+        <ul className={styles.ul}>
+          <li className={styles.li}><Link className={styles.link} to="/" onClick={handleLinkClick}>Início</Link></li>
           {isAuthenticated && userRoles ? (
             <>
-              {userRoles.isAdmin && <li className="li"><Link className="link" to="/cadastro" onClick={handleLinkClick}>Cadastro</Link></li>}
-              {userRoles.isOwner && <li className="li"><Link className="link" to="/contrato" onClick={handleLinkClick}>Contrato</Link></li>}
-              {userRoles.isEmployee && <li className="li"><Link className="link" to="/creche" onClick={handleLinkClick}>Creche</Link></li>}
-              {userRoles.isEmployee && <li className="li"><Link className="link" to="/hotel" onClick={handleLinkClick}>Hotel</Link></li>}
-              {userRoles.isOwner && <li className="li"><Link className="link" to="/financas" onClick={handleLinkClick}>Finanças</Link></li>}
-              {userRoles.isOwner && <li className="li"><Link className="link" to="/usuarios" onClick={handleLinkClick}>Usuários</Link></li>}
+              {userRoles.isAdmin && <li className={styles.li}><Link className={styles.link} to="/cadastro" onClick={handleLinkClick}>Cadastro</Link></li>}
+              {userRoles.isOwner && <li className={styles.li}><Link className={styles.link} to="/contrato" onClick={handleLinkClick}>Contrato</Link></li>}
+              {userRoles.isEmployee && <li className={styles.li}><Link className={styles.link} to="/creche" onClick={handleLinkClick}>Creche</Link></li>}
+              {userRoles.isEmployee && <li className={styles.li}><Link className={styles.link} to="/hotel" onClick={handleLinkClick}>Hotel</Link></li>}
+              {userRoles.isOwner && <li className={styles.li}><Link className={styles.link} to="/financas" onClick={handleLinkClick}>Finanças</Link></li>}
+              {userRoles.isOwner && <li className={styles.li}><Link className={styles.link} to="/usuarios" onClick={handleLinkClick}>Usuários</Link></li>}
             </>
           ) : (
-            <li className="li"><Link className="link" to="/login" onClick={handleLinkClick}>Login</Link></li>
+            <li className={styles.li}><Link className={styles.link} to="/login" onClick={handleLinkClick}>Login</Link></li>
           )}
         </ul>
       </nav>

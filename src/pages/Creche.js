@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { firestore } from '../firebase';
 import { useNavigate } from 'react-router-dom';
-import '../styles/creche.css';
+import Container from '../components/Container';
 import CrecheCard from '../components/CrecheCard';
+import Input from '../components/Input';
+import styles from '../styles/Creche.module.css';
 
 const Creche = () => {
   const [pets, setPets] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,12 +25,23 @@ const Creche = () => {
     navigate(`/controle/${id}`);
   };
 
+  const filteredPets = pets.filter(pet =>
+    pet.nome && pet.nome.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div className="creche-container">
-      {pets.map(pet => (
+    <Container className={styles.crecheContainer}>
+      <Input
+        label="Buscar Mascotinho"
+        type="text"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        placeholder="Digite o nome do mascotinho"
+      />
+      {filteredPets.map(pet => (
         <CrecheCard key={pet.id} pet={pet} onSelect={() => handleSelect(pet.id)} />
       ))}
-    </div>
+    </Container>
   );
 };
 

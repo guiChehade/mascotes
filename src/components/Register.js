@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, firestore } from '../firebase';
 import { doc, setDoc } from 'firebase/firestore';
-import '../styles/register.css';
+import styles from '../styles/Register.module.css';
 
 const Register = ({ currentUser }) => {
   const [name, setName] = useState('');

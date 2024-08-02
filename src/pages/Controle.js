@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import '../styles/controle.css';
+import styles from '../styles/Controle.module.css';
 
 const Controle = () => {
   const { id } = useParams();

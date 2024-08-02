@@ -1,8 +1,9 @@
-.menu-container {
+.menuContainer {
   position: relative;
   z-index: 9999;
   margin: 2vh;
   padding: 2vh;
+  width: 8vh;
 }
 
 .hamburger {
@@ -10,17 +11,20 @@
   color: var(--text-color);
   border: none;
   border-radius: 50%;
-  font-size: 8vh;
-  width: 3rem;
-  height: 3rem;
+  font-size: 6vh;
+  width: 8vh;
+  height: 8vh;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
   transition: transform 0.3s ease-in-out;
+  position: fixed; /* Fixar o botão */
+  left: 8vh; /* Ajustar conforme necessário */
+  top: 4vh; /* Ajustar conforme necessário */
 }
 
-.hamburger.open {
+.hamburgerOpen {
   transform: rotate(90deg);
 }
 
@@ -29,10 +33,9 @@
   flex-direction: column;
   align-items: flex-start;
   background-color: var(--button-background);
-  position: absolute;
-  top: 4rem;
-  min-width: 20vw;
-  left: 0;
+  position: fixed; /* Fixar o menu */
+  top: 12vh; /* Ajustar conforme necessário */
+  left: 4vh; /* Ajustar conforme necessário */
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
   max-height: 0;
@@ -40,7 +43,7 @@
   transition: max-height 0.5s ease-in-out;
 }
 
-.nav.open {
+.navOpen {
   max-height: 50vh;
 }
 

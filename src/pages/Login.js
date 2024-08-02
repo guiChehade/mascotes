@@ -3,7 +3,10 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { auth, firestore } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import '../styles/login.css';
+import Container from '../components/Container';
+import Input from '../components/Input';
+import Button from '../components/Button';
+import styles from '../styles/Login.module.css';
 
 const Login = ({ setIsAuthenticated, setUserRoles, setCurrentUser }) => {
   const [email, setEmail] = useState('');
@@ -34,32 +37,30 @@ const Login = ({ setIsAuthenticated, setUserRoles, setCurrentUser }) => {
   };
 
   return (
-    <div className="login-container">
+    <Container className={styles.loginContainer}>
       <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <div className="input-group">
-          <label>Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            required
-          />
-        </div>
-        <div className="input-group">
-          <label>Senha</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Senha"
-            required
-          />
-        </div>
-        <button type="submit">Login</button>
+      <form onSubmit={handleLogin} className={styles.form}>
+        <Input
+          label="Email"
+          type="email"
+          name="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Digite seu email"
+          required
+        />
+        <Input
+          label="Senha"
+          type="password"
+          name="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Digite sua senha"
+          required
+        />
+        <Button type="submit">Entrar</Button>
       </form>
-    </div>
+    </Container>
   );
 };
 

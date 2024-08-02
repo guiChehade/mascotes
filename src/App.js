@@ -20,7 +20,7 @@ function App() {
     <Router>
       <Header isAuthenticated={isAuthenticated} userRoles={userRoles} />
       <Menu isAuthenticated={isAuthenticated} userRoles={userRoles} />
-      <div style={{ paddingTop: '80px' }}>
+      <div style={{ paddingTop: '14vh' }}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/cadastro" element={isAuthenticated ? <Cadastro /> : <Navigate to="/login" />} />

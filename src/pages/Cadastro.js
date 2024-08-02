@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
-import { storage, firestore } from '../firebase';
-import '../styles/cadastro.css';
+import { firestore, storage } from '../firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { addDoc, collection } from 'firebase/firestore';
+import PhotoEditor from '../components/PhotoEditor';
+import Input from '../components/Input';
+import Button from '../components/Button';
+import Container from '../components/Container';
+import styles from '../styles/Cadastro.module.css';
 
 const Cadastro = () => {
-  const [formData, setFormData] = useState({
+  const [pet, setPet] = useState({
     mascotinho: '',
     aniversario: '',
     raca: '',
@@ -12,92 +18,90 @@ const Cadastro = () => {
     cpf: '',
     endereco: '',
     email: '',
-    celular_tutor: '',
-    vet: '',
-    endereco_vet: '',
-    celular_vet_comercial: '',
-    celular_vet_pessoal: '',
-    foto: '',
+    celularTutor: '',
+    veterinario: '',
+    enderecoVet: '',
+    celularVetComercial: '',
+    celularVetPessoal: '',
+    foto: ''
   });
 
-  const [photo, setPhoto] = useState(null);
+  const [image, setImage] = useState(null);
+  const [editorOpen, setEditorOpen] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handlePhotoChange = (e) => {
-    setPhoto(e.target.files[0]);
+    const { name, value } = e.target;
+    setPet((prevPet) => ({
+      ...prevPet,
+      [name]: value
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      let photoURL = '';
-      if (photo) {
-        const storageRef = storage.ref();
-        const photoRef = storageRef.child(`photos/${photo.name}`);
-        await photoRef.put(photo);
-        photoURL = await photoRef.getDownloadURL();
-      }
-      await firestore.collection('pets').add({
-        ...formData,
-        photoURL,
-      });
-      alert('Pet cadastrado com sucesso!');
-    } catch (error) {
-      alert('Erro ao cadastrar pet: ' + error.message);
+
+    let fotoURL = '';
+    if (image) {
+      const fotoRef = ref(storage, `pets/${Date.now()}_${image.name}`);
+      await uploadBytes(fotoRef, image);
+      fotoURL = await getDownloadURL(fotoRef);
     }
+
+    await addDoc(collection(firestore, 'pets'), {
+      ...pet,
+      foto: fotoURL
+    });
+
+    alert('Pet cadastrado com sucesso!');
+    setPet({
+      mascotinho: '',
+      aniversario: '',
+      raca: '',
+      tutor: '',
+      rg: '',
+      cpf: '',
+      endereco: '',
+      email: '',
+      celularTutor: '',
+      veterinario: '',
+      enderecoVet: '',
+      celularVetComercial: '',
+      celularVetPessoal: '',
+      foto: ''
+    });
   };
 
   return (
-    <div className="cadastro-container">
-      <form onSubmit={handleSubmit}>
-        <label>Nome do Mascotinho</label>
-        <input type="text" name="mascotinho" value={formData.mascotinho} onChange={handleChange} required />
-        
-        <label>Aniversário</label>
-        <input type="date" name="aniversario" value={formData.aniversario} onChange={handleChange} />
-        
-        <label>Raça</label>
-        <input type="text" name="raca" value={formData.raca} onChange={handleChange} />
-        
-        <label>Tutor</label>
-        <input type="text" name="tutor" value={formData.tutor} onChange={handleChange} required />
-        
-        <label>RG</label>
-        <input type="text" name="rg" value={formData.rg} onChange={handleChange} />
-        
-        <label>CPF</label>
-        <input type="text" name="cpf" value={formData.cpf} onChange={handleChange} />
-        
-        <label>Endereço</label>
-        <input type="text" name="endereco" value={formData.endereco} onChange={handleChange} />
-        
-        <label>Email</label>
-        <input type="email" name="email" value={formData.email} onChange={handleChange} />
-        
-        <label>Celular do Tutor</label>
-        <input type="text" name="celular_tutor" value={formData.celular_tutor} onChange={handleChange} />
-        
-        <label>Vet</label>
-        <input type="text" name="vet" value={formData.vet} onChange={handleChange} />
-        
-        <label>Endereço do Vet</label>
-        <input type="text" name="endereco_vet" value={formData.endereco_vet} onChange={handleChange} />
-        
-        <label>Celular Vet Comercial</label>
-        <input type="text" name="celular_vet_comercial" value={formData.celular_vet_comercial} onChange={handleChange} />
-        
-        <label>Celular Vet Pessoal</label>
-        <input type="text" name="celular_vet_pessoal" value={formData.celular_vet_pessoal} onChange={handleChange} />
-        
-        <label>Foto</label>
-        <input type="file" onChange={handlePhotoChange} />
-
-        <button type="submit">Cadastrar</button>
+    <Container className={styles.cadastroContainer}>
+      <h2>Cadastro de Mascotinho</h2>
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <Input label="Nome do Mascotinho" type="text" name="mascotinho" value={pet.mascotinho} onChange={handleChange} required placeholder="Max, Preta, Luna..." />
+        <Input label="Aniversário" type="date" name="aniversario" value={pet.aniversario} onChange={handleChange} placeholder="Data de nascimento do pet" />
+        <Input label="Raça" type="text" name="raca" value={pet.raca} onChange={handleChange} placeholder="Border Collie, SRD, Labrador..." />
+        <Input label="Tutor" type="text" name="tutor" value={pet.tutor} onChange={handleChange} required placeholder="José da Silva" />
+        <Input label="RG" type="text" name="rg" value={pet.rg} onChange={handleChange} mask="99.999.999-9" placeholder="99.999.999-9" />
+        <Input label="CPF" type="text" name="cpf" value={pet.cpf} onChange={handleChange} mask="999.999.999-99" placeholder="999.999.999-99" />
+        <Input label="Endereço" type="text" name="endereco" value={pet.endereco} onChange={handleChange} placeholder="Rua dos Bobos, 0" />
+        <Input label="Email" type="email" name="email" value={pet.email} onChange={handleChange} placeholder="tutor@mascotes.com.br" />
+        <Input label="Celular do Tutor" type="text" name="celularTutor" value={pet.celularTutor} onChange={handleChange} mask="(99) 99999-9999" placeholder="(11) 99999-9999" />
+        <Input label="Veterinário" type="text" name="veterinario" value={pet.veterinario} onChange={handleChange} placeholder="Dr. Animal" />
+        <Input label="Endereço do Vet" type="text" name="enderecoVet" value={pet.enderecoVet} onChange={handleChange} placeholder="Avenida Vet, 123" />
+        <Input label="Celular Vet Comercial" type="text" name="celularVetComercial" value={pet.celularVetComercial} onChange={handleChange} mask="(99) 99999-9999" placeholder="(11) 3456-7890" />
+        <Input label="Celular Vet Pessoal" type="text" name="celularVetPessoal" value={pet.celularVetPessoal} onChange={handleChange} mask="(99) 99999-9999" placeholder="(11) 98765-4321" />
+        <Input
+          label="Foto do Pet"
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            setImage(e.target.files[0]);
+            setEditorOpen(true);
+          }}
+          placeholder="Selecione uma foto do pet"
+        />
+        <Button type="submit">Cadastrar</Button>
       </form>
-    </div>
+      {editorOpen && <PhotoEditor image={image} setImage={(img) => setPet((prevPet) => ({ ...prevPet, foto: img }))} setEditorOpen={setEditorOpen} />}
+    </Container>
   );
 };
 

@@ -1,15 +1,16 @@
 import React from 'react';
-import '../styles/crecheCard.css';
 import logoLarge from '../assets/logo-large.png';
+import styles from '../styles/CrecheCard.module.css';
+
 const CrecheCard = ({ pet, onSelect }) => {
   return (
     <div className="card">
       <div className="pet-name">{pet.mascotinho}</div>
       <img
         className="pet-photo"
-        src={pet.foto || logoLarge}
+        src={pet.photoURL || logoLarge}
         alt={pet.mascotinho}
-        style={pet.foto ? {} : { filter: 'grayscale(100%)' }}
+        style={pet.photoURL ? {} : { filter: 'grayscale(100%)' }}
       />
       <div className="label">Tutor</div>
       <div className="value">{pet.tutor}</div>

@@ -1,0 +1,17 @@
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.label {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.input {
+  padding: 0.5rem;
+  border: 1px solid var(--button-hover-background);
+  border-radius: 10px;
+  font-size: 1rem;
+}

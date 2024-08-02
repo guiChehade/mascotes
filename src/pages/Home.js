@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Button from '../components/Button';
-import '../styles/home.css';
+import styles from '../styles/Home.module.css';
 
 const Home = ({ isAuthenticated }) => (
   <div className="home">
