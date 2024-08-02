@@ -1,6 +1,8 @@
 .menu-container {
   position: relative;
   z-index: 9999;
+  margin: 2vh;
+  padding: 2vh;
 }
 
 .hamburger {
@@ -8,6 +10,7 @@
   color: var(--text-color);
   border: none;
   border-radius: 50%;
+  font-size: 8vh;
   width: 3rem;
   height: 3rem;
   display: flex;
@@ -22,25 +25,23 @@
 }
 
 .nav {
-  display: none;
+  display: flex;
   flex-direction: column;
   align-items: flex-start;
   background-color: var(--button-background);
   position: absolute;
-  top: 3rem;
+  top: 4rem;
+  min-width: 20vw;
   left: 0;
-  padding: 1rem;
+  padding: 0.5rem 1rem;
   border-radius: 0.5rem;
-  transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
   max-height: 0;
-  opacity: 0;
   overflow: hidden;
+  transition: max-height 0.5s ease-in-out;
 }
 
 .nav.open {
-  display: flex;
   max-height: 50vh;
-  opacity: 1;
 }
 
 .ul {
