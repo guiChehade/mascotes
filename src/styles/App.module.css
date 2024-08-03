@@ -1,14 +1,15 @@
 .header {
     height: 16vh;
-    margin: 1rem;
+    margin-bottom: 1rem;
 }
 
 .main {
+    padding: 17vh 1rem 5vh 1rem;
     display: flex;
     justify-content: center;
 }
 
 .footer {
-    margin: 2rem;
+    margin-top: 2rem;
     height: 4vh;
 }

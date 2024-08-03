@@ -1,7 +1,7 @@
 .menuContainer {
   position: relative;
   z-index: 9999;
-  width: 8vh;
+  width: 0;
 }
 
 .hamburger {
@@ -27,7 +27,7 @@
 }
 
 .nav {
-  display: none;
+  visibility: hidden;
   flex-direction: column;
   align-items: flex-start;
   background-color: var(--button-background);
@@ -39,12 +39,12 @@
   border-radius: 0.5rem;
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.5s ease-in-out;
+  transition: max-height 0.5s ease-in-out, visibility 0.5s ease-in-out;
 }
 
 .navOpen {
-  display: flex;
-  max-height: 50vh;
+  visibility: visible;
+  max-height: 70vh;
 }
 
 .ul {

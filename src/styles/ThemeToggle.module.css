@@ -1,0 +1,14 @@
+  .themeToggle {
+      color: var(--text-color);
+      border: none;
+      border-radius: 50%;
+      font-size: 6vh;
+      width: 8vh;
+      height: 8vh;
+      cursor: pointer;
+      position: fixed;
+      right: 4vh;
+      top: 4vh;
+      z-index: 9999;
+  }
+  

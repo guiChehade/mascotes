@@ -5,6 +5,8 @@ import { auth, firestore } from './firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import Menu from './components/Menu';
 import Header from './components/Header';
+import Main from './components/Main';
+import ThemeToggle from './components/ThemeToggle';
 import Footer from './components/Footer';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -46,31 +48,26 @@ const App = () => {
 
   return (
     <Router>
-      <div className={styles.main}>
-        <Menu isAuthenticated={isAuthenticated} userRoles={userRoles} />
-        <Header isAuthenticated={isAuthenticated} userRoles={userRoles} />
-        <main>
-        <div className={styles.header}>
-        </div>
-          <Routes>
-            <Route path="/" element={<Home isAuthenticated={isAuthenticated} userRoles={userRoles} />} />
-            <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} setUserRoles={setUserRoles} setCurrentUser={setCurrentUser} />} />
-            {isAuthenticated && (
-              <>
-                {(userRole === 'isAdmin' || userRole === 'isOwner') && <Route path="/cadastro" element={<Cadastro currentUser={currentUser} />} />}
-                {userRole === 'isOwner' && <Route path="/contrato" element={<Contrato currentUser={currentUser} />} />}
-                {(userRole === 'isEmployee' || userRole === 'isAdmin' || userRole === 'isOwner') && <Route path="/creche" element={<Creche currentUser={currentUser} />} />}
-                {(userRole === 'isEmployee' || userRole === 'isAdmin' || userRole === 'isOwner') && <Route path="/hotel" element={<Hotel currentUser={currentUser} />} />}
-                {userRole === 'isOwner' && <Route path="/financas" element={<Financas currentUser={currentUser} />} />}
-                {userRole === 'isOwner' && <Route path="/usuarios" element={<Usuarios currentUser={currentUser} />} />}
-              </>
-            )}
-          </Routes>
-          <div className={styles.footer}>
-          </div>
-        </main>
-        <Footer />
-      </div>
+      <Menu isAuthenticated={isAuthenticated} userRoles={userRoles} />
+      <Header isAuthenticated={isAuthenticated} userRoles={userRoles} />
+      <ThemeToggle />
+      <Main className={styles.main}>
+        <Routes>
+          <Route path="/" element={<Home isAuthenticated={isAuthenticated} userRoles={userRoles} />} />
+          <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} setUserRoles={setUserRoles} setCurrentUser={setCurrentUser} />} />
+          {isAuthenticated && (
+            <>
+              {(userRole === 'isAdmin' || userRole === 'isOwner') && <Route path="/cadastro" element={<Cadastro currentUser={currentUser} />} />}
+              {userRole === 'isOwner' && <Route path="/contrato" element={<Contrato currentUser={currentUser} />} />}
+              {(userRole === 'isEmployee' || userRole === 'isAdmin' || userRole === 'isOwner') && <Route path="/creche" element={<Creche currentUser={currentUser} />} />}
+              {(userRole === 'isEmployee' || userRole === 'isAdmin' || userRole === 'isOwner') && <Route path="/hotel" element={<Hotel currentUser={currentUser} />} />}
+              {userRole === 'isOwner' && <Route path="/financas" element={<Financas currentUser={currentUser} />} />}
+              {userRole === 'isOwner' && <Route path="/usuarios" element={<Usuarios currentUser={currentUser} />} />}
+            </>
+          )}
+        </Routes>
+      </Main>
+      <Footer />
     </Router>
   );
 };

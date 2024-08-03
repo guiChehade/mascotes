@@ -79,11 +79,11 @@ const Cadastro = ({ currentUser }) => {
   return (
     <Container className={styles.cadastroContainer}>
       <h2>Cadastro de Mascotinhos</h2>
-      <form onSubmit={handleSubmit}>
+      <form className={styles.form} onSubmit={handleSubmit}>
         <Input label="Nome do Mascotinho" type="text" name="mascotinho" value={pet.mascotinho} onChange={handleChange} required placeholder="Max, Preta, Luna..." />
         <Input label="Aniversário" type="date" name="aniversario" value={pet.aniversario} onChange={handleChange} placeholder="01/01/2020" />
         <Input label="Raça" type="text" name="raca" value={pet.raca} onChange={handleChange} placeholder="Border Collie, SRD, Labrador..." />
-        <Input label="Tutor" type="text" name="tutor" value={pet.tutor} onChange={handleChange} required placeholder="José da Silva" />
+        <Input label="Tutor" type="text" name="tutor" value={pet.tutor} onChange={handleChange} required placeholder="João Pereira" />
         <Input label="RG" type="text" name="rg" value={pet.rg} onChange={handleChange} placeholder="99.999.999-9" mask="99.999.999-9" />
         <Input label="CPF" type="text" name="cpf" value={pet.cpf} onChange={handleChange} placeholder="999.999.999-99" mask="999.999.999-99" />
         <Input label="Endereço" type="text" name="endereco" value={pet.endereco} onChange={handleChange} placeholder="Rua dos Mascotes, 10" />

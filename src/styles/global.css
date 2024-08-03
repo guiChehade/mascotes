@@ -7,13 +7,14 @@
   --container-background: #1f1f1f;
 }
 
-.light-mode {
-  --background-color: #ffffff;
-  --text-color: #000000;
-  --button-background: #f1f1f1;
-  --button-color: #000000;
-  --button-hover-background: #dddddd;
-  --container-background: #f9f9f9;
+
+.light {
+  --background-color: #e6f4ff;
+  --text-color: #333333;
+  --button-background: #007BFF;
+  --button-color: #ffffff;
+  --button-hover-background: #0056b3;
+  --container-background: #e6e6e6;
 }
 
 h2 {

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import Button from '../components/Button';
 import styles from '../styles/Controle.module.css';
 
 const Controle = () => {
@@ -23,13 +24,13 @@ const Controle = () => {
   };
 
   return (
-    <div className="controle-container">
+    <div className={styles.controleContainer}>
       <h2>Controle do Pet</h2>
-      <div className="controle-buttons">
-        <button onClick={handleEntrada}>Entrada</button>
-        <button onClick={handleSaida}>Saída</button>
-        <button onClick={handleComentario}>Comentário</button>
-        <button onClick={handleEditar}>Editar</button>
+      <div className={styles.controleButtons}>
+        <Button onClick={handleEntrada}>Entrada</Button>
+        <Button onClick={handleSaida}>Saída</Button>
+        <Button onClick={handleComentario}>Comentário</Button>
+        <Button onClick={handleEditar}>Editar</Button>
       </div>
     </div>
   );

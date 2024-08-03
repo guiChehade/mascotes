@@ -1,0 +1,9 @@
+.main {
+    min-height: calc(100vh - 20vh);
+    margin: 16vh 0 4vh 0;
+    padding: 1rem;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+}
