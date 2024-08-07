@@ -61,8 +61,8 @@ const App = () => {
               {(userRole === 'isAdmin' || userRole === 'isOwner') && <Route path="/cadastro" element={<Cadastro currentUser={currentUser} />} />}
               {userRole === 'isOwner' && <Route path="/contrato" element={<Contrato currentUser={currentUser} />} />}
               {(userRole === 'isEmployee' || userRole === 'isAdmin' || userRole === 'isOwner') && <Route path="/creche" element={<Creche currentUser={currentUser} />} />}
-              {(userRole === 'isEmployee' || userRole === 'isAdmin' || userRole === 'isOwner') && <Route path="/controle/:id" element={<Controle currentUser={currentUser} />} />}
-              {(userRole === 'isAdmin' || userRole === 'isOwner') && <Route path="/editar/:id" element={<EditarPet currentUser={currentUser} />} />}
+              {(userRole === 'isEmployee' || userRole === 'isAdmin' || userRole === 'isOwner') && <Route path="/controle/:petId" element={<Controle currentUser={currentUser} />} />}
+              {(userRole === 'isAdmin' || userRole === 'isOwner') && <Route path="/editar/:petId" element={<EditarPet currentUser={currentUser} />} />}
               {userRole === 'isOwner' && <Route path="/financas" element={<Financas currentUser={currentUser} />} />}
               {userRole === 'isOwner' && <Route path="/usuarios" element={<Usuarios currentUser={currentUser} />} />}
             </>

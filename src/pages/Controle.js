@@ -4,7 +4,7 @@ import Button from '../components/Button';
 import styles from '../styles/Controle.module.css';
 
 const Controle = () => {
-  const { id } = useParams();
+  const { petId } = useParams();
   const navigate = useNavigate();
 
   const handleEntrada = () => {
@@ -20,7 +20,7 @@ const Controle = () => {
   };
 
   const handleEditar = () => {
-    navigate(`/editar/${id}`);
+    navigate(`/editar/${petId}`);
   };
 
   return (

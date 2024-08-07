@@ -36,7 +36,26 @@ const EditarPet = ({ currentUser }) => {
       if (petId) {
         const petDoc = await getDoc(doc(firestore, 'pets', petId));
         if (petDoc.exists) {
-          setFormData(petDoc.data());
+          const data = petDoc.data();
+          const initialData = {
+            mascotinho: data.mascotinho || '',
+            aniversario: data.aniversario || '',
+            raca: data.raca || '',
+            tutor: data.tutor || '',
+            rg: data.rg || '',
+            cpf: data.cpf || '',
+            endereco: data.endereco || '',
+            email: data.email || '',
+            celular_tutor: data.celular_tutor || '',
+            veterinario: data.veterinario || '',
+            endereco_vet: data.endereco_vet || '',
+            celular_vet_comercial: data.celular_vet_comercial || '',
+            celular_vet_pessoal: data.celular_vet_pessoal || '',
+            photoURL: data.photoURL || ''
+          };
+          setFormData(initialData);
+        } else {
+          console.error('No pet found with this ID');
         }
       } else {
         console.error('Pet ID is undefined');
