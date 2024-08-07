@@ -47,7 +47,7 @@ const Usuarios = () => {
         <thead>
           <tr>
             <th>Nome do Usuário</th>
-            <th>Email</th>
+            <th className={styles.emailColumn}>Email</th>
             <th>Tipo de Usuário</th>
             <th>Ações</th>
           </tr>
@@ -66,7 +66,7 @@ const Usuarios = () => {
                   user.name
                 )}
               </td>
-              <td>{user.email}</td>
+              <td className={styles.emailColumn}>{user.email}</td>
               <td>
                 {editUserId === user.id ? (
                   <select value={newUserRole} onChange={(e) => setNewUserRole(e.target.value)}>

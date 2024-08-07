@@ -4,7 +4,7 @@
   padding: 20px;
   background-color: var(--container-background);
   color: var(--text-color);
-  border-radius: 10px;
+  border-radius: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -38,4 +38,23 @@ button:hover {
 button:disabled {
   background-color: grey;
   cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .emailColumn {
+    display: none;
+  }
+
+  .usuariosTable th, .usuariosTable td {
+    font-size: 0.8rem;
+  }
+  
+  button {
+    padding: 5px;
+    font-size: 0.8rem;
+  }
+
+  .usuariosContainer {
+    max-width: 95vw;
+  }
 }

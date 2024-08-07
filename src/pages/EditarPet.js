@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { storage, firestore } from '../firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
@@ -8,7 +9,8 @@ import PhotoEditor from '../components/PhotoEditor';
 import Container from '../components/Container';
 import styles from '../styles/EditarPet.module.css';
 
-const EditarPet = ({ petId, currentUser }) => {
+const EditarPet = ({ currentUser }) => {
+  const { petId } = useParams();
   const [formData, setFormData] = useState({
     mascotinho: '',
     aniversario: '',
@@ -31,9 +33,13 @@ const EditarPet = ({ petId, currentUser }) => {
 
   useEffect(() => {
     const fetchPetData = async () => {
-      const petDoc = await getDoc(doc(firestore, 'pets', petId));
-      if (petDoc.exists) {
-        setFormData(petDoc.data());
+      if (petId) {
+        const petDoc = await getDoc(doc(firestore, 'pets', petId));
+        if (petDoc.exists) {
+          setFormData(petDoc.data());
+        }
+      } else {
+        console.error('Pet ID is undefined');
       }
     };
 

@@ -21,7 +21,6 @@ const Menu = ({ isAuthenticated, userRoles }) => {
       { to: "/cadastro", label: "Cadastro" },
       { to: "/contrato", label: "Contrato" },
       { to: "/creche", label: "Creche" },
-      { to: "/hotel", label: "Hotel" },
       { to: "/financas", label: "Financas" },
       { to: "/usuarios", label: "Usuários" },
     ],

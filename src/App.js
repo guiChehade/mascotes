@@ -13,7 +13,8 @@ import Login from './pages/Login';
 import Cadastro from './pages/Cadastro';
 import Contrato from './pages/Contrato';
 import Creche from './pages/Creche';
-import Hotel from './pages/Hotel';
+import EditarPet from './pages/EditarPet';
+import Controle from './pages/Controle';
 import Financas from './pages/Financas';
 import Usuarios from './pages/Usuarios';
 import styles from './styles/App.module.css';
@@ -60,7 +61,8 @@ const App = () => {
               {(userRole === 'isAdmin' || userRole === 'isOwner') && <Route path="/cadastro" element={<Cadastro currentUser={currentUser} />} />}
               {userRole === 'isOwner' && <Route path="/contrato" element={<Contrato currentUser={currentUser} />} />}
               {(userRole === 'isEmployee' || userRole === 'isAdmin' || userRole === 'isOwner') && <Route path="/creche" element={<Creche currentUser={currentUser} />} />}
-              {(userRole === 'isEmployee' || userRole === 'isAdmin' || userRole === 'isOwner') && <Route path="/hotel" element={<Hotel currentUser={currentUser} />} />}
+              {(userRole === 'isEmployee' || userRole === 'isAdmin' || userRole === 'isOwner') && <Route path="/controle/:id" element={<Controle currentUser={currentUser} />} />}
+              {(userRole === 'isAdmin' || userRole === 'isOwner') && <Route path="/editar/:id" element={<EditarPet currentUser={currentUser} />} />}
               {userRole === 'isOwner' && <Route path="/financas" element={<Financas currentUser={currentUser} />} />}
               {userRole === 'isOwner' && <Route path="/usuarios" element={<Usuarios currentUser={currentUser} />} />}
             </>

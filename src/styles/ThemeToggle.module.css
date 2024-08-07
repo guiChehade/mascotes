@@ -1,8 +1,11 @@
   .themeToggle {
       color: var(--text-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
       border: none;
       border-radius: 50%;
-      font-size: 6vh;
+      font-size: 5vh;
       width: 8vh;
       height: 8vh;
       cursor: pointer;
