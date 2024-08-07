@@ -42,3 +42,12 @@
 .crecheCard {
   margin-bottom: 20px;
 }
+
+@media (min-width: 768px) {
+  .searchContainer {
+    display: block;
+  }
+  .cameraButton {
+    display: none;
+  }
+}
