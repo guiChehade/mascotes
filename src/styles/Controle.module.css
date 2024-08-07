@@ -1,5 +1,5 @@
 .controleContainer {
-  width: 24em;
+  width: 20em;
   margin: 0 auto;
 }
 
@@ -47,10 +47,10 @@
   width: 100%;
   display: flex;
   justify-content: space-between;
-  gap: 10px;
 }
 
 .buttons {
-  width: 10rem;
-  padding: 1rem;
+  font-size: 1rem;
+  width: 8rem;
+  padding: 1rem 0.8rem;
 }
