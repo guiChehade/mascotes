@@ -1,27 +1,6 @@
 .controleContainer {
-  max-width: 800px;
+  width: 24em;
   margin: 0 auto;
-  padding: 20px;
-  background-color: var(--container-background);
-  color: var(--text-color);
-  border-radius: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-}
-
-.petInfo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.controleButtons {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
 }
 
 .card {
@@ -33,9 +12,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 18rem;
-  max-width: 100%;
-  margin: 10px;
 }
 
 .petName {
@@ -65,4 +41,16 @@
   margin-bottom: 1rem;
   border-radius: 1rem;
   padding: 0.1rem 0.5rem;
+}
+
+.controleButtons {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.buttons {
+  width: 10rem;
+  padding: 1rem;
 }

@@ -57,13 +57,17 @@ const Controle = ({ currentUser }) => {
           <div className={styles.label}>Tutor</div>
           <div className={styles.value}>{pet.tutor}</div>
           <div className={styles.label}>Contato</div>
-          <div className={styles.value}>{pet.celular_tutor}</div>
+          <div className={styles.value}>{pet.celularTutor}</div>
           <div className={styles.controleButtons}>
-            <Button onClick={handleEntrada}>Entrada</Button>
-            <Button onClick={handleSaida}>Saída</Button>
-            <Button onClick={handleComentario}>Comentário</Button>
-            <Button onClick={handleEditar}>Editar</Button>
+            <Button className={styles.buttons} onClick={handleEntrada}>Entrada</Button>
+            <Button className={styles.buttons} onClick={handleSaida}>Saída</Button>
           </div>
+          <div className={styles.controleButtons}>
+            <Button className={styles.buttons} onClick={handleComentario}>Comentário</Button>
+            <Button className={styles.buttons} onClick={handleEditar}>Editar</Button>
+          </div>
+            
+          
         </div>
       ) : (
         <p>Carregando...</p>
