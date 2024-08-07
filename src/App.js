@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, firestore } from "./firebase";
 import { doc, getDoc } from "firebase/firestore";
@@ -30,7 +35,7 @@ const App = () => {
       if (user) {
         setIsAuthenticated(true);
         const userDoc = await getDoc(doc(firestore, "users", user.uid));
-        if (userDoc.exists()) {
+        if (userDoc.exists) {
           const userData = userDoc.data();
           setUserRoles(userData);
           setCurrentUser(userData);

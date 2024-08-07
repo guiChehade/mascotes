@@ -84,7 +84,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
                 </div>
               </>
             ) : (
-              <Button onClick={() => setShowLoginModal(true)}>Login</Button>
+              <Button onClick={() => setShowLoginModal(true)}>Entrar</Button>
             )}
           </div>
       ) : (
