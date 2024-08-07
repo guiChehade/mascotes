@@ -1,24 +1,53 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth, firestore } from './firebase';
-import { doc, getDoc } from 'firebase/firestore';
-import Menu from './components/Menu';
-import Header from './components/Header';
-import Main from './components/Main';
-import ThemeToggle from './components/ThemeToggle';
-import Footer from './components/Footer';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Cadastro from './pages/Cadastro';
-import Contrato from './pages/Contrato';
-import Creche from './pages/Creche';
-import EditarPet from './pages/EditarPet';
-import Controle from './pages/Controle';
-import Financas from './pages/Financas';
-import Usuarios from './pages/Usuarios';
-import styles from './styles/App.module.css';
-import './styles/global.css';
+import React, { useState, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth, firestore } from "./firebase";
+import { doc, getDoc } from "firebase/firestore";
+import Menu from "./components/Menu";
+import Header from "./components/Header";
+import Main from "./components/Main";
+import ThemeToggle from "./components/ThemeToggle";
+import Footer from "./components/Footer";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Cadastro from "./pages/Cadastro";
+import Contrato from "./pages/Contrato";
+import Creche from "./pages/Creche";
+import EditarPet from "./pages/EditarPet";
+import Controle from "./components/Controle";
+import Financas from "./pages/Financas";
+import Usuarios from "./pages/Usuarios";
+import styles from "./styles/App.module.css";
+import "./styles/global.css";
+
+const PrivateRoute = ({ children }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  if (!isAuthenticated) {
+    return <Navigate to={`/login?redirect=${location.pathname}`} />;
+  }
+
+  return children;
+};
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -29,7 +58,7 @@ const App = () => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setIsAuthenticated(true);
-        const userDoc = await getDoc(doc(firestore, 'users', user.uid));
+        const userDoc = await getDoc(doc(firestore, "users", user.uid));
         if (userDoc.exists()) {
           const userData = userDoc.data();
           setUserRoles(userData);
@@ -45,7 +74,7 @@ const App = () => {
     return () => unsubscribe();
   }, []);
 
-  const userRole = userRoles?.role || 'none';
+  const userRole = userRoles?.role || "none";
 
   return (
     <Router>
@@ -54,17 +83,70 @@ const App = () => {
       <ThemeToggle />
       <Main className={styles.main}>
         <Routes>
-          <Route path="/" element={<Home isAuthenticated={isAuthenticated} userRoles={userRoles} />} />
-          <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} setUserRoles={setUserRoles} setCurrentUser={setCurrentUser} />} />
+          <Route
+            path="/"
+            element={
+              <Home isAuthenticated={isAuthenticated} userRoles={userRoles} />
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <Login
+                setIsAuthenticated={setIsAuthenticated}
+                setUserRoles={setUserRoles}
+                setCurrentUser={setCurrentUser}
+              />
+            }
+          />
           {isAuthenticated && (
             <>
-              {(userRole === 'isAdmin' || userRole === 'isOwner') && <Route path="/cadastro" element={<Cadastro currentUser={currentUser} />} />}
-              {userRole === 'isOwner' && <Route path="/contrato" element={<Contrato currentUser={currentUser} />} />}
-              {(userRole === 'isEmployee' || userRole === 'isAdmin' || userRole === 'isOwner') && <Route path="/creche" element={<Creche currentUser={currentUser} />} />}
-              {(userRole === 'isEmployee' || userRole === 'isAdmin' || userRole === 'isOwner') && <Route path="/controle/:petId" element={<Controle currentUser={currentUser} />} />}
-              {(userRole === 'isAdmin' || userRole === 'isOwner') && <Route path="/editar/:petId" element={<EditarPet currentUser={currentUser} />} />}
-              {userRole === 'isOwner' && <Route path="/financas" element={<Financas currentUser={currentUser} />} />}
-              {userRole === 'isOwner' && <Route path="/usuarios" element={<Usuarios currentUser={currentUser} />} />}
+              {(userRole === "isAdmin" || userRole === "isOwner") && (
+                <Route
+                  path="/cadastro"
+                  element={<Cadastro currentUser={currentUser} />}
+                />
+              )}
+              {userRole === "isOwner" && (
+                <Route
+                  path="/contrato"
+                  element={<Contrato currentUser={currentUser} />}
+                />
+              )}
+              {(userRole === "isEmployee" ||
+                userRole === "isAdmin" ||
+                userRole === "isOwner") && (
+                <Route
+                  path="/creche"
+                  element={<Creche currentUser={currentUser} />}
+                />
+              )}
+              {(userRole === "isEmployee" ||
+                userRole === "isAdmin" ||
+                userRole === "isOwner") && (
+                <Route
+                  path="/creche/:petId"
+                  element={<Controle currentUser={currentUser} />}
+                />
+              )}
+              {(userRole === "isAdmin" || userRole === "isOwner") && (
+                <Route
+                  path="/editar/:petId"
+                  element={<EditarPet currentUser={currentUser} />}
+                />
+              )}
+              {userRole === "isOwner" && (
+                <Route
+                  path="/financas"
+                  element={<Financas currentUser={currentUser} />}
+                />
+              )}
+              {userRole === "isOwner" && (
+                <Route
+                  path="/usuarios"
+                  element={<Usuarios currentUser={currentUser} />}
+                />
+              )}
             </>
           )}
         </Routes>

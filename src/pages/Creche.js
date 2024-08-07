@@ -12,8 +12,6 @@ import styles from '../styles/Creche.module.css';
 const Creche = () => {
   const [pets, setPets] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [showQrReader, setShowQrReader] = useState(false);
-  const [facingMode, setFacingMode] = useState('environment'); // 'environment' for back camera, 'user' for front camera
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,32 +24,7 @@ const Creche = () => {
   }, []);
 
   const handleSelect = (id) => {
-    navigate(`/controle/${id}`);
-  };
-
-  const handleQrCodeScan = async (data) => {
-    if (data) {
-      const id = data.text;
-      const petDoc = await getDoc(doc(firestore, 'pets', id));
-      if (petDoc.exists) {
-        navigate(`/controle/${id}`);
-        return;
-      }
-
-      const userDoc = await getDoc(doc(firestore, 'users', id));
-      if (userDoc.exists) {
-        navigate(`/ponto/${id}`);
-        return;
-      }
-
-      alert('ID não encontrado');
-      setShowQrReader(false);
-    }
-  };
-
-  const handleError = (err) => {
-    console.error(err);
-    setShowQrReader(false);
+    navigate(`/creche/${id}`);
   };
 
   const filteredPets = pets.filter(pet =>
@@ -68,27 +41,7 @@ const Creche = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Digite o nome do mascotinho"
         />
-        <Button className={styles.cameraButton} onClick={() => setShowQrReader(true)}>
-          📷
-        </Button>
       </Container>
-      {showQrReader && (
-        <Container className={styles.qrReaderContainer}>
-          <Button className={styles.closeButton} onClick={() => setShowQrReader(false)}>
-            ✖️
-          </Button>
-          <Button className={styles.switchButton} onClick={() => setFacingMode(prevMode => (prevMode === 'environment' ? 'user' : 'environment'))}>
-            🔄
-          </Button>
-          <QrReader
-            delay={300}
-            style={{ width: '100%' }}
-            onError={handleError}
-            onScan={handleQrCodeScan}
-            facingMode={facingMode}
-          />
-        </Container>
-      )}
       <Container className={styles.cardsContainer}>
         {filteredPets.map(pet => (
           <CrecheCard key={pet.id} pet={pet} onSelect={() => handleSelect(pet.id)} />
