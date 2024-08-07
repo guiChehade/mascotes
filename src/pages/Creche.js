@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 import { firestore } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 import Container from '../components/Container';
 import CrecheCard from '../components/CrecheCard';
 import Input from '../components/Input';
-import Button from '../components/Button';
-import QrReader from 'react-qr-scanner';
 import styles from '../styles/Creche.module.css';
 
 const Creche = () => {
@@ -24,7 +22,7 @@ const Creche = () => {
   }, []);
 
   const handleSelect = (id) => {
-    navigate(`/creche/${id}`);
+    navigate(`/controle/${id}`);
   };
 
   const filteredPets = pets.filter(pet =>

@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Navigate,
-  useLocation,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, firestore } from "./firebase";
 import { doc, getDoc } from "firebase/firestore";
@@ -20,34 +14,11 @@ import Cadastro from "./pages/Cadastro";
 import Contrato from "./pages/Contrato";
 import Creche from "./pages/Creche";
 import EditarPet from "./pages/EditarPet";
-import Controle from "./components/Controle";
+import Controle from "./pages/Controle";
 import Financas from "./pages/Financas";
 import Usuarios from "./pages/Usuarios";
 import styles from "./styles/App.module.css";
 import "./styles/global.css";
-
-const PrivateRoute = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const location = useLocation();
-
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        setIsAuthenticated(true);
-      } else {
-        setIsAuthenticated(false);
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  if (!isAuthenticated) {
-    return <Navigate to={`/login?redirect=${location.pathname}`} />;
-  }
-
-  return children;
-};
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -90,6 +61,10 @@ const App = () => {
             }
           />
           <Route
+            path="/controle/:petId"
+            element={<Controle currentUser={currentUser} />}
+          />
+          <Route
             path="/login"
             element={
               <Login
@@ -119,14 +94,6 @@ const App = () => {
                 <Route
                   path="/creche"
                   element={<Creche currentUser={currentUser} />}
-                />
-              )}
-              {(userRole === "isEmployee" ||
-                userRole === "isAdmin" ||
-                userRole === "isOwner") && (
-                <Route
-                  path="/creche/:petId"
-                  element={<Controle currentUser={currentUser} />}
                 />
               )}
               {(userRole === "isAdmin" || userRole === "isOwner") && (
