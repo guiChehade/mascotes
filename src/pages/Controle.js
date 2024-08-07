@@ -43,19 +43,15 @@ const Controle = ({ currentUser }) => {
     navigate(`/editar/${petId}`);
   };
 
-  if (!pet) {
-    return <div>Carregando...</div>;
-  }
-
   return (
     <Container className={styles.controleContainer}>
       <div className={styles.card}>
         <div className={styles.petName}>{pet.mascotinho}</div>
         <img
           className={styles.petPhoto}
-          src={pet.photoURL || logoLarge}
+          src={pet.foto || logoLarge}
           alt={pet.mascotinho}
-          style={pet.photoURL ? {} : { filter: 'grayscale(100%)' }}
+          style={pet.foto ? {} : { filter: 'grayscale(100%)' }}
         />
         <div className={styles.label}>Tutor</div>
         <div className={styles.value}>{pet.tutor}</div>

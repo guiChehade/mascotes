@@ -62,7 +62,9 @@ const App = () => {
           />
           <Route
             path="/controle/:petId"
-            element={<Controle currentUser={currentUser} />}
+            element={
+            <Controle currentUser={currentUser} isAuthenticated={isAuthenticated} userRoles={userRoles} />
+          }
           />
           <Route
             path="/login"
