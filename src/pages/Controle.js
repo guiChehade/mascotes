@@ -45,25 +45,29 @@ const Controle = ({ currentUser }) => {
 
   return (
     <Container className={styles.controleContainer}>
-      <div className={styles.card}>
-        <div className={styles.petName}>{pet.mascotinho}</div>
-        <img
-          className={styles.petPhoto}
-          src={pet.foto || logoLarge}
-          alt={pet.mascotinho}
-          style={pet.foto ? {} : { filter: 'grayscale(100%)' }}
-        />
-        <div className={styles.label}>Tutor</div>
-        <div className={styles.value}>{pet.tutor}</div>
-        <div className={styles.label}>Contato</div>
-        <div className={styles.value}>{pet.celularTutor}</div>
-        <div className={styles.controleButtons}>
-          <Button onClick={handleEntrada}>Entrada</Button>
-          <Button onClick={handleSaida}>Saída</Button>
-          <Button onClick={handleComentario}>Comentário</Button>
-          <Button onClick={handleEditar}>Editar</Button>
+      {pet ? (
+        <div className={styles.card}>
+          <div className={styles.petName}>{pet.mascotinho}</div>
+          <img
+            className={styles.petPhoto}
+            src={pet.foto || logoLarge}
+            alt={pet.mascotinho}
+            style={pet.foto ? {} : { filter: 'grayscale(100%)' }}
+          />
+          <div className={styles.label}>Tutor</div>
+          <div className={styles.value}>{pet.tutor}</div>
+          <div className={styles.label}>Contato</div>
+          <div className={styles.value}>{pet.celular_tutor}</div>
+          <div className={styles.controleButtons}>
+            <Button onClick={handleEntrada}>Entrada</Button>
+            <Button onClick={handleSaida}>Saída</Button>
+            <Button onClick={handleComentario}>Comentário</Button>
+            <Button onClick={handleEditar}>Editar</Button>
+          </div>
         </div>
-      </div>
+      ) : (
+        <p>Carregando...</p>
+      )}
     </Container>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import AvatarEditor from 'react-avatar-editor';
 import Button from './Button';
 import styles from '../styles/PhotoEditor.module.css';
