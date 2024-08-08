@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, firestore } from "./firebase";
 import { doc, getDoc } from "firebase/firestore";
@@ -17,8 +13,9 @@ import Login from "./pages/Login";
 import Cadastro from "./pages/Cadastro";
 import Contrato from "./pages/Contrato";
 import Creche from "./pages/Creche";
-import EditarPet from "./pages/EditarPet";
 import Controle from "./pages/Controle";
+import ControleRedirect from "./pages/ControleRedirect";
+import EditarPet from "./pages/EditarPet";
 import Financas from "./pages/Financas";
 import Usuarios from "./pages/Usuarios";
 import styles from "./styles/App.module.css";
@@ -34,7 +31,7 @@ const App = () => {
       if (user) {
         setIsAuthenticated(true);
         const userDoc = await getDoc(doc(firestore, "users", user.uid));
-        if (userDoc.exists) {
+        if (userDoc.exists()) {
           const userData = userDoc.data();
           setUserRoles(userData);
           setCurrentUser(userData);
@@ -58,65 +55,29 @@ const App = () => {
       <ThemeToggle />
       <Main className={styles.main}>
         <Routes>
-          <Route
-            path="/"
-            element={
-              <Home isAuthenticated={isAuthenticated} userRoles={userRoles} />
-            }
-          />
-          <Route
-            path="/controle/:petId"
-            element={<Controle currentUser={currentUser} setIsAuthenticated={setIsAuthenticated} setUserRoles={setUserRoles} setCurrentUser={setCurrentUser} />}
-          />
-          <Route
-            path="/login"
-            element={
-              <Login
-                setIsAuthenticated={setIsAuthenticated}
-                setUserRoles={setUserRoles}
-                setCurrentUser={setCurrentUser}
-              />
-            }
-          />
+          <Route path="/" element={<Home isAuthenticated={isAuthenticated} userRoles={userRoles} />} />
+          <Route path="/controle" element={<ControleRedirect />} />
+          <Route path="/controle/:petId" element={<Controle currentUser={currentUser} />} />
+          <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} setUserRoles={setUserRoles} setCurrentUser={setCurrentUser} />} />
           {isAuthenticated && (
             <>
               {(userRole === "isAdmin" || userRole === "isOwner") && (
-                <Route
-                  path="/cadastro"
-                  element={<Cadastro currentUser={currentUser} />}
-                />
+                <Route path="/cadastro" element={<Cadastro currentUser={currentUser} />} />
               )}
               {userRole === "isOwner" && (
-                <Route
-                  path="/contrato"
-                  element={<Contrato currentUser={currentUser} />}
-                />
+                <Route path="/contrato" element={<Contrato currentUser={currentUser} />} />
               )}
-              {(userRole === "isEmployee" ||
-                userRole === "isAdmin" ||
-                userRole === "isOwner") && (
-                <Route
-                  path="/creche"
-                  element={<Creche currentUser={currentUser} />}
-                />
+              {(userRole === "isEmployee" || userRole === "isAdmin" || userRole === "isOwner") && (
+                <Route path="/creche" element={<Creche currentUser={currentUser} />} />
               )}
               {(userRole === "isAdmin" || userRole === "isOwner") && (
-                <Route
-                  path="/editar/:petId"
-                  element={<EditarPet currentUser={currentUser} />}
-                />
+                <Route path="/editar/:petId" element={<EditarPet currentUser={currentUser} />} />
               )}
               {userRole === "isOwner" && (
-                <Route
-                  path="/financas"
-                  element={<Financas currentUser={currentUser} />}
-                />
+                <Route path="/financas" element={<Financas currentUser={currentUser} />} />
               )}
               {userRole === "isOwner" && (
-                <Route
-                  path="/usuarios"
-                  element={<Usuarios currentUser={currentUser} />}
-                />
+                <Route path="/usuarios" element={<Usuarios currentUser={currentUser} />} />
               )}
             </>
           )}

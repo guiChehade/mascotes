@@ -19,7 +19,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
       if (petId) {
         try {
           const petDoc = await getDoc(doc(firestore, "pets", petId));
-          if (petDoc.exists()) {
+          if (petDoc.exists) {
             setPet(petDoc.data());
           } else {
             console.error("Pet não encontrado");
@@ -52,7 +52,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
   const handleLoginSuccess = (user) => {
     setIsAuthenticated(true);
     getDoc(doc(firestore, "users", user.uid)).then((userDoc) => {
-      if (userDoc.exists()) {
+      if (userDoc.exists) {
         const userData = userDoc.data();
         setUserRoles(userData);
         setCurrentUser(userData);
