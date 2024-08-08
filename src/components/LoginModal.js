@@ -8,7 +8,7 @@ import styles from '../styles/LoginModal.module.css';
 const LoginModal = ({ onClose, onLoginSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [error] = useState('');
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -16,7 +16,7 @@ const LoginModal = ({ onClose, onLoginSuccess }) => {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       onLoginSuccess(userCredential.user);
     } catch (error) {
-      setError(error.message);
+      console.log(`Erro ao fazer login: ${error.message}`);
     }
   };
 
@@ -43,7 +43,7 @@ const LoginModal = ({ onClose, onLoginSuccess }) => {
             placeholder="Digite sua senha"
             required
           />
-          <Button type="submit">Login</Button>
+          <Button type="submit">Entrar</Button>
         </form>
       </div>
     </div>
