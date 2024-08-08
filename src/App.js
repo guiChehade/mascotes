@@ -3,7 +3,6 @@ import {
   BrowserRouter as Router,
   Route,
   Routes,
-  Navigate,
 } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, firestore } from "./firebase";
@@ -67,9 +66,7 @@ const App = () => {
           />
           <Route
             path="/controle/:petId"
-            element={
-            <Controle currentUser={currentUser} isAuthenticated={isAuthenticated} userRoles={userRoles} />
-          }
+            element={<Controle currentUser={currentUser} setIsAuthenticated={setIsAuthenticated} setUserRoles={setUserRoles} setCurrentUser={setCurrentUser} />}
           />
           <Route
             path="/login"

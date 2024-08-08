@@ -72,7 +72,8 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
           <div className={styles.value}>{pet.tutor}</div>
           <div className={styles.label}>Contato</div>
           <div className={styles.value}>{pet.celularTutor}</div>
-            {currentUser && (currentUser.role === 'isEmployee' || currentUser.role === 'isAdmin' || currentUser.role === 'isOwner') ? (
+          {currentUser ? (
+            (currentUser.role === 'isEmployee' || currentUser.role === 'isAdmin' || currentUser.role === 'isOwner') ? (
               <>
                 <div className={styles.controleButtons}>
                   <Button className={styles.buttons} onClick={handleEntrada}>Entrada</Button>
@@ -85,8 +86,11 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
               </>
             ) : (
               <Button onClick={() => setShowLoginModal(true)}>Entrar</Button>
-            )}
-          </div>
+            )
+          ) : (
+            <Button onClick={() => setShowLoginModal(true)}>Entrar</Button>
+          )}
+        </div>
       ) : (
         <p>Carregando...</p>
       )}

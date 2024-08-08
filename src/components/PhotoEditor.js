@@ -10,14 +10,17 @@ const PhotoEditor = ({ image, setImage, setEditorOpen }) => {
   const handleSave = () => {
     if (editor) {
       const canvas = editor.getImageScaledToCanvas();
-      const imgData = canvas.toDataURL('image/jpeg');
-      fetch(imgData)
-        .then(res => res.blob())
-        .then(blob => {
-          const file = new File([blob], "photo.jpg", { type: 'image/jpeg' });
-          setImage(file);
-          setEditorOpen(false);
-        });
+      const resizedCanvas = document.createElement('canvas');
+      resizedCanvas.width = 200;
+      resizedCanvas.height = 200;
+      const resizedContext = resizedCanvas.getContext('2d');
+      resizedContext.drawImage(canvas, 0, 0, 200, 200);
+
+      resizedCanvas.toBlob(blob => {
+        const file = new File([blob], "photo.jpg", { type: 'image/jpeg' });
+        setImage(file);
+        setEditorOpen(false);
+      }, 'image/jpeg');
     }
   };
 
