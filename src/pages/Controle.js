@@ -58,9 +58,10 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
         setUserRoles(userData);
         setCurrentUser(userData);
       }
-      setShowLoginModal(false); // Fechar o modal após o login bem-sucedido
+      setShowLoginModal(false);
     } catch (err) {
       console.error('Erro ao buscar dados do usuário:', err);
+      setShowLoginModal(false)
     }
   };
 
