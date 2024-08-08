@@ -17,11 +17,15 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
   useEffect(() => {
     const fetchPetData = async () => {
       if (petId) {
-        const petDoc = await getDoc(doc(firestore, "pets", petId));
-        if (petDoc.exists) {
-          setPet(petDoc.data());
-        } else {
-          console.error("Pet não encontrado");
+        try {
+          const petDoc = await getDoc(doc(firestore, "pets", petId));
+          if (petDoc.exists()) {
+            setPet(petDoc.data());
+          } else {
+            console.error("Pet não encontrado");
+          }
+        } catch (error) {
+          console.error("Erro ao buscar dados do pet:", error);
         }
       }
     };
@@ -48,7 +52,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
   const handleLoginSuccess = (user) => {
     setIsAuthenticated(true);
     getDoc(doc(firestore, "users", user.uid)).then((userDoc) => {
-      if (userDoc.exists) {
+      if (userDoc.exists()) {
         const userData = userDoc.data();
         setUserRoles(userData);
         setCurrentUser(userData);
@@ -72,8 +76,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
           <div className={styles.value}>{pet.tutor}</div>
           <div className={styles.label}>Contato</div>
           <div className={styles.value}>{pet.celularTutor}</div>
-          {currentUser ? (
-            (currentUser.role === 'isEmployee' || currentUser.role === 'isAdmin' || currentUser.role === 'isOwner') ? (
+            {currentUser && (currentUser.role === 'isEmployee' || currentUser.role === 'isAdmin' || currentUser.role === 'isOwner') ? (
               <>
                 <div className={styles.controleButtons}>
                   <Button className={styles.buttons} onClick={handleEntrada}>Entrada</Button>
@@ -86,11 +89,8 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
               </>
             ) : (
               <Button onClick={() => setShowLoginModal(true)}>Entrar</Button>
-            )
-          ) : (
-            <Button onClick={() => setShowLoginModal(true)}>Entrar</Button>
-          )}
-        </div>
+            )}
+          </div>
       ) : (
         <p>Carregando...</p>
       )}
