@@ -8,15 +8,16 @@ import styles from '../styles/LoginModal.module.css';
 const LoginModal = ({ onClose, onLoginSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error] = useState('');
+  const [error, setError] = useState('');
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       onLoginSuccess(userCredential.user);
-    } catch (error) {
-      console.log(`Erro ao fazer login: ${error.message}`);
+    } catch (err) {
+      console.error('Erro ao fazer login:', err);
+      setError('Erro ao fazer login');
     }
   };
 

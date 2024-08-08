@@ -49,16 +49,19 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     navigate(`/editar/${petId}`);
   };
 
-  const handleLoginSuccess = (user) => {
-    setIsAuthenticated(true);
-    getDoc(doc(firestore, "users", user.uid)).then((userDoc) => {
+  const handleLoginSuccess = async (user) => {
+    try {
+      setIsAuthenticated(true);
+      const userDoc = await getDoc(doc(firestore, "users", user.uid));
       if (userDoc.exists) {
         const userData = userDoc.data();
         setUserRoles(userData);
         setCurrentUser(userData);
       }
-    });
-    setShowLoginModal(false);
+      setShowLoginModal(false); // Fechar o modal após o login bem-sucedido
+    } catch (err) {
+      console.error('Erro ao buscar dados do usuário:', err);
+    }
   };
 
   return (
@@ -76,21 +79,21 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
           <div className={styles.value}>{pet.tutor}</div>
           <div className={styles.label}>Contato</div>
           <div className={styles.value}>{pet.celularTutor}</div>
-            {currentUser && (currentUser.role === 'isEmployee' || currentUser.role === 'isAdmin' || currentUser.role === 'isOwner') ? (
-              <>
-                <div className={styles.controleButtons}>
-                  <Button className={styles.buttons} onClick={handleEntrada}>Entrada</Button>
-                  <Button className={styles.buttons} onClick={handleSaida}>Saída</Button>
-                </div>
-                <div className={styles.controleButtons}>
-                  <Button className={styles.buttons} onClick={handleComentario}>Comentário</Button>
-                  <Button className={styles.buttons} onClick={handleEditar}>Editar</Button>
-                </div>
-              </>
-            ) : (
-              <Button onClick={() => setShowLoginModal(true)}>Entrar</Button>
-            )}
-          </div>
+          {currentUser && (currentUser.role === 'isEmployee' || currentUser.role === 'isAdmin' || currentUser.role === 'isOwner') ? (
+            <>
+              <div className={styles.controleButtons}>
+                <Button className={styles.buttons} onClick={handleEntrada}>Entrada</Button>
+                <Button className={styles.buttons} onClick={handleSaida}>Saída</Button>
+              </div>
+              <div className={styles.controleButtons}>
+                <Button className={styles.buttons} onClick={handleComentario}>Comentário</Button>
+                <Button className={styles.buttons} onClick={handleEditar}>Editar</Button>
+              </div>
+            </>
+          ) : (
+            <Button onClick={() => setShowLoginModal(true)}>Login</Button>
+          )}
+        </div>
       ) : (
         <p>Carregando...</p>
       )}

@@ -55,8 +55,7 @@ const Login = ({ setIsAuthenticated, setUserRoles, setCurrentUser }) => {
           placeholder="Digite sua senha"
           required
         />
-        <Button type="submit">Entrar
-        </Button>
+        <Button type="submit">Entrar</Button>
       </form>
     </Container>
   );
