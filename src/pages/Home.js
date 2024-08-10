@@ -29,7 +29,15 @@ const Home = () => {
       <section className={styles.homeAbout}>
         <div className={styles.aboutContent}>
           <h2>Sobre nós</h2>
-          <p>O Parque dos Mascotes é um espaço pensado para oferecer o melhor cuidado para o seu pet. Aqui, ele encontra um ambiente seguro e confortável, onde pode brincar, se divertir e fazer novos amigos. Contamos com uma equipe de profissionais qualificados e apaixonados por animais, prontos para atender todas as necessidades do seu pet. Venha nos conhecer e deixe o seu pet em boas mãos!</p>
+          <p>No coração de São Paulo, desde 1º de setembro de 2020, o Parque dos Mascotes vem transformando a vida de cães e seus tutores. Acreditamos que o bem-estar animal é fundamental, e por isso, utilizamos nossa creche e hotel como ferramentas para promover ajustes comportamentais em cães domiciliares.
+          <br /><br />
+          Através de uma combinação única de técnicas de adestramento e conhecimento em etologia aplicadas em matilha, proporcionamos um ambiente seguro e enriquecedor para que cada cão possa se desenvolver e alcançar seu pleno potencial. Entendemos a importância de manter latentes os instintos dos cães, sem riscos, dentro do universo doméstico, promovendo um equilíbrio entre suas necessidades naturais e a vida em família.
+          <br /><br />
+          Nosso sonho de atuar no segmento de bem-estar animal nos impulsiona a cada dia. Personalizamos ao máximo nossos serviços e atendimentos, trabalhando a conscientização e levando conhecimento aos tutores sobre a importância de manter o equilíbrio e a qualidade de vida de seus amados "Mascotinhos", mesmo no ambiente doméstico.
+          <br /><br />
+          Convidamos você a fazer parte da nossa jornada e descobrir como podemos ajudar seu cão a viver uma vida mais feliz e equilibrada.
+          <br /><br />
+          Parque dos Mascotes: Onde o amor pelos animais se transforma em cuidado e dedicação.!</p>
           <Link to="/sobre" className={styles.button}>Saiba mais</Link>
         </div>
       </section>

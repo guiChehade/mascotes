@@ -59,6 +59,7 @@ section {
 
 .homeAbout {
   padding: 60px 20px;
+  height: fit-content;
   text-align: center;
   background-color: var(--container-background);
   border-radius: 20px;
