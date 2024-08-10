@@ -5,6 +5,7 @@ import InputMask from 'react-input-mask';
 import styles from '../styles/Contrato.module.css';
 
 const Creche = () => {
+  console.log("Controle component loaded");
   const [ano, setAno] = useState('2023');
   const [mes, setMes] = useState('01');
   const [pets, setPets] = useState([]);

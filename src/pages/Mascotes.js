@@ -22,7 +22,7 @@ const Mascotes = () => {
   }, []);
 
   const handleSelect = (id) => {
-    navigate(`/controle/${id}`);
+    navigate(`/${id}`);
   };
 
   const filteredPets = pets.filter(pet =>

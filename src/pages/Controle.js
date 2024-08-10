@@ -9,6 +9,7 @@ import logoLarge from '../assets/logo/logo-large.png';
 import styles from '../styles/Controle.module.css';
 
 const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUser }) => {
+  console.log("Controle component loaded");
   const { petId } = useParams();
   const navigate = useNavigate();
   const [pet, setPet] = useState(null);
