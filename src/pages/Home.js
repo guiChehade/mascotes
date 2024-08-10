@@ -1,52 +1,124 @@
 import React from 'react';
-// import { Link } from 'react-router-dom';
-// import Button from '../components/Button';
+import { Link } from 'react-router-dom';
 import styles from '../styles/Home.module.css';
 
-const Home = ({ isAuthenticated, userRoles }) => {
-  const userRole = userRoles?.role || 'none';
-
-//   const rolePages = {
-//     isOwner: [
-//       { to: "/", label: "Início" },
-//       { to: "/cadastro", label: "Cadastro" },
-//       { to: "/contrato", label: "Contrato" },
-//       { to: "/creche", label: "Creche" },
-//       { to: "/hotel", label: "Hotel" },
-//       { to: "/financas", label: "Financas" },
-//       { to: "/usuarios", label: "Usuários" },
-//     ],
-//     isAdmin: [
-//       { to: "/", label: "Início" },
-//       { to: "/creche", label: "Creche" },
-//       { to: "/cadastro", label: "Cadastro" },
-//     ],
-//     isEmployee: [
-//       { to: "/", label: "Início" },
-//       { to: "/creche", label: "Creche" },
-//     ],
-//     isTutor: [
-//       { to: "/", label: "Início" },
-//     ],
-//     none: [
-//       { to: "/", label: "Início" }
-//     ],
-//   };
-
+const Home = () => {
   return (
     <div className={styles.home}>
-      <h1>Bem-vindo ao ERP Mascotinhos</h1>
-      {/* {isAuthenticated && userRoles && (
-        <div className={styles.buttons}>
-          {rolePages[userRole]?.map((page) => (
-            <div className={styles.buttonWrapper} key={page.to}>
-              <Link to={page.to}>
-                <Button>{page.label}</Button>
-              </Link>
-            </div>
-          ))}
+      <section className={styles.homeBanner}>
+        <div className={styles.bannerContent}>
+          <h1>Bem-vindo ao Parque dos Mascotes</h1>
+          <p>Onde o seu pet encontra cuidado, diversão e carinho!</p>
+          <Link to="/agendar-visita" className={styles.button}>Agende uma visita</Link>
         </div>
-      )} */}
+      </section>
+      <section className={styles.homeAbout}>
+        <div className={styles.aboutContent}>
+          <h2>Sobre nós</h2>
+          <p>O Parque dos Mascotes é um espaço pensado para oferecer o melhor cuidado para o seu pet. Aqui, ele encontra um ambiente seguro e confortável, onde pode brincar, se divertir e fazer novos amigos. Contamos com uma equipe de profissionais qualificados e apaixonados por animais, prontos para atender todas as necessidades do seu pet. Venha nos conhecer e deixe o seu pet em boas mãos!</p>
+          <Link to="/sobre" className={styles.button}>Saiba mais</Link>
+        </div>
+      </section>
+      <section className={styles.homeFeatures}>
+        <h2>Por que escolher o Parque dos Mascotes?</h2>
+        <div className={styles.featuresList}>
+          <div className={styles.featureItem}>
+            <i className={`fas fa-shield ${styles.featureIcon}`}></i>
+            <h3>Ambiente Seguro</h3>
+            <p>Contamos com instalações seguras e monitoradas para garantir o bem-estar do seu pet.</p>
+          </div>
+          <div className={styles.featureItem}>
+            <i className={`fas fa-bone ${styles.featureIcon}`}></i>
+            <h3>Monitoramento em Tempo Real</h3>
+            <p>Fotos e vídeos disponíveis para os tutores.</p>
+          </div>
+          <div className={styles.featureItem}>
+            <i className={`fas fa-qrcode ${styles.featureIcon}`}></i>
+            <h3>QR Code Personalizado</h3>
+            <p>Cada pet com um QR Code exclusivo para segurança e informação.</p>
+          </div>
+          <div className={styles.featureItem}>
+            <i className={`fas fa-heart ${styles.featureIcon}`}></i>
+            <h3>Atendimento Personalizado</h3>
+            <p>Tratamos cada pet de forma única e especial.</p>
+          </div>
+        </div>
+      </section>
+      <section className={styles.homeContent}>
+        <h2>Conheça nossos serviços</h2>
+        <div className={styles.services}>
+          <div className={styles.service}>
+            <img src="../assets/home/servicos/creche.png" alt="Creche" />
+            <h3>Creche</h3>
+            <p>Seu pet passa o dia brincando e se divertindo com outros pets.</p>
+          </div>
+          <div className={styles.service}>
+            <img src="../assets/home/servicos/hotel.png" alt="Hotel" />
+            <h3>Hotel</h3>
+            <p>Seu pet se hospeda em um ambiente seguro e confortável.</p>
+          </div>
+          <div className={styles.service}>
+            <img src="../assets/home/servicos/banho.png" alt="Banho" />
+            <h3>Banho</h3>
+            <p>Seu pet fica limpinho e cheiroso com o serviço do nosso parceiro de banho e tosa.</p>
+          </div>
+          <div className={styles.service}>
+            <img src="../assets/home/servicos/consulta.png" alt="Consulta" />
+            <h3>Consulta Veterinária</h3>
+            <p>Seu pet recebe atendimento veterinário de qualidade com o nosso parceiro veterinário.</p>
+          </div>
+          <div className={styles.service}>
+            <img src="../assets/home/servicos/adestramento.png" alt="Adestramento" />
+            <h3>Adestramento</h3>
+            <p>Seu pet aprende com adestradores experientes com uma metodologia que realmente funciona.</p>
+          </div>
+          <div className={styles.service}>
+            <img src="../assets/home/servicos/passeio.png" alt="Passeio" />
+            <h3>Passeio</h3>
+            <p>Seu pet se diverte e faz exercícios com os nossos passeadores de cães.</p>
+          </div>
+        </div>
+      </section>
+      <section className={styles.homeTestimonials}>
+        <h2>Depoimentos</h2>
+        <div className={styles.testimonialsList}>
+          <div className={styles.testimonialItem}>
+            <img src="../assets/home/depoimentos/depoimento1.png" alt="Depoimento 1" />
+            <p>“O Parque dos Mascotes é o melhor lugar para deixar o meu pet. Sempre que preciso viajar, sei que ele está em boas mãos e se divertindo muito.”</p>
+            <h4>João Pereira</h4>
+          </div>
+          <div className={styles.testimonialItem}>
+            <img src="../assets/home/depoimentos/depoimento2.png" alt="Depoimento 2" />
+            <p>“A equipe do Parque dos Mascotes é incrível! Eles cuidam do meu pet com muito carinho e atenção, sempre prontos para atender às necessidades dele.”</p>
+            <h4>Ana Carla Silva</h4>
+          </div>
+          <div className={styles.testimonialItem}>
+            <img src="../assets/home/depoimentos/depoimento3.png" alt="Depoimento 3" />
+            <p>"Confio totalmente na equipe. Eles realmente amam o que fazem!"</p>
+            <h4>João e Isabela</h4>
+          </div>
+          <div className={styles.testimonialItem}>
+            <img src="../assets/home/depoimentos/depoimento4.png" alt="Depoimento 4" />
+            <p>“Meu pet adora o Parque dos Mascotes! Ele sempre volta para casa feliz e cansado de tanto brincar. Recomendo a todos!”</p>
+            <h4>Carlos Souza</h4>
+          </div>
+        </div>
+      </section>
+      <section className={styles.homeGallery}>
+        <h2>Galeria de Fotos</h2>
+        <div className={styles.galleryGrid}>
+          <img src="../assets/home/galeria/foto1.jpg" alt="Pet no parque" />
+          <img src="../assets/home/galeria/foto2.jpg" alt="Pet relaxando" />
+          <img src="../assets/home/galeria/foto3.jpg" alt="Pet interagindo" />
+        </div>
+      </section>
+      <section className={styles.homeVisit}>
+        <div className={styles.visitContent}>
+          <h2>Quer conhecer o Parque dos Mascotes?</h2>
+          <p>Conheça o Parque dos Mascotes e descubra tudo o que podemos oferecer para o seu pet. Agende uma visita.</p>
+          <Link to="/agendar-visita" className={styles.button}>Agende uma visita</Link>
+        </div>
+      </section>
     </div>
   );
 };

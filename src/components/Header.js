@@ -1,6 +1,6 @@
 import React from 'react';
-import logoLarge from '../assets/logo-large.png';
-import logoSmall from '../assets/logo-small.png';
+import logoLarge from '../assets/logo/logo-large.png';
+import logoSmall from '../assets/logo/logo-small.png';
 import styles from '../styles/Header.module.css';
 
 const Header = () => (

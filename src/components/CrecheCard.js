@@ -1,5 +1,5 @@
 import React from 'react';
-import logoLarge from '../assets/logo-large.png';
+import logoLarge from '../assets/logo/logo-large.png';
 import styles from '../styles/CrecheCard.module.css';
 
 const CrecheCard = ({ pet, onSelect }) => {

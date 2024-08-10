@@ -5,7 +5,7 @@ import { doc, getDoc } from "firebase/firestore";
 import Container from "../components/Container";
 import Button from "../components/Button";
 import LoginModal from "../components/LoginModal";
-import logoLarge from '../assets/logo-large.png';
+import logoLarge from '../assets/logo/logo-large.png';
 import styles from '../styles/Controle.module.css';
 
 const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUser }) => {
@@ -61,7 +61,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
       setShowLoginModal(false);
     } catch (err) {
       console.error('Erro ao buscar dados do usuário:', err);
-      setShowLoginModal(false)
+      setShowLoginModal(false);
     }
   };
 
@@ -80,21 +80,21 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
           <div className={styles.value}>{pet.tutor}</div>
           <div className={styles.label}>Contato</div>
           <div className={styles.value}>{pet.celularTutor}</div>
-          {currentUser && (currentUser.role === 'isEmployee' || currentUser.role === 'isAdmin' || currentUser.role === 'isOwner') ? (
-            <>
-              <div className={styles.controleButtons}>
-                <Button className={styles.buttons} onClick={handleEntrada}>Entrada</Button>
-                <Button className={styles.buttons} onClick={handleSaida}>Saída</Button>
-              </div>
-              <div className={styles.controleButtons}>
-                <Button className={styles.buttons} onClick={handleComentario}>Comentário</Button>
-                <Button className={styles.buttons} onClick={handleEditar}>Editar</Button>
-              </div>
-            </>
-          ) : (
-            <Button onClick={() => setShowLoginModal(true)}>Login</Button>
-          )}
-        </div>
+            {currentUser && (currentUser.role === 'isEmployee' || currentUser.role === 'isAdmin' || currentUser.role === 'isOwner') ? (
+              <>
+                <div className={styles.controleButtons}>
+                  <Button className={styles.buttons} onClick={handleEntrada}>Entrada</Button>
+                  <Button className={styles.buttons} onClick={handleSaida}>Saída</Button>
+                </div>
+                <div className={styles.controleButtons}>
+                  <Button className={styles.buttons} onClick={handleComentario}>Comentário</Button>
+                  <Button className={styles.buttons} onClick={handleEditar}>Editar</Button>
+                </div>
+              </>
+            ) : (
+              <Button onClick={() => setShowLoginModal(true)}>Entrar</Button>
+            )}
+          </div>
       ) : (
         <p>Carregando...</p>
       )}
