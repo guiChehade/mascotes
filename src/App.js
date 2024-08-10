@@ -11,7 +11,6 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Cadastro from "./pages/Cadastro";
-import Contrato from "./pages/Contrato";
 import Mascotes from "./pages/Mascotes";
 import Controle from "./pages/Controle";
 import ControleRedirect from "./pages/ControleRedirect";
@@ -58,7 +57,6 @@ const App = () => {
           <Route path="/" element={<Home isAuthenticated={isAuthenticated} userRoles={userRoles} />} />
           <Route path="/controle" element={<ControleRedirect />} />
           <Route path="/:petId" element={<Controle currentUser={currentUser} />} />
-          <Route path="/controle/contrato" element={<Contrato />} />
           <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} setUserRoles={setUserRoles} setCurrentUser={setCurrentUser} />} />
           {isAuthenticated && (
             <>

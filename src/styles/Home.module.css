@@ -12,6 +12,7 @@ section {
   padding: 4vh;
   height: 60vh;
   width: 80vw;
+  max-width: 1200px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -21,7 +22,7 @@ section {
 }
 
 .homeBanner {
-  background: url('../assets/home/banner/banner.png') no-repeat bottom center/cover;
+  background: url('../assets/home/banner/banner2.jpg') no-repeat center center;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -258,7 +259,7 @@ section {
 .testimonialItem img {
   border: 0.3rem solid #DFA430;
   box-shadow: 0 0 8px #DFA430;
-  width: 30%;
+  width: 150px;  
   border-radius: 50%;
   margin: 1rem;
 }

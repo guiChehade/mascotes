@@ -1,19 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../styles/Home.module.css';
-import depoimento1 from '../assets/home/depoimentos/depoimento1.png';
-import depoimento2 from '../assets/home/depoimentos/depoimento2.png';
-import depoimento3 from '../assets/home/depoimentos/depoimento3.png';
-import depoimento4 from '../assets/home/depoimentos/depoimento4.png';
+import depoimento1 from '../assets/home/depoimentos/depoimento1.jpg';
+import depoimento2 from '../assets/home/depoimentos/depoimento2.jpg';
+import depoimento3 from '../assets/home/depoimentos/depoimento3.jpg';
+import depoimento4 from '../assets/home/depoimentos/depoimento4.jpg';
 import creche from '../assets/home/servicos/creche.png';
 import hotel from '../assets/home/servicos/hotel.png';
 import banho from '../assets/home/servicos/banho.png';
 import consulta from '../assets/home/servicos/consulta.png';
 import adestramento from '../assets/home/servicos/adestramento.png';
 import passeio from '../assets/home/servicos/passeio.png';
-import foto1 from '../assets/home/galeria/foto1.png';
-import foto2 from '../assets/home/galeria/foto2.png';
-import foto3 from '../assets/home/galeria/foto3.png';
+import foto1 from '../assets/home/galeria/foto1.jpg';
+import foto2 from '../assets/home/galeria/foto2.jpg';
+import foto3 from '../assets/home/galeria/foto3.jpg';
 
 
 const Home = () => {
@@ -48,8 +48,8 @@ const Home = () => {
           </div>
           <div className={styles.featureItem}>
             <i className={`fas fa-qrcode ${styles.featureIcon}`}></i>
-            <h3>QR Code Personalizado</h3>
-            <p>Cada pet com um QR Code exclusivo para segurança e informação.</p>
+            <h3>QR Code</h3>
+            <p>Cada pet conta com um QR Code exclusivo para segurança e informação.</p>
           </div>
           <div className={styles.featureItem}>
             <i className={`fas fa-heart ${styles.featureIcon}`}></i>
@@ -114,7 +114,7 @@ const Home = () => {
           <div className={styles.testimonialItem}>
             <img src={depoimento4} alt="Depoimento 4" />
             <p>“Meu pet adora o Parque dos Mascotes! Ele sempre volta para casa feliz e cansado de tanto brincar. Recomendo a todos!”</p>
-            <h4>Henrique Souza</h4>
+            <h4>Alice Correia</h4>
           </div>
         </div>
       </section>
