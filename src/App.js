@@ -11,8 +11,7 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Cadastro from "./pages/Cadastro";
-import Contrato from "./pages/Contrato";
-import Creche from "./pages/Creche";
+import Mascotes from "./pages/Mascotes";
 import Controle from "./pages/Controle";
 import ControleRedirect from "./pages/ControleRedirect";
 import EditarPet from "./pages/EditarPet";
@@ -64,11 +63,8 @@ const App = () => {
               {(userRole === "isAdmin" || userRole === "isOwner") && (
                 <Route path="/cadastro" element={<Cadastro currentUser={currentUser} />} />
               )}
-              {userRole === "isOwner" && (
-                <Route path="/contrato" element={<Contrato currentUser={currentUser} />} />
-              )}
               {(userRole === "isEmployee" || userRole === "isAdmin" || userRole === "isOwner") && (
-                <Route path="/creche" element={<Creche currentUser={currentUser} />} />
+                <Route path="/mascotes" element={<Mascotes currentUser={currentUser} />} />
               )}
               {(userRole === "isAdmin" || userRole === "isOwner") && (
                 <Route path="/editar/:petId" element={<EditarPet currentUser={currentUser} />} />

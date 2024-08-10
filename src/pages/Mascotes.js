@@ -3,11 +3,11 @@ import { collection, getDocs } from 'firebase/firestore';
 import { firestore } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 import Container from '../components/Container';
-import CrecheCard from '../components/CrecheCard';
+import MascoteCard from '../components/MascoteCard';
 import Input from '../components/Input';
-import styles from '../styles/Creche.module.css';
+import styles from '../styles/Mascotes.module.css';
 
-const Creche = () => {
+const Mascotes = () => {
   const [pets, setPets] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ const Creche = () => {
   );
 
   return (
-    <Container className={styles.crecheContainer}>
+    <Container className={styles.mascotesContainer}>
       <Container className={styles.searchContainer}>
         <Input
           label="Buscar Mascotinho"
@@ -42,11 +42,11 @@ const Creche = () => {
       </Container>
       <Container className={styles.cardsContainer}>
         {filteredPets.map(pet => (
-          <CrecheCard key={pet.id} pet={pet} onSelect={() => handleSelect(pet.id)} />
+          <MascoteCard key={pet.id} pet={pet} onSelect={() => handleSelect(pet.id)} />
         ))}
       </Container>
     </Container>
   );
 };
 
-export default Creche;
+export default Mascotes;

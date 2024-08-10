@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../styles/Menu.module.css';
 
-const Menu = ({ isAuthenticated, userRoles }) => {
+const Menu = ({ userRoles }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleMenuClick = () => {
@@ -19,19 +19,18 @@ const Menu = ({ isAuthenticated, userRoles }) => {
     isOwner: [
       { to: "/", label: "Início" },
       { to: "/cadastro", label: "Cadastro" },
-      { to: "/contrato", label: "Contrato" },
-      { to: "/creche", label: "Creche" },
-      { to: "/financas", label: "Financas" },
+      { to: "/mascotes", label: "Mascotes" },
+      { to: "/financas", label: "Finanças" },
       { to: "/usuarios", label: "Usuários" },
     ],
     isAdmin: [
       { to: "/", label: "Início" },
-      { to: "/creche", label: "Creche" },
+      { to: "/mascotes", label: "Mascotes" },
       { to: "/cadastro", label: "Cadastro" },
     ],
     isEmployee: [
       { to: "/", label: "Início" },
-      { to: "/creche", label: "Creche" },
+      { to: "/mascotes", label: "Mascotes" },
     ],
     isTutor: [
       { to: "/", label: "Início" },

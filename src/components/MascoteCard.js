@@ -1,8 +1,8 @@
 import React from 'react';
 import logoLarge from '../assets/logo/logo-large.png';
-import styles from '../styles/CrecheCard.module.css';
+import styles from '../styles/MascoteCard.module.css';
 
-const CrecheCard = ({ pet, onSelect }) => {
+const MascoteCard = ({ pet, onSelect }) => {
   return (
     <div className={styles.card}>
       <div className={styles.petName}>{pet.mascotinho}</div>
@@ -21,4 +21,4 @@ const CrecheCard = ({ pet, onSelect }) => {
   );
 };
 
-export default CrecheCard;
+export default MascoteCard;

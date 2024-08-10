@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { collection, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { firestore } from '../firebase';
 import Register from '../components/Register';
+import Button from '../components/Button';
 import styles from '../styles/Usuarios.module.css';
 
 const Usuarios = () => {
@@ -86,16 +87,16 @@ const Usuarios = () => {
               <td>
                 {user.role === 'isOwner' ? (
                   <>
-                    <button className={styles.disabledButton} disabled title="Não é possível editar Proprietários, caso seja necessário contate o Guilherme Chehade">Editar</button>
-                    <button className={styles.disabledButton} disabled title="Não é possível excluir Proprietários, caso seja necessário contate o Guilherme Chehade">Excluir</button>
+                    <Button className={styles.disabledButton} disabled title="Não é possível editar Proprietários, caso seja necessário contate o Guilherme Chehade">Editar</Button>
+                    <Button className={styles.disabledButton} disabled title="Não é possível excluir Proprietários, caso seja necessário contate o Guilherme Chehade">Excluir</Button>
                   </>
                 ) : (
                   editUserId === user.id ? (
-                    <button onClick={() => handleUpdateRole(user.id)}>Salvar</button>
+                    <Button onClick={() => handleUpdateRole(user.id)}>Salvar</Button>
                   ) : (
                     <>
-                      <button onClick={() => handleEdit(user)}>Editar</button>
-                      <button onClick={() => handleDelete(user.id)}>Excluir</button>
+                      <Button onClick={() => handleEdit(user)}>Editar</Button>
+                      <Button onClick={() => handleDelete(user.id)}>Excluir</Button>
                     </>
                   )
                 )}
