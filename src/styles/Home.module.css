@@ -9,7 +9,7 @@
 
 section {
   margin: 2vh 0 4vh 0;
-  padding: 4vh ;
+  padding: 4vh;
   height: 60vh;
   width: 80vw;
   display: flex;
@@ -94,6 +94,7 @@ section {
 }
 
 .homeFeatures {
+  height: fit-content;
   padding: 60px 20px;
   text-align: center;
   background-color: var(--container-background);
