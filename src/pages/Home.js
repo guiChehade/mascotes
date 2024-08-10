@@ -1,6 +1,20 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../styles/Home.module.css';
+import depoimento1 from '../assets/home/depoimentos/depoimento1.png';
+import depoimento2 from '../assets/home/depoimentos/depoimento2.png';
+import depoimento3 from '../assets/home/depoimentos/depoimento3.png';
+import depoimento4 from '../assets/home/depoimentos/depoimento4.png';
+import creche from '../assets/home/servicos/creche.png';
+import hotel from '../assets/home/servicos/hotel.png';
+import banho from '../assets/home/servicos/banho.png';
+import consulta from '../assets/home/servicos/consulta.png';
+import adestramento from '../assets/home/servicos/adestramento.png';
+import passeio from '../assets/home/servicos/passeio.png';
+import foto1 from '../assets/home/galeria/foto1.png';
+import foto2 from '../assets/home/galeria/foto2.png';
+import foto3 from '../assets/home/galeria/foto3.png';
+
 
 const Home = () => {
   return (
@@ -48,32 +62,32 @@ const Home = () => {
         <h2>Conheça nossos serviços</h2>
         <div className={styles.services}>
           <div className={styles.service}>
-            <img src="../assets/home/servicos/creche.png" alt="Creche" />
+            <img src={creche} alt="Creche" />
             <h3>Creche</h3>
             <p>Seu pet passa o dia brincando e se divertindo com outros pets.</p>
           </div>
           <div className={styles.service}>
-            <img src="../assets/home/servicos/hotel.png" alt="Hotel" />
+            <img src={hotel} alt="Hotel" />
             <h3>Hotel</h3>
             <p>Seu pet se hospeda em um ambiente seguro e confortável.</p>
           </div>
           <div className={styles.service}>
-            <img src="../assets/home/servicos/banho.png" alt="Banho" />
+            <img src={banho} alt="Banho" />
             <h3>Banho</h3>
             <p>Seu pet fica limpinho e cheiroso com o serviço do nosso parceiro de banho e tosa.</p>
           </div>
           <div className={styles.service}>
-            <img src="../assets/home/servicos/consulta.png" alt="Consulta" />
+            <img src={consulta} alt="Consulta" />
             <h3>Consulta Veterinária</h3>
             <p>Seu pet recebe atendimento veterinário de qualidade com o nosso parceiro veterinário.</p>
           </div>
           <div className={styles.service}>
-            <img src="../assets/home/servicos/adestramento.png" alt="Adestramento" />
+            <img src={adestramento} alt="Adestramento" />
             <h3>Adestramento</h3>
             <p>Seu pet aprende com adestradores experientes com uma metodologia que realmente funciona.</p>
           </div>
           <div className={styles.service}>
-            <img src="../assets/home/servicos/passeio.png" alt="Passeio" />
+            <img src={passeio} alt="Passeio" />
             <h3>Passeio</h3>
             <p>Seu pet se diverte e faz exercícios com os nossos passeadores de cães.</p>
           </div>
@@ -83,33 +97,33 @@ const Home = () => {
         <h2>Depoimentos</h2>
         <div className={styles.testimonialsList}>
           <div className={styles.testimonialItem}>
-            <img src="../assets/home/depoimentos/depoimento1.png" alt="Depoimento 1" />
+            <img src={depoimento1} alt="Depoimento 1" />
             <p>“O Parque dos Mascotes é o melhor lugar para deixar o meu pet. Sempre que preciso viajar, sei que ele está em boas mãos e se divertindo muito.”</p>
-            <h4>João Pereira</h4>
-          </div>
-          <div className={styles.testimonialItem}>
-            <img src="../assets/home/depoimentos/depoimento2.png" alt="Depoimento 2" />
-            <p>“A equipe do Parque dos Mascotes é incrível! Eles cuidam do meu pet com muito carinho e atenção, sempre prontos para atender às necessidades dele.”</p>
             <h4>Ana Carla Silva</h4>
           </div>
           <div className={styles.testimonialItem}>
-            <img src="../assets/home/depoimentos/depoimento3.png" alt="Depoimento 3" />
-            <p>"Confio totalmente na equipe. Eles realmente amam o que fazem!"</p>
-            <h4>João e Isabela</h4>
+            <img src={depoimento2} alt="Depoimento 2" />
+            <p>“A equipe do Parque dos Mascotes é incrível! Eles cuidam do meu pet com muito carinho e atenção, sempre prontos para atender às necessidades dele.”</p>
+            <h4>João Pedro Pereira</h4>
           </div>
           <div className={styles.testimonialItem}>
-            <img src="../assets/home/depoimentos/depoimento4.png" alt="Depoimento 4" />
+            <img src={depoimento3} alt="Depoimento 3" />
+            <p>"Confio totalmente na equipe. Eles realmente amam o que fazem!"</p>
+            <h4>Isabela Giovanna</h4>
+          </div>
+          <div className={styles.testimonialItem}>
+            <img src={depoimento4} alt="Depoimento 4" />
             <p>“Meu pet adora o Parque dos Mascotes! Ele sempre volta para casa feliz e cansado de tanto brincar. Recomendo a todos!”</p>
-            <h4>Carlos Souza</h4>
+            <h4>Henrique Souza</h4>
           </div>
         </div>
       </section>
       <section className={styles.homeGallery}>
         <h2>Galeria de Fotos</h2>
         <div className={styles.galleryGrid}>
-          <img src="../assets/home/galeria/foto1.jpg" alt="Pet no parque" />
-          <img src="../assets/home/galeria/foto2.jpg" alt="Pet relaxando" />
-          <img src="../assets/home/galeria/foto3.jpg" alt="Pet interagindo" />
+          <img src={foto1} alt="Pet no parque" />
+          <img src={foto2} alt="Pet relaxando" />
+          <img src={foto3} alt="Pet interagindo" />
         </div>
       </section>
       <section className={styles.homeVisit}>
