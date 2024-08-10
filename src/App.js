@@ -15,6 +15,7 @@ import Mascotes from "./pages/Mascotes";
 import Controle from "./pages/Controle";
 import ControleRedirect from "./pages/ControleRedirect";
 import EditarPet from "./pages/EditarPet";
+import AgendarVisita from "./pages/AgendarVisita";
 import Financas from "./pages/Financas";
 import Usuarios from "./pages/Usuarios";
 import styles from "./styles/App.module.css";
@@ -57,6 +58,7 @@ const App = () => {
           <Route path="/" element={<Home isAuthenticated={isAuthenticated} userRoles={userRoles} />} />
           <Route path="/controle" element={<ControleRedirect />} />
           <Route path="/:petId" element={<Controle currentUser={currentUser} />} />
+          <Route path="/agendar-visita" element={<AgendarVisita />} />
           <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} setUserRoles={setUserRoles} setCurrentUser={setCurrentUser} />} />
           {isAuthenticated && (
             <>
