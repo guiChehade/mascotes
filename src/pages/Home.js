@@ -131,6 +131,7 @@ const Home = () => {
           <h2>Quer conhecer o Parque dos Mascotes?</h2>
           <p>Conheça o Parque dos Mascotes e descubra tudo o que podemos oferecer para o seu pet. Agende uma visita.</p>
           <Link to="/agendar-visita" className={styles.button}>Agende uma visita</Link>
+          <p>R. Viçosa do Ceará, 21 - Vila Mascote, São Paulo - SP, 04363-090</p>
         </div>
       </section>
     </div>
