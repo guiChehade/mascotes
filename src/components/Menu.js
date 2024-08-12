@@ -20,17 +20,20 @@ const Menu = ({ userRoles }) => {
       { to: "/", label: "Início" },
       { to: "/cadastro", label: "Cadastro" },
       { to: "/mascotes", label: "Mascotes" },
+      { to: "/registros", label: "Registros" },
       { to: "/financas", label: "Finanças" },
       { to: "/usuarios", label: "Usuários" },
     ],
     isAdmin: [
       { to: "/", label: "Início" },
-      { to: "/mascotes", label: "Mascotes" },
       { to: "/cadastro", label: "Cadastro" },
+      { to: "/mascotes", label: "Mascotes" },
+      { to: "/registros", label: "Registros" },
     ],
     isEmployee: [
       { to: "/", label: "Início" },
       { to: "/mascotes", label: "Mascotes" },
+      { to: "/registros", label: "Registros" },
     ],
     isTutor: [
       { to: "/", label: "Início" },

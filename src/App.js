@@ -9,13 +9,14 @@ import Main from "./components/Main";
 import ThemeToggle from "./components/ThemeToggle";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
+import AgendarVisita from "./pages/AgendarVisita";
 import Login from "./pages/Login";
 import Cadastro from "./pages/Cadastro";
 import Mascotes from "./pages/Mascotes";
 import Controle from "./pages/Controle";
 import ControleRedirect from "./pages/ControleRedirect";
 import EditarPet from "./pages/EditarPet";
-import AgendarVisita from "./pages/AgendarVisita";
+import Registros from "./pages/Registros";
 import Financas from "./pages/Financas";
 import Usuarios from "./pages/Usuarios";
 import styles from "./styles/App.module.css";
@@ -70,6 +71,9 @@ const App = () => {
               )}
               {(userRole === "isAdmin" || userRole === "isOwner") && (
                 <Route path="/editar/:petId" element={<EditarPet currentUser={currentUser} />} />
+              )}
+              {(userRole === "isEmployee" || userRole === "isAdmin" || userRole === "isOwner") && (
+                <Route path="/registros" element={<Registros currentUser={currentUser} />} />
               )}
               {userRole === "isOwner" && (
                 <Route path="/financas" element={<Financas currentUser={currentUser} />} />
