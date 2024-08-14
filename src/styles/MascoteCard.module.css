@@ -1,7 +1,7 @@
 .card {
   background-color: var(--container-background);
   color: var(--text-color);
-  border-radius: 10px;
+  border-radius: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 20px;
   display: flex;
@@ -47,7 +47,7 @@
   color: var(--button-color);
   padding: 10px;
   border: none;
-  border-radius: 5px;
+  border-radius: 20px;
   cursor: pointer;
   transition: background-color 0.3s;
 }
