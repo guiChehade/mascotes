@@ -1,17 +1,16 @@
 .editarPetContainer {
-  max-width: 800px;
+  max-width: 90vw;
   margin: 0 auto;
-  padding: 20px;
-  background-color: var(--button-background);
-  color: var(--text-color);
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  background-color: var(--container-background);
+  border-radius: 20px;
 }
 
 form {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
 }
 
 label {
@@ -28,6 +27,7 @@ button {
   background-color: var(--button-background);
   color: var(--text-color);
   cursor: pointer;
+  grid-column: span 2;
   transition: background-color 0.3s;
 }
 
@@ -36,7 +36,13 @@ button:hover {
 }
 
 @media (min-width: 768px) {
+  .editarPetContainer {
+    max-width: 800px;
+    margin: 0 auto;
+  }
   form {
+    display: grid;
     grid-template-columns: 1fr 1fr;
+    gap: 20px;
   }
 }
