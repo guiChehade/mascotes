@@ -1,38 +1,11 @@
-.filtros {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-    gap: 10px;
-  }
-  
-  .diaContainer {
-    margin-bottom: 30px;
-  }
-  
-  .registroContainer {
-    display: flex;
-    justify-content: space-between;
-    background-color: var(--container-background);
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-  }
-  
-  .horario {
-    flex: 1;
-  }
-  
-  .tipo {
-    flex: 1;
-  }
-  
-  .petNome {
-    flex: 2;
-    font-weight: bold;
-  }
-  
-  .comentario {
-    flex: 3;
-    font-style: italic;
-  }
-  
+.registrosContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: var(--text-color);
+}

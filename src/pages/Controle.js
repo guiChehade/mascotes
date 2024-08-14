@@ -6,6 +6,7 @@ import Container from "../components/Container";
 import Button from "../components/Button";
 import LoginModal from "../components/LoginModal";
 import ActionOptions from "../components/ActionOptions";
+import CommentSelection from "../components/CommentSelection";
 import TextInputModal from "../components/TextInputModal";
 import logoLarge from '../assets/logo/logo-large.png';
 import styles from '../styles/Controle.module.css';
@@ -75,22 +76,19 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     }
   };
 
-  const handleComentarioSubmit = async (comentario) => {
+  const handleComentarioSubmit = async (tipoComentario, comentario) => {
     const now = new Date();
     const formattedDate = `${now.getDate()}_${now.getMonth() + 1}_${now.getFullYear()}`;
     const documentId = `${petId}_${formattedDate}`;
 
     await setDoc(doc(firestore, "registros", documentId), {
-      [`comentario${selectedOption}`]: comentario,
+      [`${tipoComentario.toLowerCase()}`]: comentario,
       data: formattedDate,
       hora: now.toLocaleTimeString(),
       usuario: currentUser.name,
     }, { merge: true });
 
-    setSelectedOption(null);
-    setCurrentAction(null);
-    setShowPertenceInput(false);
-    alert(`Comentário sobre ${selectedOption} foi registrado com sucesso.`);
+    alert(`Comentário sobre ${tipoComentario} foi registrado com sucesso.`);
     navigate("/mascotes");
   };
 
@@ -167,15 +165,22 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
                   <Button onClick={handleEditar}>Editar</Button>
                 </div>
               ) : currentAction && !showPertenceInput ? (
-                <ActionOptions
-                  actionType={currentAction}
-                  onSelectOption={handleOptionSelection}
-                  onBack={() => setCurrentAction(null)}
-                />
+                currentAction === "comentario" ? (
+                  <CommentSelection
+                    onSubmit={handleComentarioSubmit}
+                    onClose={() => setCurrentAction(null)}
+                  />
+                ) : (
+                  <ActionOptions
+                    actionType={currentAction}
+                    onSelectOption={handleOptionSelection}
+                    onBack={() => setCurrentAction(null)}
+                  />
+                )
               ) : (
                 <TextInputModal
                   placeholder="Descreva os pertences..."
-                  onSubmit={(text) => handleComentarioSubmit(text)}
+                  onSubmit={(text) => handleComentarioSubmit('Pertences', text)}
                   onClose={() => setShowPertenceInput(false)}
                   onCancel={() => setShowPertenceInput(false)}
                 />

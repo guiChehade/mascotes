@@ -1,39 +1,73 @@
 import React, { useState, useEffect } from "react";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { firestore } from "../firebase";
-import { collection, query, orderBy, getDocs } from "firebase/firestore";
-import Container from "../components/Container";
+import RegistroTable from "../components/RegistroTable";
+import Filtro from "../components/Filtro";
 import styles from '../styles/Registros.module.css';
 
 const Registros = () => {
   const [registros, setRegistros] = useState([]);
+  const [filtros, setFiltros] = useState({ petId: '', data: '', mes: '', ano: '' });
 
   useEffect(() => {
     const fetchRegistros = async () => {
-      const q = query(collection(firestore, "registros"), orderBy('data', 'desc'), orderBy('hora', 'desc'));
-      const querySnapshot = await getDocs(q);
-      const registrosList = querySnapshot.docs.map(doc => doc.data());
-      setRegistros(registrosList);
+      try {
+        const registrosRef = collection(firestore, "registros");
+        const petsRef = collection(firestore, "pets");
+
+        const q = query(registrosRef, orderBy("data", "desc"));
+        const registrosSnapshot = await getDocs(q);
+
+        const registrosData = await Promise.all(
+          registrosSnapshot.docs.map(async (registroDoc) => {
+            const registro = registroDoc.data();
+            const petDoc = await getDocs(query(petsRef));
+            const petData = petDoc.docs.find((doc) => doc.id === registro.petId)?.data() || {};
+            return {
+              ...registro,
+              foto: petData.foto || '',
+              mascotinho: petData.mascotinho || '',
+              raca: petData.raca || '',
+              tutor: petData.tutor || '',
+              data: formatData(registro.data),
+            };
+          })
+        );
+
+        setRegistros(registrosData);
+      } catch (error) {
+        console.error("Erro ao buscar registros:", error);
+      }
     };
 
     fetchRegistros();
   }, []);
 
+  const handleFiltroChange = (filtro) => {
+    setFiltros(filtro);
+  };
+
+  const registrosFiltrados = registros.filter((registro) => {
+    const { petId, data, mes, ano } = filtros;
+    const matchPetId = petId ? registro.petId.includes(petId) : true;
+    const matchData = data ? registro.data === formatData(data) : true;
+    const matchMes = mes ? registro.data.split('/')[1] === mes : true;
+    const matchAno = ano ? registro.data.split('/')[2] === ano : true;
+    return matchPetId && matchData && matchMes && matchAno;
+  });
+
   return (
-    <Container className={styles.registrosContainer}>
-      <h2>Registros de Todos os Pets</h2>
-      {registros.length > 0 ? (
-        registros.map((registro, index) => (
-          <div key={index} className={styles.registro}>
-            <strong>{registro.data} {registro.hora}</strong>: {registro.tipo} - {registro.opcao}
-            {registro.comentario && <div>{registro.comentario}</div>}
-            <div><em>Usuário: {registro.usuario}</em></div>
-          </div>
-        ))
-      ) : (
-        <p>Nenhum registro encontrado.</p>
-      )}
-    </Container>
+    <div className={styles.registrosContainer}>
+      <h1>Registros dos Pets</h1>
+      <Filtro onChange={handleFiltroChange} />
+      <RegistroTable registros={registrosFiltrados} />
+    </div>
   );
+};
+
+const formatData = (data) => {
+  const [dia, mes, ano] = data.split('_');
+  return `${dia}/${mes}/${ano}`;
 };
 
 export default Registros;
