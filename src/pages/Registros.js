@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 import { firestore } from "../firebase";
 import { collection, query, orderBy, getDocs, where, getDoc, doc } from "firebase/firestore";
 import styles from '../styles/Registros.module.css';
+import Button from "../components/Button";
 import PopupUsuario from "../components/PopupUsuario"; // Componente de popup
 
 const Registros = () => {
   const [registros, setRegistros] = useState([]);
   const [selectedRecord, setSelectedRecord] = useState(null); // Para armazenar o registro selecionado para o popup
-  const [filterPetId, setFilterPetId] = useState("");
-  const [filterMonth, setFilterMonth] = useState("");
+  const [filterMascotinho, setFilterMascotinho] = useState("");
+  const [filterMonth] = useState("");
   const [filterDate, setFilterDate] = useState("");
 
   useEffect(() => {
@@ -16,8 +17,8 @@ const Registros = () => {
       try {
         let q = query(collection(firestore, "registros"), orderBy("dataEntrada", "desc"));
 
-        if (filterPetId) {
-          q = query(q, where("petId", "==", filterPetId));
+        if (filterMascotinho) {
+          q = query(q, where("mascotinho", "==", filterMascotinho));
         }
 
         if (filterMonth) {
@@ -55,7 +56,7 @@ const Registros = () => {
     };
 
     fetchRegistros();
-  }, [filterPetId, filterMonth, filterDate]);
+  }, [filterMascotinho, filterMonth, filterDate]);
 
   const handleClick = (record, field) => {
     setSelectedRecord({ record, field });
@@ -72,14 +73,9 @@ const Registros = () => {
       <div className={styles.filters}>
         <input
           type="text"
-          placeholder="ID do Pet"
-          value={filterPetId}
-          onChange={(e) => setFilterPetId(e.target.value)}
-        />
-        <input
-          type="month"
-          placeholder="Mês"
-          onChange={(e) => setFilterMonth(e.target.value)}
+          placeholder="Mascotinho"
+          value={filterMascotinho}
+          onChange={(e) => setFilterMascotinho(e.target.value)}
         />
         <input
           type="date"
@@ -139,7 +135,7 @@ const Registros = () => {
           <p>
             <strong>Usuário:</strong> {selectedRecord.record[selectedRecord.field]}
           </p>
-          <button onClick={handleClosePopup}>Fechar</button>
+          <Button onClick={handleClosePopup}>Fechar</Button>
         </PopupUsuario>
       )}
     </div>

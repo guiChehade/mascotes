@@ -4,6 +4,7 @@ import { auth, firestore } from '../firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import Container from '../components/Container';
 import Input from '../components/Input';
+import Button from '../components/Button';
 import styles from '../styles/Register.module.css';
 
 const Register = ({ currentUser }) => {
@@ -73,7 +74,7 @@ const Register = ({ currentUser }) => {
           <option value="isEmployee">Funcionário</option>
           <option value="isTutor">Tutor</option>
         </select>
-        <button type="submit">Registrar</button>
+        <Button type="submit">Registrar</Button>
       </form>
     </Container>
   );

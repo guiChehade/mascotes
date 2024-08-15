@@ -21,16 +21,6 @@
   text-align: left;
 }
 
-button {
-  padding: 10px;
-  background-color: var(--button-background);
-  color: var(--text-color);
-  border: none;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
 @media (max-width: 768px) {
   .emailColumn {
     display: none;
