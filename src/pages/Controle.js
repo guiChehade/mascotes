@@ -18,6 +18,8 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
   const [showPertenceQuestion, setShowPertenceQuestion] = useState(false);
   const [showPertenceModal, setShowPertenceModal] = useState(false);
   const [showServiceModal, setShowServiceModal] = useState(false);
+  const [selectedAction, setSelectedAction] = useState(null); // Para diferenciar entre entrada e saída
+  const [lastRecord, setLastRecord] = useState(null); // Armazena o último registro de entrada
 
   useEffect(() => {
     const fetchPetData = async () => {
@@ -35,18 +37,51 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
       }
     };
 
+    const fetchLastRecord = async () => {
+      if (petId) {
+        try {
+          const recordDoc = await getDoc(doc(firestore, `registros/${petId}`));
+          if (recordDoc.exists) {
+            setLastRecord(recordDoc.data());
+          }
+        } catch (error) {
+          console.error("Erro ao buscar o último registro:", error);
+        }
+      }
+    };
+
     fetchPetData();
+    fetchLastRecord();
   }, [petId]);
 
   const handleEntrada = () => {
+    setSelectedAction("entrada");
+    setShowServiceModal(true);
+  };
+
+  const handleSaida = () => {
+    setSelectedAction("saida");
     setShowServiceModal(true);
   };
 
   const handleServiceSelection = (service) => {
     if (service === "Creche") {
       setShowServiceModal(false);
-      setShowPertenceQuestion(true);
+      if (selectedAction === "entrada") {
+        setShowPertenceQuestion(true);
+      } else if (selectedAction === "saida") {
+        showPertenceInfo();
+      }
     }
+  };
+
+  const showPertenceInfo = () => {
+    if (lastRecord && lastRecord.pertences) {
+      alert(`Pertences registrados na entrada: ${lastRecord.pertences}`);
+    } else {
+      alert("Nenhum pertence registrado na entrada.");
+    }
+    registerSaida();
   };
 
   const handlePertenceSubmit = async (pertences) => {
@@ -77,6 +112,44 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
   const handleNoPertence = () => {
     handlePertenceSubmit(null);
     setShowPertenceQuestion(false);
+  };
+
+  const registerSaida = async () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // meses começam em 0
+    const day = String(now.getDate()).padStart(2, '0');
+    const formattedDate = `${year}${month}${day}`; // Data no formato YYYYMMDD
+    const formattedTime = now.toLocaleTimeString();
+
+    const diarias = calculateDiarias(lastRecord?.data, `${day}/${month}/${year}`);
+
+    const record = {
+      saidaData: `${day}/${month}/${year}`,
+      saidaCreche: formattedTime,
+      saidaCrecheUsuario: currentUser.name,
+      diarias,
+    };
+
+    await setDoc(doc(firestore, "registros", `${petId}_${formattedDate}`), record, { merge: true });
+
+    alert(`Saída da Creche registrada com sucesso. Diárias: ${diarias}`);
+    navigate("/mascotes");
+  };
+
+  const calculateDiarias = (entradaData, saidaData) => {
+    if (!entradaData) return 0;
+
+    const [entradaDia, entradaMes, entradaAno] = entradaData.split("/");
+    const [saidaDia, saidaMes, saidaAno] = saidaData.split("/");
+
+    const entrada = new Date(`${entradaAno}-${entradaMes}-${entradaDia}`);
+    const saida = new Date(`${saidaAno}-${saidaMes}-${saidaDia}`);
+
+    const diffTime = Math.abs(saida - entrada);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    return diffDays > 0 ? diffDays : 0;
   };
 
   const handleLoginSuccess = async (user) => {
@@ -117,6 +190,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
           {currentUser && (currentUser.role === 'isEmployee' || currentUser.role === 'isAdmin' || currentUser.role === 'isOwner') ? (
             <div className={styles.controleButtons}>
               <Button onClick={handleEntrada}>Entrada</Button>
+              <Button onClick={handleSaida}>Saída</Button>
               <Button onClick={handleEditar}>Editar</Button>
             </div>
           ) : (
