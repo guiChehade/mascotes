@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { firestore } from "../firebase";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, query, where, collection, getDocs } from "firebase/firestore";
 import Container from "../components/Container";
 import Button from "../components/Button";
 import LoginModal from "../components/LoginModal";
@@ -41,9 +41,11 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     const fetchLastRecord = async () => {
       if (petId) {
         try {
-          const recordDoc = await getDoc(doc(firestore, `registros/${petId}`));
-          if (recordDoc.exists) {
-            setLastRecord(recordDoc.data());
+          const q = query(collection(firestore, "registros"), where("petId", "==", petId), where("local", "==", "Creche"));
+          const querySnapshot = await getDocs(q);
+          if (!querySnapshot.empty) {
+            const latestRecord = querySnapshot.docs[0].data();
+            setLastRecord(latestRecord);
           }
         } catch (error) {
           console.error("Erro ao buscar o último registro:", error);
