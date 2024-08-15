@@ -9,6 +9,7 @@ import TextInputModal from "../components/TextInputModal";
 import ActionOptions from "../components/ActionOptions";
 import logoLarge from '../assets/logo/logo-large.png';
 import styles from '../styles/Controle.module.css';
+import { v4 as uuidv4 } from 'uuid';
 
 const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUser }) => {
   const { petId } = useParams();
@@ -89,19 +90,23 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, '0'); // meses começam em 0
     const day = String(now.getDate()).padStart(2, '0');
-    const formattedDate = `${year}${month}${day}`; // Data no formato YYYYMMDD
     const formattedTime = now.toLocaleTimeString();
+
+    // Gerar um ID único para cada período de permanência
+    const recordId = lastRecord ? lastRecord.recordId : uuidv4();
 
     const record = {
       petId,
-      data: `${day}/${month}/${year}`, // Data no formato DD/MM/YYYY para exibição
+      recordId, // ID único para esta estadia
+      local: "Creche",
+      dataEntrada: `${day}/${month}/${year}`, // Data no formato DD/MM/YYYY para exibição
       entradaCreche: formattedTime,
       entradaCrecheUsuario: currentUser.name,
       pertences: pertences || null,
       pertencesUsuario: pertences ? currentUser.name : null,
     };
 
-    await setDoc(doc(firestore, "registros", `${petId}_${formattedDate}`), record, { merge: true });
+    await setDoc(doc(firestore, "registros", recordId), record, { merge: true });
 
     alert(`Entrada na Creche registrada com sucesso.\n${pertences ? 'Pertences: ' + pertences : 'Sem pertences.'}`);
     setShowPertenceModal(false);
@@ -119,19 +124,19 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, '0'); // meses começam em 0
     const day = String(now.getDate()).padStart(2, '0');
-    const formattedDate = `${year}${month}${day}`; // Data no formato YYYYMMDD
     const formattedTime = now.toLocaleTimeString();
 
-    const diarias = calculateDiarias(lastRecord?.data, `${day}/${month}/${year}`);
+    const diarias = calculateDiarias(lastRecord?.dataEntrada, `${day}/${month}/${year}`);
 
     const record = {
       saidaData: `${day}/${month}/${year}`,
       saidaCreche: formattedTime,
       saidaCrecheUsuario: currentUser.name,
       diarias,
+      local: null, // Pet não está mais na creche
     };
 
-    await setDoc(doc(firestore, "registros", `${petId}_${formattedDate}`), record, { merge: true });
+    await setDoc(doc(firestore, "registros", lastRecord.recordId), record, { merge: true });
 
     alert(`Saída da Creche registrada com sucesso. Diárias: ${diarias}`);
     navigate("/mascotes");
@@ -189,8 +194,11 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
           <div className={styles.value}>{pet.celularTutor}</div>
           {currentUser && (currentUser.role === 'isEmployee' || currentUser.role === 'isAdmin' || currentUser.role === 'isOwner') ? (
             <div className={styles.controleButtons}>
-              <Button onClick={handleEntrada}>Entrada</Button>
-              <Button onClick={handleSaida}>Saída</Button>
+              {!lastRecord || lastRecord.local !== "Creche" ? (
+                <Button onClick={handleEntrada}>Entrada</Button>
+              ) : (
+                <Button onClick={handleSaida}>Saída</Button>
+              )}
               <Button onClick={handleEditar}>Editar</Button>
             </div>
           ) : (
@@ -210,7 +218,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
         />
       )}
 
-      {showPertenceQuestion && (
+      {showPertenceQuestion && selectedAction === "entrada" && (
         <ActionOptions
           actionType="O pet possui pertences?"
           options={["Sim", "Não"]}
