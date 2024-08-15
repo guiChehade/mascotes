@@ -6,8 +6,8 @@ import Container from "../components/Container";
 import Button from "../components/Button";
 import LoginModal from "../components/LoginModal";
 import TextInputModal from "../components/TextInputModal";
-import ActionOptions from "../components/ActionOptions";  // Novo componente para selecionar o serviço
-import logoLarge from "../assets/logo/logo-large.png";
+import ActionOptions from "../components/ActionOptions";
+import logoLarge from '../assets/logo/logo-large.png';
 import styles from '../styles/Controle.module.css';
 
 const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUser }) => {
@@ -51,12 +51,15 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
 
   const handlePertenceSubmit = async (pertences) => {
     const now = new Date();
-    const formattedDate = `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`;
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // meses começam em 0
+    const day = String(now.getDate()).padStart(2, '0');
+    const formattedDate = `${year}${month}${day}`; // Data no formato YYYYMMDD
     const formattedTime = now.toLocaleTimeString();
-    
+
     const record = {
       petId,
-      data: formattedDate,
+      data: `${day}/${month}/${year}`, // Data no formato DD/MM/YYYY para exibição
       entradaCreche: formattedTime,
       entradaCrecheUsuario: currentUser.name,
       pertences: pertences || null,
@@ -67,6 +70,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
 
     alert(`Entrada na Creche registrada com sucesso.\n${pertences ? 'Pertences: ' + pertences : 'Sem pertences.'}`);
     setShowPertenceModal(false);
+    setShowPertenceQuestion(false);
     navigate("/mascotes");
   };
 

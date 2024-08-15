@@ -8,8 +8,8 @@ const PertenceSelection = ({ onSelectPertence, onCancel }) => {
       <div className={styles.modalContent}>
         <p>O pet tem algum pertence?</p>
         <div className={styles.gridContainer}>
-          <Button onClick={() => onSelectPertence(true)}>Sim</Button>
           <Button onClick={() => onSelectPertence(false)}>Não</Button>
+          <Button onClick={() => onSelectPertence(true)}>Sim</Button>
         </div>
         <Button onClick={onCancel} className={styles.cancelButton}>
           Cancelar
