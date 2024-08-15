@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { firestore } from "../firebase";
-import { doc, getDoc, setDoc, getDocs, query, collection, orderBy, limit } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import Container from "../components/Container";
 import Button from "../components/Button";
 import LoginModal from "../components/LoginModal";
-import ActionOptions from "../components/ActionOptions";
-import CommentSelection from "../components/CommentSelection";
 import TextInputModal from "../components/TextInputModal";
-import logoLarge from '../assets/logo/logo-large.png';
+import ActionOptions from "../components/ActionOptions";  // Novo componente para selecionar o serviço
+import logoLarge from "../assets/logo/logo-large.png";
 import styles from '../styles/Controle.module.css';
 
 const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUser }) => {
@@ -16,9 +15,9 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
   const navigate = useNavigate();
   const [pet, setPet] = useState(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const [currentAction, setCurrentAction] = useState(null);
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [showPertenceInput, setShowPertenceInput] = useState(false);
+  const [showPertenceQuestion, setShowPertenceQuestion] = useState(false);
+  const [showPertenceModal, setShowPertenceModal] = useState(false);
+  const [showServiceModal, setShowServiceModal] = useState(false);
 
   useEffect(() => {
     const fetchPetData = async () => {
@@ -39,57 +38,41 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     fetchPetData();
   }, [petId]);
 
-  const handleActionSelection = (actionType) => {
-    setCurrentAction(actionType);
-    setSelectedOption(null);
-    setShowPertenceInput(false);
+  const handleEntrada = () => {
+    setShowServiceModal(true);
   };
 
-  const handleOptionSelection = async (option) => {
-    const now = new Date();
-    const formattedDate = `${now.getDate()}_${now.getMonth() + 1}_${now.getFullYear()}`;
-    const documentId = `${petId}_${formattedDate}`;
-
-    if (currentAction === "entrada" || currentAction === "saida") {
-      const record = {
-        tipo: currentAction,
-        opcao: option,
-        data: formattedDate,
-        hora: now.toLocaleTimeString(),
-        usuario: currentUser.name,
-      };
-
-      await setDoc(doc(firestore, "registros", documentId), {
-        ...record,
-        [currentAction + option]: record.hora,
-        [currentAction + option + "Usuario"]: record.usuario,
-      }, { merge: true });
-
-      if (currentAction === "entrada" && (option === "Creche" || option === "Hotel")) {
-        setShowPertenceInput(true);
-      } else {
-        alert(`Registro de ${currentAction} para ${option} foi efetuado com sucesso.`);
-        navigate("/mascotes");
-      }
-    } else if (currentAction === "comentario") {
-      setSelectedOption(option);
+  const handleServiceSelection = (service) => {
+    if (service === "Creche") {
+      setShowServiceModal(false);
+      setShowPertenceQuestion(true);
     }
   };
 
-  const handleComentarioSubmit = async (tipoComentario, comentario) => {
+  const handlePertenceSubmit = async (pertences) => {
     const now = new Date();
-    const formattedDate = `${now.getDate()}_${now.getMonth() + 1}_${now.getFullYear()}`;
-    const documentId = `${petId}_${formattedDate}`;
-
-    await setDoc(doc(firestore, "registros", documentId), {
-      [`${tipoComentario.toLowerCase()}`]: comentario,
+    const formattedDate = `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`;
+    const formattedTime = now.toLocaleTimeString();
+    
+    const record = {
+      petId,
       data: formattedDate,
-      hora: now.toLocaleTimeString(),
-      usuario: currentUser.name,
-    }, { merge: true });
+      entradaCreche: formattedTime,
+      entradaCrecheUsuario: currentUser.name,
+      pertences: pertences || null,
+      pertencesUsuario: pertences ? currentUser.name : null,
+    };
 
-    alert(`Comentário sobre ${tipoComentario} foi registrado com sucesso.`);
+    await setDoc(doc(firestore, "registros", `${petId}_${formattedDate}`), record, { merge: true });
+
+    alert(`Entrada na Creche registrada com sucesso.\n${pertences ? 'Pertences: ' + pertences : 'Sem pertences.'}`);
+    setShowPertenceModal(false);
     navigate("/mascotes");
+  };
+
+  const handleNoPertence = () => {
+    handlePertenceSubmit(null);
+    setShowPertenceQuestion(false);
   };
 
   const handleLoginSuccess = async (user) => {
@@ -112,34 +95,6 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     navigate(`/editar/${petId}`);
   };
 
-  const getLastEntry = async (petId) => {
-    const q = query(
-      collection(firestore, "registros"),
-      orderBy("data", "desc"),
-      orderBy("hora", "desc"),
-      limit(1)
-    );
-    const querySnapshot = await getDocs(q);
-  
-    if (!querySnapshot.empty) {
-      return querySnapshot.docs[0].data();
-    }
-    return null;
-  };
-  
-
-  const checkLastEntryForPertences = async () => {
-    const lastEntry = await getLastEntry(petId);
-
-    if (lastEntry && lastEntry.pertence) {
-      alert(`O pet tem o(s) seguinte(s) pertence(s): ${lastEntry.pertence}`);
-    } else {
-      alert('O pet não tem pertences registrados.');
-    }
-
-    handleActionSelection('saida');
-  };
-
   return (
     <Container className={styles.controleContainer}>
       {pet ? (
@@ -156,43 +111,51 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
           <div className={styles.label}>Contato</div>
           <div className={styles.value}>{pet.celularTutor}</div>
           {currentUser && (currentUser.role === 'isEmployee' || currentUser.role === 'isAdmin' || currentUser.role === 'isOwner') ? (
-            <>
-              {!currentAction && !selectedOption && !showPertenceInput ? (
-                <div className={styles.controleButtons}>
-                  <Button onClick={() => handleActionSelection("entrada")}>Entrada</Button>
-                  <Button onClick={checkLastEntryForPertences}>Saída</Button>
-                  <Button onClick={() => handleActionSelection("comentario")}>Comentário</Button>
-                  <Button onClick={handleEditar}>Editar</Button>
-                </div>
-              ) : currentAction && !showPertenceInput ? (
-                currentAction === "comentario" ? (
-                  <CommentSelection
-                    onSubmit={handleComentarioSubmit}
-                    onClose={() => setCurrentAction(null)}
-                  />
-                ) : (
-                  <ActionOptions
-                    actionType={currentAction}
-                    onSelectOption={handleOptionSelection}
-                    onBack={() => setCurrentAction(null)}
-                  />
-                )
-              ) : (
-                <TextInputModal
-                  placeholder="Descreva os pertences..."
-                  onSubmit={(text) => handleComentarioSubmit('Pertences', text)}
-                  onClose={() => setShowPertenceInput(false)}
-                  onCancel={() => setShowPertenceInput(false)}
-                />
-              )}
-            </>
+            <div className={styles.controleButtons}>
+              <Button onClick={handleEntrada}>Entrada</Button>
+              <Button onClick={handleEditar}>Editar</Button>
+            </div>
           ) : (
-            <Button onClick={() => setShowLoginModal(true)}>Entrar</Button>
+            <Button onClick={() => setShowLoginModal(true)}>Login</Button>
           )}
         </div>
       ) : (
         <p>Carregando...</p>
       )}
+
+      {showServiceModal && (
+        <ActionOptions
+          actionType="Selecione o Serviço"
+          options={["Creche"]}
+          onSelectOption={handleServiceSelection}
+          onBack={() => setShowServiceModal(false)}
+        />
+      )}
+
+      {showPertenceQuestion && (
+        <ActionOptions
+          actionType="O pet possui pertences?"
+          options={["Sim", "Não"]}
+          onSelectOption={(option) => {
+            if (option === "Sim") {
+              setShowPertenceModal(true);
+            } else {
+              handleNoPertence();
+            }
+            setShowPertenceQuestion(false);
+          }}
+          onBack={() => setShowPertenceQuestion(false)}
+        />
+      )}
+
+      {showPertenceModal && (
+        <TextInputModal
+          placeholder="Descreva os pertences do pet (se houver)..."
+          onSubmit={(text) => handlePertenceSubmit(text)}
+          onClose={() => setShowPertenceModal(false)}
+        />
+      )}
+
       {showLoginModal && (
         <LoginModal
           onClose={() => setShowLoginModal(false)}

@@ -38,7 +38,7 @@ const Home = () => {
           Convidamos você a fazer parte da nossa jornada e descobrir como podemos ajudar seu cão a viver uma vida mais feliz e equilibrada.
           <br /><br />
           Parque dos Mascotes: Onde o amor pelos animais se transforma em cuidado e dedicação.!</p>
-          <Link to="/sobre" className={styles.button}>Saiba mais</Link>
+          <Link to="/agendar-visita" className={styles.button}>Agende uma visita</Link>
         </div>
       </section>
       <section className={styles.homeFeatures}>
