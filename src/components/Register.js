@@ -36,7 +36,7 @@ const Register = ({ currentUser }) => {
   return (
     <Container className={styles.registerContainer}>
       <h2>Registrar</h2>
-      <form onSubmit={handleRegister}>
+      <form className={styles.registerForm} onSubmit={handleRegister}>
         <Input
           label="Nome"
           type="text"

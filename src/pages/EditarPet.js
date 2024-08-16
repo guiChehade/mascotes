@@ -125,7 +125,7 @@ const EditarPet = ({ currentUser }) => {
   return (
     <Container className={styles.editarPetContainer}>
       <h1>Editar Pet</h1>
-      <form className={styles.form} onSubmit={handleSubmit}>
+      <form className={styles.editarPetForm} onSubmit={handleSubmit}>
         <Input label="Nome do Mascotinho" type="text" name="mascotinho" value={formData.mascotinho} onChange={handleChange} required />
         <Input label="Aniversário" type="date" name="aniversario" value={formData.aniversario} onChange={handleChange} />
         <Input label="Raça" type="text" name="raca" value={formData.raca} onChange={handleChange} />

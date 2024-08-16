@@ -1,42 +1,14 @@
 .loginContainer {
   max-width: 400px;
   margin: 100px auto;
-  padding: 20px;
   background-color: var(--container-background);
   color: var(--text-color);
   border-radius: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.form {
+.loginForm {
   display: flex;
   flex-direction: column;
   gap: 10px;
-}
-
-label {
-  font-size: 1rem;
-  margin-bottom: 0.5rem;
-}
-
-input {
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid var(--button-hover-background);
-  font-size: 1rem;
-}
-
-button {
-  font-size: 1rem;
-  padding: 10px;
-  background-color: var(--button-background);
-  color: var(--text-color);
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: var(--button-hover-background);
 }

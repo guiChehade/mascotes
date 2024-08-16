@@ -37,10 +37,10 @@ const Detalhes = () => {
       <div className={styles.columnsContainer}>
         {Object.keys(petsByLocal).map(local => (
           <div key={local} className={styles.column}>
-            <h2>{local}</h2>
+            <h2 className={styles.h2Detalhes}>{local}</h2>
             {petsByLocal[local].map((pet, index) => (
               <div key={index} className={styles.petItem}>
-                <img src={pet.photoURL} alt={pet.mascotinho} className={styles.petThumbnail} />
+                <img src={pet.foto} alt={pet.mascotinho} className={styles.petThumbnail} />
                 <div>{pet.mascotinho}</div>
                 <div>{pet.raca}</div>
               </div>

@@ -38,7 +38,7 @@ const Login = ({ setIsAuthenticated, setUserRoles, setCurrentUser }) => {
   return (
     <Container className={styles.loginContainer}>
       <h2>Login</h2>
-      <form onSubmit={handleLogin}>
+      <form className={styles.loginForm} onSubmit={handleLogin}>
         <Input
           label="Email"
           type="email"

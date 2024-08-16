@@ -21,6 +21,12 @@
   text-align: left;
 }
 
+.buttonContainer{
+  display: flex;
+  gap: 5px;
+}
+
+
 @media (max-width: 768px) {
   .emailColumn {
     display: none;

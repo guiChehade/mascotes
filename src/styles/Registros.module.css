@@ -5,7 +5,7 @@
   padding: 20px;
   background-color: var(--container-background);
   color: var(--text-color);
-  border-radius: 10px;
+  border-radius: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -18,7 +18,7 @@
 .filters input {
   padding: 10px;
   border: 1px solid var(--border-color);
-  border-radius: 5px;
+  border-radius: 20px;
   width: 100%;
 }
 
@@ -30,7 +30,7 @@
 .registrosTable th, .registrosTable td {
   padding: 10px;
   border: 1px solid var(--border-color);
-  text-align: left;
+  text-align: center;
   cursor: pointer; /* para indicar que é clicável */
 }
 
@@ -47,6 +47,8 @@
   width: 50px;
   height: 50px;
   border-radius: 50%;
+  border: 0.125rem solid #DFA430;
+  box-shadow: 0 0 4px #DFA430;
   object-fit: cover;
 }
 

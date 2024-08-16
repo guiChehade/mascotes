@@ -86,18 +86,18 @@ const Usuarios = () => {
               </td>
               <td>
                 {user.role === 'isOwner' ? (
-                  <>
+                  <div className={styles.buttonContainer}>
                     <Button className={styles.disabledButton} disabled title="Não é possível editar Proprietários, caso seja necessário contate o Guilherme Chehade">Editar</Button>
                     <Button className={styles.disabledButton} disabled title="Não é possível excluir Proprietários, caso seja necessário contate o Guilherme Chehade">Excluir</Button>
-                  </>
+                  </div>
                 ) : (
                   editUserId === user.id ? (
                     <Button onClick={() => handleUpdateRole(user.id)}>Salvar</Button>
                   ) : (
-                    <>
+                    <div className={styles.buttonContainer}>
                       <Button onClick={() => handleEdit(user)}>Editar</Button>
                       <Button onClick={() => handleDelete(user.id)}>Excluir</Button>
-                    </>
+                    </div>
                   )
                 )}
               </td>

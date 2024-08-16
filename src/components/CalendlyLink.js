@@ -1,8 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "./Button";
 import styles from '../styles/CalendlyLink.module.css';
 
 const CalendlyLink = () => {
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+
     useEffect(() => {
         const script = document.createElement('script');
         script.src = "https://assets.calendly.com/assets/external/widget.js";
@@ -15,8 +17,12 @@ const CalendlyLink = () => {
     }, []);
 
     const openCalendlyPopup = () => {
+        setIsPopupOpen(true);
         if (window.Calendly) {
-            window.Calendly.initPopupWidget({ url: 'https://calendly.com/calendario-parquedosmascotes/visita?background_color=1f1f1f&text_color=ffffff&primary_color=dfa430' });
+            window.Calendly.initPopupWidget({ 
+                url: 'https://calendly.com/calendario-parquedosmascotes/visita?background_color=1f1f1f&text_color=ffffff&primary_color=dfa430',
+                onClose: () => setIsPopupOpen(false) // Fecha o overlay quando o Calendly for fechado
+            });
         } else {
             console.error('Calendly script not loaded yet.');
         }
@@ -31,6 +37,8 @@ const CalendlyLink = () => {
             >
                 Agende uma visita
             </Button>
+            {/* Overlay de fundo */}
+            {isPopupOpen && <div className={styles.overlay}></div>}
         </>
     );
 };

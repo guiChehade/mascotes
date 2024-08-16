@@ -5,6 +5,7 @@ import { addDoc, collection } from 'firebase/firestore';
 import PhotoEditor from '../components/PhotoEditor';
 import Container from '../components/Container';
 import Input from '../components/Input';
+import Button from '../components/Button';
 import styles from '../styles/Cadastro.module.css';
 
 const Cadastro = ({ currentUser }) => {
@@ -94,7 +95,7 @@ const Cadastro = ({ currentUser }) => {
         <Input label="Celular Vet Comercial" type="text" name="celularVetComercial" value={pet.celularVetComercial} onChange={handleChange} placeholder="(11) 99999-9999" mask="(99) 99999-9999" />
         <Input label="Celular Vet Pessoal" type="text" name="celularVetPessoal" value={pet.celularVetPessoal} onChange={handleChange} placeholder="(11) 99999-9999" mask="(99) 99999-9999" />
         <Input label="Foto do Pet" type="file" accept="image/*" onChange={handleFileChange} />
-        <button className={styles.button} type="submit">Cadastrar</button>
+        <Button type="submit">Cadastrar</Button>
       </form>
       {editorOpen && <PhotoEditor image={image} setImage={(img) => setPet((prevPet) => ({ ...prevPet, foto: img }))} setEditorOpen={setEditorOpen} />}
     </Container>

@@ -14,16 +14,7 @@
   gap: 10px;
 }
 
-button {
-  background-color: var(--button-background);
-  color: var(--text-color);
-  border: none;
-  padding: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  margin: 5px;
-}
-
-button:hover {
-  background-color: var(--button-hover-background);
+.buttonsContainer {
+  display: flex;
+  gap: 10px;
 }
