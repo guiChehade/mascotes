@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import CalendlyLink from '../components/CalendlyLink';
 import styles from '../styles/Home.module.css';
 import depoimento1 from '../assets/home/depoimentos/depoimento1.jpg';
