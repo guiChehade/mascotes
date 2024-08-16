@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Calendly from './AgendarVisita';
 import styles from '../styles/Home.module.css';
 import depoimento1 from '../assets/home/depoimentos/depoimento1.jpg';
 import depoimento2 from '../assets/home/depoimentos/depoimento2.jpg';
