@@ -8,7 +8,6 @@
   --border-color: #ddd;
 }
 
-
 .light {
   --text-color: #333333;
   --background-color: #e0e0e0;
@@ -16,6 +15,7 @@
   --button-background: #9b9b9b;
   --button-hover-background: #868686;
   --container-background: #e6e6e6;
+  --border-color: #ddd;
 }
 
 h2 {
@@ -36,5 +36,3 @@ body {
 button:hover {
   background-color: var(--button-hover-background);
 }
-
-

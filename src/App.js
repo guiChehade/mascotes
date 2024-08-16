@@ -51,41 +51,43 @@ const App = () => {
 
   return (
     <Router>
-      <Menu isAuthenticated={isAuthenticated} userRoles={userRoles} />
-      <Header isAuthenticated={isAuthenticated} userRoles={userRoles} />
-      <ThemeToggle />
-      <Main className={styles.main}>
-        <Routes>
-          <Route path="/" element={<Home isAuthenticated={isAuthenticated} userRoles={userRoles} />} />
-          <Route path="/controle" element={<ControleRedirect />} />
-          <Route path="/:petId" element={<Controle currentUser={currentUser} />} />
-          <Route path="/agendar-visita" element={<AgendarVisita />} />
-          <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} setUserRoles={setUserRoles} setCurrentUser={setCurrentUser} />} />
-          {isAuthenticated && (
-            <>
-              {(userRole === "isAdmin" || userRole === "isOwner") && (
-                <Route path="/cadastro" element={<Cadastro currentUser={currentUser} />} />
-              )}
-              {(userRole === "isEmployee" || userRole === "isAdmin" || userRole === "isOwner") && (
-                <Route path="/mascotes" element={<Mascotes currentUser={currentUser} />} />
-              )}
-              {(userRole === "isAdmin" || userRole === "isOwner") && (
-                <Route path="/editar/:petId" element={<EditarPet currentUser={currentUser} />} />
-              )}
-              {(userRole === "isEmployee" || userRole === "isAdmin" || userRole === "isOwner") && (
-                <Route path="/registros" element={<Registros currentUser={currentUser} />} />
-              )}
-              {userRole === "isOwner" && (
-                <Route path="/financas" element={<Financas currentUser={currentUser} />} />
-              )}
-              {userRole === "isOwner" && (
-                <Route path="/usuarios" element={<Usuarios currentUser={currentUser} />} />
-              )}
-            </>
-          )}
-        </Routes>
-      </Main>
-      <Footer />
+      <div className={styles.pageContainer}>
+        <Menu isAuthenticated={isAuthenticated} userRoles={userRoles} />
+        <Header isAuthenticated={isAuthenticated} userRoles={userRoles} />
+        <ThemeToggle />
+        <Main className={styles.main}>
+          <Routes>
+            <Route path="/" element={<Home isAuthenticated={isAuthenticated} userRoles={userRoles} />} />
+            <Route path="/controle" element={<ControleRedirect />} />
+            <Route path="/:petId" element={<Controle currentUser={currentUser} />} />
+            <Route path="/agendar-visita" element={<AgendarVisita />} />
+            <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} setUserRoles={setUserRoles} setCurrentUser={setCurrentUser} />} />
+            {isAuthenticated && (
+              <>
+                {(userRole === "isAdmin" || userRole === "isOwner") && (
+                  <Route path="/cadastro" element={<Cadastro currentUser={currentUser} />} />
+                )}
+                {(userRole === "isEmployee" || userRole === "isAdmin" || userRole === "isOwner") && (
+                  <Route path="/mascotes" element={<Mascotes currentUser={currentUser} />} />
+                )}
+                {(userRole === "isAdmin" || userRole === "isOwner") && (
+                  <Route path="/editar/:petId" element={<EditarPet currentUser={currentUser} />} />
+                )}
+                {(userRole === "isEmployee" || userRole === "isAdmin" || userRole === "isOwner") && (
+                  <Route path="/registros" element={<Registros currentUser={currentUser} />} />
+                )}
+                {userRole === "isOwner" && (
+                  <Route path="/financas" element={<Financas currentUser={currentUser} />} />
+                )}
+                {userRole === "isOwner" && (
+                  <Route path="/usuarios" element={<Usuarios currentUser={currentUser} />} />
+                )}
+              </>
+            )}
+          </Routes>
+        </Main>
+        <Footer />
+      </div>
     </Router>
   );
 };

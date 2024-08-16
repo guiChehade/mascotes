@@ -16,9 +16,9 @@ const AgendarVisita = () => {
     return (
         <div className={styles.calendlyContainer}>
             <div 
-                className="calendly-inline-widget" 
-                data-url="https://calendly.com/calendario-parquedosmascotes/visita??hide_landing_page_details=1&hide_gdpr_banner=1&background_color=1f1f1f&text_color=ffffff&primary_color=dfa430" 
-                style={{ minWidth: '90vw', height: '700px' }}
+                className="calendly-inline-widget"
+                data-url="https://calendly.com/calendario-parquedosmascotes?background_color=1f1f1f&text_color=ffffff&primary_color=dfa430" 
+                style={{ width: '100%' }}
             >
             </div>
         </div>

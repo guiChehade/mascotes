@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Calendly from './AgendarVisita';
+import CalendlyLink from '../components/CalendlyLink';
 import styles from '../styles/Home.module.css';
 import depoimento1 from '../assets/home/depoimentos/depoimento1.jpg';
 import depoimento2 from '../assets/home/depoimentos/depoimento2.jpg';
@@ -24,7 +24,7 @@ const Home = () => {
         <div className={styles.bannerContent}>
           <h1>Bem-vindo ao Parque dos Mascotes</h1>
           <p>Onde o seu pet encontra cuidado, diversão e carinho!</p>
-          <Link to="/agendar-visita" className={styles.button}>Agende uma visita</Link>
+          <CalendlyLink />
         </div>
       </section>
       <section className={styles.homeAbout}>
@@ -39,7 +39,7 @@ const Home = () => {
           Convidamos você a fazer parte da nossa jornada e descobrir como podemos ajudar seu cão a viver uma vida mais feliz e equilibrada.
           <br /><br />
           Parque dos Mascotes: Onde o amor pelos animais se transforma em cuidado e dedicação.!</p>
-          <Link to="/agendar-visita" className={styles.button}>Agende uma visita</Link>
+          <CalendlyLink />
         </div>
       </section>
       <section className={styles.homeFeatures}>
@@ -139,7 +139,7 @@ const Home = () => {
         <div className={styles.visitContent}>
           <h2>Quer conhecer o Parque dos Mascotes?</h2>
           <p>Conheça o Parque dos Mascotes e descubra tudo o que podemos oferecer para o seu pet. Agende uma visita.</p>
-          <Link to="/agendar-visita" className={styles.button}>Agende uma visita</Link>
+          <CalendlyLink />
           <p>R. Viçosa do Ceará, 21 - Vila Mascote, São Paulo - SP, 04363-090</p>
         </div>
       </section>

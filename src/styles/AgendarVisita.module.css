@@ -1,7 +1,31 @@
+/* .calendlyContainer {
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    max-width: 95vw;
+} */
+
 .calendlyContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  width: 100%;
+    margin: 0 auto;
+    width: 90vw;
+    display: flex;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+
+    .calendlyContainer {
+        top: 18vh;
+        height: 80vh;
+        border-radius: 20px;
+    }
+
+
+
+    /* .calendly-inline-widget {
+        width: 100%;
+        height: 100%;
+    } */
 }
