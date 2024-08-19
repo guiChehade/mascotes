@@ -77,11 +77,18 @@ const EditarPet = ({ currentUser }) => {
       }
 
       // Atualize o documento no Firestore com a URL da foto
-      await updateDoc(doc(firestore, 'pets', petId), {
+      const updatedData = {
         ...formData,
         foto, // URL da foto ou o valor atual
         updatedBy: currentUser.name,
-      });
+      };
+
+      // Remover o campo 'foto' se ainda for um objeto File
+      if (updatedData.foto instanceof File) {
+        delete updatedData.foto;
+      }
+
+      await updateDoc(doc(firestore, 'pets', petId), updatedData);
 
       alert('Pet atualizado com sucesso!');
       navigate("/mascotes");
