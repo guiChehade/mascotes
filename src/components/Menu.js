@@ -1,12 +1,27 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { signOut } from 'firebase/auth';
+import { auth } from '../firebase';
+import LoginModal from './LoginModal';
 import styles from '../styles/Menu.module.css';
 
-const Menu = ({ userRoles }) => {
+const Menu = ({ currentUser, setCurrentUser, userRoles }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const handleMenuClick = () => {
     setMenuOpen(!menuOpen);
+  };
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    setCurrentUser(null);
+    window.location.reload();
+  };
+
+  const handleLoginSuccess = (user) => {
+    setCurrentUser(user);
+    setShowLoginModal(false);
   };
 
   const handleLinkClick = () => {
@@ -40,16 +55,12 @@ const Menu = ({ userRoles }) => {
     ],
     none: [
       { to: "/", label: "Início" },
-      { to: "/login", label: "Login" },
     ],
   };
 
   return (
     <div className={styles.menuContainer}>
-      <button className={`${styles.hamburger} ${menuOpen ? styles.hamburgerOpen : ''}`} onClick={handleMenuClick}>
-        ☰
-      </button>
-      <nav className={`${styles.nav} ${menuOpen ? styles.navOpen : ''}`}>
+      <nav className={styles.nav}>
         <ul className={styles.ul}>
           {rolePages[userRole]?.map((page) => (
             <li className={styles.li} key={page.to}>
@@ -58,8 +69,31 @@ const Menu = ({ userRoles }) => {
               </Link>
             </li>
           ))}
+          {currentUser ? (
+            <>
+              <li className={styles.li}>
+                <span className={styles.userGreeting}>Olá, {currentUser.name}</span>
+              </li>
+              <li className={styles.li}>
+                <button className={styles.logoutButton} onClick={handleLogout}>Sair</button>
+              </li>
+            </>
+          ) : (
+            <>
+              <li className={styles.li}>
+                <button className={styles.loginButton} onClick={() => setShowLoginModal(true)}>Login</button>
+              </li>
+            </>
+          )}
         </ul>
       </nav>
+
+      {showLoginModal && (
+        <LoginModal
+          onClose={() => setShowLoginModal(false)}
+          onLoginSuccess={handleLoginSuccess}
+        />
+      )}
     </div>
   );
 };
