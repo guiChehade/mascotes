@@ -39,23 +39,7 @@ const EditarPet = ({ currentUser }) => {
         const petDoc = await getDoc(doc(firestore, 'pets', petId));
         if (petDoc.exists) {
           const data = petDoc.data();
-          const initialData = {
-            mascotinho: data.mascotinho || '',
-            aniversario: data.aniversario || '',
-            raca: data.raca || '',
-            tutor: data.tutor || '',
-            rg: data.rg || '',
-            cpf: data.cpf || '',
-            endereco: data.endereco || '',
-            email: data.email || '',
-            celular_tutor: data.celular_tutor || '',
-            veterinario: data.veterinario || '',
-            endereco_vet: data.endereco_vet || '',
-            celular_vet_comercial: data.celular_vet_comercial || '',
-            celular_vet_pessoal: data.celular_vet_pessoal || '',
-            foto: data.foto || ''
-          };
-          setFormData(initialData);
+          setFormData(data);
         } else {
           console.error('No pet found with this ID');
         }
@@ -84,30 +68,26 @@ const EditarPet = ({ currentUser }) => {
     e.preventDefault();
     try {
       let foto = formData.foto;
+
+      // Verifique se há uma nova foto a ser enviada
       if (photo) {
         const photoRef = ref(storage, `pets/${Date.now()}_${photo.name}`);
         await uploadBytes(photoRef, photo);
-        foto = await getDownloadURL(photoRef);
+        foto = await getDownloadURL(photoRef); // URL da imagem enviada
       }
+
+      // Atualize o documento no Firestore com a URL da foto
       await updateDoc(doc(firestore, 'pets', petId), {
         ...formData,
-        foto,
-        createdBy: currentUser.name
+        foto, // URL da foto ou o valor atual
+        updatedBy: currentUser.name,
       });
-      alert('Pet atualizado com sucesso!');
-    } catch (error) {
-      alert('Erro ao atualizar pet: ' + error.message);
-    }
-  };
 
-  const handleSave = async () => {
-    try {
-      await updateDoc(doc(firestore, "pets", petId), formData);
-      alert("Pet atualizado com sucesso.");
+      alert('Pet atualizado com sucesso!');
       navigate("/mascotes");
     } catch (error) {
-      console.error("Erro ao salvar pet:", error);
-      alert("Erro ao salvar pet.");
+      console.error('Erro ao atualizar pet:', error);
+      alert('Erro ao atualizar pet: ' + error.message);
     }
   };
 
@@ -140,8 +120,8 @@ const EditarPet = ({ currentUser }) => {
         <Input label="Celular Veterinário Comercial" type="text" name="celular_vet_comercial" value={formData.celular_vet_comercial} onChange={handleChange} />
         <Input label="Celular Veterinário Pessoal" type="text" name="celular_vet_pessoal" value={formData.celular_vet_pessoal} onChange={handleChange} />
         <Input label="Foto" type="file" accept="image/*" onChange={(e) => handlePhotoChange(e.target.files[0])} />
-      <Button onClick={handleSave}>Salvar</Button>
-      <Button onClick={handleInactivate} className={styles.inactivateButton}>Inativar Pet</Button>
+        <Button type="submit">Salvar</Button>
+        <Button onClick={handleInactivate} className={styles.inactivateButton}>Inativar Pet</Button>
       </form>
       {editorOpen && <PhotoEditor image={photo} setImage={(img) => setFormData((prevFormData) => ({ ...prevFormData, foto: img }))} setEditorOpen={setEditorOpen} />}
     </Container>
