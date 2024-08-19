@@ -54,7 +54,7 @@ const App = () => {
       <div className={styles.pageContainer}>
         <Menu isAuthenticated={isAuthenticated} userRoles={userRoles} />
         <Header isAuthenticated={isAuthenticated} userRoles={userRoles} />
-        <UserMenu currentUser={currentUser} />
+        <UserMenu currentUser={currentUser} setCurrentUser={setCurrentUser} />
         <Main className={styles.main}>
           <Routes>
             <Route path="/" element={<Home isAuthenticated={isAuthenticated} userRoles={userRoles} />} />
