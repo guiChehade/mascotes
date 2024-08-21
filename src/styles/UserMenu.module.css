@@ -1,6 +1,6 @@
 .userMenuContainer {
     position: fixed;
-    top: 4vh;
+    top: 5vh;
     right: 4vh;
     z-index: 9999;
   }
@@ -9,16 +9,21 @@
     background-color: var(--button-background);
     color: var(--button-color);
     border: none;
-    font-size: 1rem;
+    font-size: 1.25rem;
     width: 100%;
-    padding: 0.5rem 1rem;
-    border-radius: 4vh;
-    height: 8vh;
+    padding: 1rem;
+    border-radius: 3vh;
+    height: 6vh;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    transition: transform 0.3s ease;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .userButton:hover {
+    transform: scale(1.05);
+    background-color: var(--button-hover-background);
   }
   
   .dropdownMenu {

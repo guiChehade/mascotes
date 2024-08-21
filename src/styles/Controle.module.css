@@ -54,4 +54,9 @@
   font-size: 1rem;
   width: 8rem;
   padding: 1rem 0.8rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.buttons:hover {
+  transform: scale(1.05);
 }

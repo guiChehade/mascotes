@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebase';
 import LoginModal from './LoginModal'; // Importa o LoginModal
+import Button from './Button';
 import styles from '../styles/UserMenu.module.css';
 
 const UserMenu = ({ currentUser, setCurrentUser }) => {
@@ -27,9 +28,9 @@ const UserMenu = ({ currentUser, setCurrentUser }) => {
     <div className={styles.userMenuContainer}>
       {currentUser ? (
         <>
-          <button className={styles.userButton} onClick={handleMenuClick}>
+          <Button className={styles.userButton} onClick={handleMenuClick}>
             {currentUser.name}
-          </button>
+          </Button>
           <div
             className={`${styles.dropdownMenu} ${
               menuOpen ? styles.dropdownMenuOpen : ''

@@ -1,4 +1,4 @@
-button {
+.button {
   background-color: var(--button-background);
   color: var(--button-color);
   border: none;
@@ -6,10 +6,10 @@ button {
   font-size: 1rem;
   padding: 10px 20px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.5s ease-in-out;
 }
 
-button:hover {
+.button:hover {
   background-color: var(--button-hover-background);
   transform: scale(1.05);
 }
@@ -17,6 +17,7 @@ button:hover {
 button:disabled {
   background-color: #ccc;
   border: none;
+  font-size: 1rem;
   border-radius: 20px;
   padding: 10px 20px;
   cursor: not-allowed;
