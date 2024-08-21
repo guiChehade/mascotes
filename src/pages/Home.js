@@ -15,7 +15,6 @@ import foto1 from '../assets/home/galeria/foto1.jpg';
 import foto2 from '../assets/home/galeria/foto2.jpg';
 import foto3 from '../assets/home/galeria/foto3.jpg';
 
-
 const Home = () => {
   return (
     <div className={styles.home}>
@@ -29,15 +28,11 @@ const Home = () => {
       <section className={styles.homeAbout}>
         <div className={styles.aboutContent}>
           <h2>Sobre nós</h2>
-          <p>No coração de São Paulo, desde 1º de setembro de 2020, o Parque dos Mascotes vem transformando a vida de cães e seus tutores. Acreditamos que o bem-estar animal é fundamental, e por isso, utilizamos nossa creche e hotel como ferramentas para promover ajustes comportamentais em cães domiciliares.
-          <br /><br />
-          Através de uma combinação única de técnicas de adestramento e conhecimento em etologia aplicadas em matilha, proporcionamos um ambiente seguro e enriquecedor para que cada cão possa se desenvolver e alcançar seu pleno potencial. Entendemos a importância de manter latentes os instintos dos cães, sem riscos, dentro do universo doméstico, promovendo um equilíbrio entre suas necessidades naturais e a vida em família.
-          <br /><br />
-          Nosso sonho de atuar no segmento de bem-estar animal nos impulsiona a cada dia. Personalizamos ao máximo nossos serviços e atendimentos, trabalhando a conscientização e levando conhecimento aos tutores sobre a importância de manter o equilíbrio e a qualidade de vida de seus amados "Mascotinhos", mesmo no ambiente doméstico.
-          <br /><br />
-          Convidamos você a fazer parte da nossa jornada e descobrir como podemos ajudar seu cão a viver uma vida mais feliz e equilibrada.
-          <br /><br />
-          Parque dos Mascotes: Onde o amor pelos animais se transforma em cuidado e dedicação.!</p>
+          <p>No coração de São Paulo, desde 1º de setembro de 2020, o Parque dos Mascotes vem transformando a vida de cães e seus tutores. Acreditamos que o bem-estar animal é fundamental, e por isso, utilizamos nossa creche e hotel como ferramentas para promover ajustes comportamentais em cães domiciliares.</p>
+          <p>Através de uma combinação única de técnicas de adestramento e conhecimento em etologia aplicadas em matilha, proporcionamos um ambiente seguro e enriquecedor para que cada cão possa se desenvolver e alcançar seu pleno potencial. Entendemos a importância de manter latentes os instintos dos cães, sem riscos, dentro do universo doméstico, promovendo um equilíbrio entre suas necessidades naturais e a vida em família.</p>
+          <p>Nosso sonho de atuar no segmento de bem-estar animal nos impulsiona a cada dia. Personalizamos ao máximo nossos serviços e atendimentos, trabalhando a conscientização e levando conhecimento aos tutores sobre a importância de manter o equilíbrio e a qualidade de vida de seus amados "Mascotinhos", mesmo no ambiente doméstico.</p>
+          <p>Convidamos você a fazer parte da nossa jornada e descobrir como podemos ajudar seu cão a viver uma vida mais feliz e equilibrada.</p>
+          <p>Parque dos Mascotes: Onde o amor pelos animais se transforma em cuidado e dedicação!</p>
           <CalendlyLink />
         </div>
       </section>
@@ -106,12 +101,12 @@ const Home = () => {
         <div className={styles.testimonialsList}>
           <div className={styles.testimonialItem}>
             <img src={depoimento1} alt="Depoimento 1" />
-            <p>“O Parque dos Mascotes é o melhor lugar para deixar o meu pet. Sempre que preciso viajar, sei que ele está em boas mãos e se divertindo muito.”</p>
+            <p>"O Parque dos Mascotes é o melhor lugar para deixar o meu pet. Sempre que preciso viajar, sei que ele está em boas mãos e se divertindo muito."</p>
             <h4>Ana Carla Silva</h4>
           </div>
           <div className={styles.testimonialItem}>
             <img src={depoimento2} alt="Depoimento 2" />
-            <p>“A equipe do Parque dos Mascotes é incrível! Eles cuidam do meu pet com muito carinho e atenção, sempre prontos para atender às necessidades dele.”</p>
+            <p>"A equipe do Parque dos Mascotes é incrível! Eles cuidam do meu pet com muito carinho e atenção, sempre prontos para atender às necessidades dele."</p>
             <h4>João Pedro Pereira</h4>
           </div>
           <div className={styles.testimonialItem}>
@@ -121,7 +116,7 @@ const Home = () => {
           </div>
           <div className={styles.testimonialItem}>
             <img src={depoimento4} alt="Depoimento 4" />
-            <p>“Meu pet adora o Parque dos Mascotes! Ele sempre volta para casa feliz e cansado de tanto brincar. Recomendo a todos!”</p>
+            <p>"Meu pet adora o Parque dos Mascotes! Ele sempre volta para casa feliz e cansado de tanto brincar. Recomendo a todos!"</p>
             <h4>Alice Correia</h4>
           </div>
         </div>
