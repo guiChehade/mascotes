@@ -70,7 +70,7 @@ const EditarPet = ({ currentUser }) => {
       let foto = formData.foto;
 
       // Verifique se há uma nova foto a ser enviada
-      if (photo) {
+      if (photo instanceof File) {
         const photoRef = ref(storage, `pets/${Date.now()}_${photo.name}`);
         await uploadBytes(photoRef, photo);
         foto = await getDownloadURL(photoRef); // URL da imagem enviada
@@ -82,11 +82,6 @@ const EditarPet = ({ currentUser }) => {
         foto, // URL da foto ou o valor atual
         updatedBy: currentUser.name,
       };
-
-      // Remover o campo 'foto' se ainda for um objeto File
-      if (updatedData.foto instanceof File) {
-        delete updatedData.foto;
-      }
 
       await updateDoc(doc(firestore, 'pets', petId), updatedData);
 
@@ -117,18 +112,18 @@ const EditarPet = ({ currentUser }) => {
         <Input label="Aniversário" type="date" name="aniversario" value={formData.aniversario} onChange={handleChange} />
         <Input label="Raça" type="text" name="raca" value={formData.raca} onChange={handleChange} />
         <Input label="Tutor" type="text" name="tutor" value={formData.tutor} onChange={handleChange} required />
-        <Input label="RG" type="text" name="rg" value={formData.rg} onChange={handleChange} />
-        <Input label="CPF" type="text" name="cpf" value={formData.cpf} onChange={handleChange} />
+        <Input label="RG" type="text" name="rg" value={formData.rg} onChange={handleChange} mask="99.999.999-9" />
+        <Input label="CPF" type="text" name="cpf" value={formData.cpf} onChange={handleChange} mask="999.999.999-99" />
         <Input label="Endereço" type="text" name="endereco" value={formData.endereco} onChange={handleChange} />
         <Input label="Email" type="email" name="email" value={formData.email} onChange={handleChange} />
-        <Input label="Celular do Tutor" type="text" name="celular_tutor" value={formData.celular_tutor} onChange={handleChange} />
+        <Input label="Celular do Tutor" type="text" name="celular_tutor" value={formData.celular_tutor} onChange={handleChange} mask="(99) 99999-9999" />
         <Input label="Veterinário" type="text" name="veterinario" value={formData.veterinario} onChange={handleChange} />
         <Input label="Endereço do Veterinário" type="text" name="endereco_vet" value={formData.endereco_vet} onChange={handleChange} />
-        <Input label="Celular Veterinário Comercial" type="text" name="celular_vet_comercial" value={formData.celular_vet_comercial} onChange={handleChange} />
-        <Input label="Celular Veterinário Pessoal" type="text" name="celular_vet_pessoal" value={formData.celular_vet_pessoal} onChange={handleChange} />
+        <Input label="Celular Veterinário Comercial" type="text" name="celular_vet_comercial" value={formData.celular_vet_comercial} onChange={handleChange} mask="(99) 99999-9999" />
+        <Input label="Celular Veterinário Pessoal" type="text" name="celular_vet_pessoal" value={formData.celular_vet_pessoal} onChange={handleChange} mask="(99) 99999-9999" />
         <Input label="Foto" type="file" accept="image/*" onChange={(e) => handlePhotoChange(e.target.files[0])} />
+        <Button onClick={handleInactivate}>Inativar Pet</Button>
         <Button type="submit">Salvar</Button>
-        <Button onClick={handleInactivate} className={styles.inactivateButton}>Inativar Pet</Button>
       </form>
       {editorOpen && <PhotoEditor image={photo} setImage={(img) => setFormData((prevFormData) => ({ ...prevFormData, foto: img }))} setEditorOpen={setEditorOpen} />}
     </Container>

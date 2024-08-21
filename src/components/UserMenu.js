@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebase';
 import LoginModal from './LoginModal';
@@ -10,6 +11,7 @@ const UserMenu = ({ currentUser, setCurrentUser }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showQuiz, setShowQuiz] = useState(false);
+  const navigate = useNavigate();
 
   const handleMenuClick = () => {
     setMenuOpen(!menuOpen);
@@ -18,16 +20,19 @@ const UserMenu = ({ currentUser, setCurrentUser }) => {
   const handleLogout = async () => {
     await signOut(auth);
     setCurrentUser(null);
-    window.location.reload();
+    navigate('/');
+    setMenuOpen(false); // Fechar a navegação após o logout
   };
 
   const handleLoginSuccess = (user) => {
     setCurrentUser(user);
     setShowLoginModal(false);
+    setMenuOpen(false); // Fechar a navegação após o login bem-sucedido
   };
 
   const handleQuizClick = () => {
     setShowQuiz(true);
+    setMenuOpen(false); // Fechar a navegação ao abrir o Quiz
   };
 
   return (

@@ -10,15 +10,9 @@ const PhotoEditor = ({ image, setImage, setEditorOpen }) => {
   const handleSave = () => {
     if (editor) {
       const canvas = editor.getImageScaledToCanvas();
-      const resizedCanvas = document.createElement('canvas');
-      resizedCanvas.width = 200;
-      resizedCanvas.height = 200;
-      const resizedContext = resizedCanvas.getContext('2d');
-      resizedContext.drawImage(canvas, 0, 0, 200, 200);
-
-      resizedCanvas.toBlob(blob => {
-        const file = new File([blob], "photo.jpg", { type: 'image/jpeg' });
-        setImage(file);
+      canvas.toBlob((blob) => {
+        const resizedFile = new File([blob], "photo.jpg", { type: 'image/jpeg' });
+        setImage(resizedFile);
         setEditorOpen(false);
       }, 'image/jpeg');
     }
@@ -34,10 +28,10 @@ const PhotoEditor = ({ image, setImage, setEditorOpen }) => {
       <AvatarEditor
         ref={setEditor}
         image={image}
-        width={250}
-        height={250}
+        width={200}
+        height={200}
         border={50}
-        borderRadius={125}
+        borderRadius={100}
         scale={scale}
       />
       <input

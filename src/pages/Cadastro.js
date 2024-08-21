@@ -46,7 +46,7 @@ const Cadastro = ({ currentUser }) => {
     e.preventDefault();
 
     let fotoURL = '';
-    if (image) {
+    if (image instanceof File) {
       const fotoRef = ref(storage, `pets/${Date.now()}_${image.name}`);
       await uploadBytes(fotoRef, image);
       fotoURL = await getDownloadURL(fotoRef);
