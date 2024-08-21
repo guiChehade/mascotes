@@ -6,7 +6,7 @@ import { doc, getDoc } from "firebase/firestore";
 import Menu from "./components/Menu";
 import Header from "./components/Header";
 import Main from "./components/Main";
-import ThemeToggle from "./components/ThemeToggle";
+import UserMenu from "./components/UserMenu";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import AgendarVisita from "./pages/AgendarVisita";
@@ -54,7 +54,7 @@ const App = () => {
       <div className={styles.pageContainer}>
         <Menu isAuthenticated={isAuthenticated} userRoles={userRoles} />
         <Header isAuthenticated={isAuthenticated} userRoles={userRoles} />
-        <ThemeToggle />
+        <UserMenu currentUser={currentUser} setCurrentUser={setCurrentUser} />
         <Main className={styles.main}>
           <Routes>
             <Route path="/" element={<Home isAuthenticated={isAuthenticated} userRoles={userRoles} />} />

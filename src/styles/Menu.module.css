@@ -16,7 +16,7 @@
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  transition: transform 0.3s ease-in-out;
+  transition: transform 0.3s ease;
   position: fixed;
   left: 4vh;
   top: 4vh;
@@ -37,9 +37,10 @@
   min-width: 20vh;
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.5s ease-in-out, visibility 0.5s ease-in-out;
+  transition: max-height 0.5s ease, visibility 0.5s ease;
 }
 
 .navOpen {

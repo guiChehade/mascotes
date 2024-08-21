@@ -19,7 +19,9 @@ const Register = ({ currentUser }) => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-
+      await auth.signOut();
+      await auth.updateCurrentUser(currentUser);
+      
       await setDoc(doc(firestore, 'users', user.uid), {
         name,
         email,
