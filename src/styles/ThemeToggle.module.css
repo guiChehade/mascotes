@@ -1,18 +1,23 @@
+.themeToggle {
+    color: var(--text-color);
+    background-color: var(--button-background);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    border-radius: 50%;
+    font-size: 5vh;
+    width: 8vh;
+    height: 8vh;
+    cursor: pointer;
+    position: fixed;
+    right: 4vh;
+    top: 4vh;
+    z-index: 9999;
+}
+
+@media (max-width: 768px) {
   .themeToggle {
-      color: var(--text-color);
-      background-color: var(--button-background);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border: none;
-      border-radius: 50%;
-      font-size: 5vh;
-      width: 8vh;
-      height: 8vh;
-      cursor: pointer;
-      position: fixed;
-      right: 4vh;
-      top: 4vh;
-      z-index: 9999;
+    display: none;
   }
-  
+}

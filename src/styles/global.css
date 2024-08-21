@@ -7,6 +7,10 @@
   --container-background: #1f1f1f;
   --border-color: #ddd;
   --yellow-logo: #dfa430;
+  --green-pastel: #B6D7A8;
+  --red-pastel: #D794A2;
+  --green-pastel-hover: #D9EAD3;
+  --red-pastel-hover: #F4CCCC;
 }
 
 .light {
@@ -16,8 +20,6 @@
   --button-background: #e7b349;
   --button-hover-background: #868686;
   --container-background: #e6e6e6;
-  --border-color: #ddd;
-  --yellow-logo: #dfa430;
 }
 
 h2 {
@@ -30,11 +32,46 @@ h2 {
 body {
   margin: 0;
   padding: 0;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'DM Sans', 'Roboto', sans-serif;
   background-color: var(--background-color);
   color: var(--text-color);
 }
 
-button:hover {
-  background-color: var(--button-hover-background);
+@media (max-width: 768px) {
+  body {
+    font-size: 16px;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+  
+  h2 {
+    font-size: 1.75rem;
+  }
+  
+  h3 {
+    font-size: 1.5rem;
+  }
+  
+  h4 {
+    font-size: 1.25rem;
+  }
+  
+  h5 {
+    font-size: 1rem;
+  }
+  
+  h6 {
+    font-size: 0.875rem;
+  }
+}
+
+@keyframes fadeIn {
+  0% {opacity: 0;}
+  100% {opacity: 1;}
+}
+
+body {
+  animation: fadeIn 1s ease-in;
 }

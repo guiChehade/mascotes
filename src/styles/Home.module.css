@@ -8,14 +8,14 @@
 
 
 section {
-  margin: 2vh 0 4vh 0;
-  padding: 4vh;
-  height: 60vh;
+  margin: 4vh 0;
+  padding: 2vh;
+  height: auto;
   width: 80vw;
   max-width: 1200px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   background-color: var(--container-background);
   border-radius: 20px;
@@ -23,6 +23,7 @@ section {
 
 .homeBanner {
   background: url('../assets/home/banner/banner2.jpg') no-repeat center center;
+  height: 61vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -308,12 +309,13 @@ section {
   border: none;
   border-radius: 20px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
   background-color: rgba(255, 255, 255, 0.7);
 }
 
 .button:hover {
   background-color: rgba(255, 255, 255, 0.9);
+  transform: scale(1.05);
 }
 
 @media (max-width: 768px) {

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import Button from './Button';
 import styles from '../styles/Menu.module.css';
 
 const Menu = ({ userRoles }) => {
@@ -46,9 +47,9 @@ const Menu = ({ userRoles }) => {
 
   return (
     <div className={styles.menuContainer}>
-      <button className={`${styles.hamburger} ${menuOpen ? styles.hamburgerOpen : ''}`} onClick={handleMenuClick}>
+      <Button className={`${styles.hamburger} ${menuOpen ? styles.hamburgerOpen : ''}`} onClick={handleMenuClick}>
         ☰
-      </button>
+      </Button>
       <nav className={`${styles.nav} ${menuOpen ? styles.navOpen : ''}`}>
         <ul className={styles.ul}>
           {rolePages[userRole]?.map((page) => (
