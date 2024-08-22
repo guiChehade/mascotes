@@ -9,10 +9,21 @@ const PhotoEditor = ({ image, setImage, setEditorOpen }) => {
 
   const handleSave = () => {
     if (editor) {
+      // Cria o canvas com as dimensões desejadas
       const canvas = editor.getImageScaledToCanvas();
-      canvas.toBlob((blob) => {
-        const resizedFile = new File([blob], "photo.jpg", { type: 'image/jpeg' });
-        setImage(resizedFile);
+      const resizedCanvas = document.createElement('canvas');
+      const context = resizedCanvas.getContext('2d');
+
+      resizedCanvas.width = 200;
+      resizedCanvas.height = 200;
+
+      // Redimensiona e desenha a imagem no novo canvas
+      context.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, 200, 200);
+
+      // Converte o canvas redimensionado em um blob e, em seguida, em um arquivo
+      resizedCanvas.toBlob(blob => {
+        const file = new File([blob], "photo.jpg", { type: 'image/jpeg' });
+        setImage(file);
         setEditorOpen(false);
       }, 'image/jpeg');
     }

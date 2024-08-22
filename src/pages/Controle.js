@@ -223,7 +223,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
       {showPertenceQuestion && selectedAction === "entrada" && (
         <ActionOptions
           actionType="O pet possui pertences?"
-          options={["Sim", "Não"]}
+          options={["Não", "Sim"]}
           onSelectOption={(option) => {
             if (option === "Sim") {
               setShowPertenceModal(true);

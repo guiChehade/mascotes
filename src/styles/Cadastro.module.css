@@ -3,6 +3,11 @@
   padding: 40px;
   background-color: var(--container-background);
   border-radius: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .form {
@@ -10,10 +15,6 @@
   flex-direction: column;
   gap: 10px;
 }
-
-/* button {
-  grid-column: span 2;
-} */
 
 @media (min-width: 768px) {
   .cadastroContainer {

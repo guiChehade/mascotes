@@ -44,6 +44,28 @@
   transform: scale(1.1);
 }
 
+.buttonSim {
+  background-color: var(--green-pastel);
+  color: var(--text-color);
+  border: none;
+  transition: background-color 0.3s;
+}
+
+.buttonNao {
+  background-color: var(--red-pastel);
+  color: var(--text-color);
+  border: none;
+  transition: background-color 0.3s;
+}
+
+.buttonSim:hover {
+  background-color: var(--green-pastel-hover);
+}
+
+.buttonNao:hover {
+  background-color: var(--red-pastel-hover);
+}
+
 .backButton {
   margin-top: 1rem;
   background-color: var(--button-background);

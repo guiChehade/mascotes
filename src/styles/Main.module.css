@@ -1,5 +1,6 @@
 .main {
-    min-height: calc(100vh - 16vh);
+    /* min-height: calc(100vh - 16vh); */
+    height: fit-content;
     overflow: auto;
     width: 100vw;
     position: relative;

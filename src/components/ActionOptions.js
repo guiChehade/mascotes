@@ -9,7 +9,11 @@ const ActionOptions = ({ actionType, options, onSelectOption, onBack }) => {
         <h2>{actionType}</h2>
         <div className={styles.optionsContainer}>
           {options.map((option, index) => (
-            <Button key={index} onClick={() => onSelectOption(option)} className={styles.optionButton}>
+            <Button 
+              key={index} 
+              onClick={() => onSelectOption(option)} 
+              className={`${styles.optionButton} ${option === 'Sim' ? styles.buttonSim : option === 'Não' ? styles.buttonNao : ''}`}
+            >
               {option}
             </Button>
           ))}

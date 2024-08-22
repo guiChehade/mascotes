@@ -7,10 +7,10 @@
   --container-background: #1f1f1f;
   --border-color: #ddd;
   --yellow-logo: #dfa430;
-  --green-pastel: #B6D7A8;
-  --red-pastel: #D794A2;
-  --green-pastel-hover: #D9EAD3;
-  --red-pastel-hover: #F4CCCC;
+  --red-pastel: #E06666;
+  --green-pastel: #93C47D;
+  --red-pastel-hover: #EA9999;
+  --green-pastel-hover: #B6D7A8;
 }
 
 .light {

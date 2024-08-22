@@ -4,12 +4,37 @@
   padding: 40px;
   background-color: var(--container-background);
   border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .editarPetForm {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.buttonSim {
+  background-color: var(--green-pastel);
+  color: var(--text-color);
+  border: none;
+  transition: background-color 0.3s;
+}
+
+.buttonNao {
+  background-color: var(--red-pastel);
+  color: var(--text-color);
+  border: none;
+  transition: background-color 0.3s;
+}
+
+.buttonSim:hover {
+  background-color: var(--green-pastel-hover);
+}
+
+.buttonNao:hover {
+  background-color: var(--red-pastel-hover);
 }
 
 @media (min-width: 768px) {

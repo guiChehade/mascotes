@@ -122,8 +122,8 @@ const EditarPet = ({ currentUser }) => {
         <Input label="Celular Veterinário Comercial" type="text" name="celular_vet_comercial" value={formData.celular_vet_comercial} onChange={handleChange} mask="(99) 99999-9999" />
         <Input label="Celular Veterinário Pessoal" type="text" name="celular_vet_pessoal" value={formData.celular_vet_pessoal} onChange={handleChange} mask="(99) 99999-9999" />
         <Input label="Foto" type="file" accept="image/*" onChange={(e) => handlePhotoChange(e.target.files[0])} />
-        <Button onClick={handleInactivate}>Inativar Pet</Button>
-        <Button type="submit">Salvar</Button>
+        <Button onClick={handleInactivate} className={styles.buttonNao}>Inativar Pet</Button>
+        <Button  className={styles.buttonSim} type="submit">Salvar</Button>
       </form>
       {editorOpen && <PhotoEditor image={photo} setImage={(img) => setFormData((prevFormData) => ({ ...prevFormData, foto: img }))} setEditorOpen={setEditorOpen} />}
     </Container>

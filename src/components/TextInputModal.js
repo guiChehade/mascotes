@@ -21,8 +21,8 @@ const TextInputModal = ({ onSubmit, onClose }) => {
           className={styles.textarea}
         />
         <div className={styles.buttonGroup}>
-          <Button onClick={handleSubmit}>Enviar</Button>
           <Button onClick={onClose}>Cancelar</Button>
+          <Button onClick={handleSubmit}>Enviar</Button>
         </div>
       </div>
     </div>
