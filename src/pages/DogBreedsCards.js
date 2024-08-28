@@ -78,8 +78,8 @@ const DogBreedsCards = () => {
                 loading="lazy" // Lazy loading da imagem
               />
             </div>
-            <h3>{breed.nome}</h3>
-            <p>{breed.destaque}</p>
+            <h3 className={styles.raca}>{breed.nome}</h3>
+            <p className={styles.destaque}>{breed.destaque}</p>
             <Button to={`/racas/${breed.id}`} className={styles.button}>
               Saiba Mais
             </Button>
