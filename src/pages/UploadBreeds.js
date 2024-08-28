@@ -8,11 +8,8 @@ import Button from '../components/Button';
 const UploadBreeds = () => {
   const [formData, setFormData] = useState({
     nome: '',
+    busca: '',
     destaque: '',
-    origem: '',
-    peso_medio: '',
-    altura_media: '',
-    expectativa_vida: '',
     porte: '',
     nivel_latido: '',
     nivel_energia: '',
@@ -20,9 +17,6 @@ const UploadBreeds = () => {
     nivel_treinamento: '',
     grupo: '',
     temperamento: '',
-    ideal_para: '',
-    necessidades: '',
-    plano: 'gratuito'
   });
 
   const [imagemCard, setImagemCard] = useState(null);
@@ -64,11 +58,8 @@ const UploadBreeds = () => {
 
       setFormData({
         nome: '',
+        busca: '',
         destaque: '',
-        origem: '',
-        peso_medio: '',
-        altura_media: '',
-        expectativa_vida: '',
         porte: '',
         nivel_latido: '',
         nivel_energia: '',
@@ -76,9 +67,6 @@ const UploadBreeds = () => {
         nivel_treinamento: '',
         grupo: '',
         temperamento: '',
-        ideal_para: '',
-        necessidades: '',
-        plano: 'gratuito',
       });
       setImagemCard(null);
       setImagensCarrossel([]);
@@ -101,38 +89,17 @@ const UploadBreeds = () => {
         />
         <Input
             type="text"
+            name="busca"
+            value={formData.busca}
+            onChange={handleChange}
+            placeholder="Busca"
+        />
+        <Input
+            type="text"
             name="destaque"
             value={formData.destaque}
             onChange={handleChange}
             placeholder="Destaque"
-        />
-        <Input
-            type="text"
-            name="origem"
-            value={formData.origem}
-            onChange={handleChange}
-            placeholder="Origem"
-        />
-        <Input
-            type="text"
-            name="peso_medio"
-            value={formData.peso_medio}
-            onChange={handleChange}
-            placeholder="Peso Médio"
-        />
-        <Input
-            type="text"
-            name="altura_media"
-            value={formData.altura_media}
-            onChange={handleChange}
-            placeholder="Altura Média"
-        />
-        <Input
-            type="text"
-            name="expectativa_vida"
-            value={formData.expectativa_vida}
-            onChange={handleChange}
-            placeholder="Expectativa de Vida"
         />
         <Input
             type="text"
@@ -182,20 +149,6 @@ const UploadBreeds = () => {
             value={formData.temperamento}
             onChange={handleChange}
             placeholder="Temperamento"
-        />
-        <Input
-            type="text"
-            name="ideal_para"
-            value={formData.ideal_para}
-            onChange={handleChange}
-            placeholder="Ideal para"
-        />
-        <Input
-            type="text"
-            name="necessidades"
-            value={formData.necessidades}
-            onChange={handleChange}
-            placeholder="Necessidades"
         />
       <Input type="file" onChange={handleImagemCardChange} />
       <Input type="file" multiple onChange={handleImagensCarrosselChange} />
