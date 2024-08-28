@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { collection, query, where, getDocs, limit, startAfter } from 'firebase/firestore';
 import { firestore } from '../firebase'; // Importando a configuração do Firestore
 import Button from '../components/Button';
+import fotoDefault from '../assets/dogBreeds/images/border-collie.png';
 import styles from '../styles/DogBreedsCards.module.css';
 
 const DogBreedsCards = () => {

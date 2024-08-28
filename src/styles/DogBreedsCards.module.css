@@ -41,8 +41,5 @@
   width: 100%;
   height: auto;
   object-fit: cover;
-  border: 0.2rem solid #DFA430;
-  box-shadow: 0 0 8px #DFA430;
-  border-radius: 20px;
-  /* colocar borda e sombra */
+  /* border-radius: 20px; */
 }
