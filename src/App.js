@@ -15,6 +15,7 @@ import Quiz from "./components/Quiz";
 import Cadastro from "./pages/Cadastro";
 import Mascotes from "./pages/Mascotes";
 import Controle from "./pages/Controle";
+import DogBreeds from "./pages/DogsBreeds";
 import ControleRedirect from "./pages/ControleRedirect";
 import EditarPet from "./pages/EditarPet";
 import Registros from "./pages/Registros";
@@ -59,6 +60,7 @@ const App = () => {
         <Main className={styles.main}>
           <Routes>
             <Route path="/" element={<Home isAuthenticated={isAuthenticated} userRoles={userRoles} />} />
+            <Route path="/racas" element={<DogBreeds />} />
             <Route path="/controle" element={<ControleRedirect />} />
             <Route path="/quiz" element={<Quiz />} />
             <Route path="/:petId" element={<Controle currentUser={currentUser} />} />

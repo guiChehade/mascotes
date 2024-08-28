@@ -10,6 +10,7 @@ const MascoteCard = ({ pet, onSelect }) => {
         className={styles.petPhoto}
         src={pet.foto || logoLarge}
         alt={pet.mascotinho}
+        loading="lazy"
         style={pet.foto ? {} : { filter: 'grayscale(100%)' }}
       />
       <div className={styles.label}>Tutor</div>

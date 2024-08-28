@@ -24,23 +24,28 @@ const Menu = ({ userRoles }) => {
       { to: "/registros", label: "Registros" },
       { to: "/financas", label: "Finanças" },
       { to: "/usuarios", label: "Usuários" },
+      { to: "/racas", label: "Raças" },
     ],
     isAdmin: [
       { to: "/", label: "Início" },
       { to: "/cadastro", label: "Cadastro" },
       { to: "/mascotes", label: "Mascotes" },
       { to: "/registros", label: "Registros" },
+      { to: "/racas", label: "Raças" },
     ],
     isEmployee: [
       { to: "/", label: "Início" },
       { to: "/mascotes", label: "Mascotes" },
       { to: "/registros", label: "Registros" },
+      { to: "racas", label: "Raças" },
     ],
     isTutor: [
       { to: "/", label: "Início" },
+      { to: "/racas", label: "Raças" },
     ],
     none: [
       { to: "/", label: "Início" },
+      { to: "/racas", label: "Raças" },
       { to: "/login", label: "Login" },
     ],
   };

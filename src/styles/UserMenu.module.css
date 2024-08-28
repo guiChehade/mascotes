@@ -62,3 +62,11 @@
     text-decoration: underline;
   }
   
+  @media (max-width: 768px) {
+    .userMenuContainer {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+      width: 20vw;
+    }
+  }

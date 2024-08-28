@@ -1,0 +1,60 @@
+.breedsContainer {
+  padding: 20px;
+  text-align: center;
+}
+
+.filterContainer {
+  margin: 1rem;
+}
+
+.filterContainer label {
+  margin: 0 0.25rem 0 1rem;
+  font-size: 1.125rem;
+  font-weight: bold;
+}
+
+.selectFilter {
+  padding: 0.5rem;
+  font-size: 1.125rem;
+  width: 12.5rem;
+  border-radius: 2rem;
+  background-color: var(--button-background);
+  color: var(--text-color);
+  border: 1px solid var(--container-background);
+  transition: all 0.3s ease-in-out;
+}
+
+.selectFilter:hover {
+  border: 1px solid var(--yellow-pastel);
+  transform: scale(1.025);
+}
+
+.breedsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  justify-items: center;
+}
+
+.breedCard {
+  background-color: var(--container-background);
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  text-align: center;
+}
+
+.breedCard img {
+  width: 100%;
+  height: 10rem;
+  border-radius: 0.5rem;
+  object-fit: cover;
+}
+
+.breedCard h3 {
+  margin: 10px 0;
+}
+
+.breedCard p {
+  padding: 0 10px 10px;
+}
