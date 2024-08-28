@@ -67,15 +67,17 @@ const DogBreedsCards = () => {
       <div className={styles.cardsContainer}>
         {filteredBreeds.map((breed) => (
           <div key={breed.id} className={styles.card}>
-            <img
-              src={
-                breed.imagem_card ||
-                `https://firebasestorage.googleapis.com/v0/b/{bucket}/o/racas%2F${encodeURIComponent(breed.nome)}%2Fcard.png?alt=media`
-              }
-              alt={breed.nome}
-              className={styles.breedImage}
-              loading="lazy" // Lazy loading da imagem
-            />
+            <div className={styles.imageContainer}>
+              <img
+                src={
+                  breed.imagem_card ||
+                  `https://firebasestorage.googleapis.com/v0/b/{bucket}/o/racas%2F${encodeURIComponent(breed.nome)}%2Fcard.png?alt=media`
+                }
+                alt={breed.nome}
+                className={styles.breedImage}
+                loading="lazy" // Lazy loading da imagem
+              />
+            </div>
             <h3>{breed.nome}</h3>
             <p>{breed.destaque}</p>
             <Button to={`/racas/${breed.id}`} className={styles.button}>
