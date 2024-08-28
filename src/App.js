@@ -15,7 +15,8 @@ import Quiz from "./components/Quiz";
 import Cadastro from "./pages/Cadastro";
 import Mascotes from "./pages/Mascotes";
 import Controle from "./pages/Controle";
-import DogBreeds from "./pages/DogsBreeds";
+import DogBreedsCards from "./pages/DogBreedsCards";
+import UploadBreeds from "./pages/UploadBreeds";
 import ControleRedirect from "./pages/ControleRedirect";
 import EditarPet from "./pages/EditarPet";
 import Registros from "./pages/Registros";
@@ -60,7 +61,7 @@ const App = () => {
         <Main className={styles.main}>
           <Routes>
             <Route path="/" element={<Home isAuthenticated={isAuthenticated} userRoles={userRoles} />} />
-            <Route path="/racas" element={<DogBreeds />} />
+            <Route path="/racas" element={<DogBreedsCards />} />
             <Route path="/controle" element={<ControleRedirect />} />
             <Route path="/quiz" element={<Quiz />} />
             <Route path="/:petId" element={<Controle currentUser={currentUser} />} />
@@ -70,6 +71,9 @@ const App = () => {
               <>
                 {(userRole === "isAdmin" || userRole === "isOwner") && (
                   <Route path="/cadastro" element={<Cadastro currentUser={currentUser} />} />
+                )}
+                {(userRole === "isOwner") && (
+                  <Route path="/upload-racas" element={<UploadBreeds />} />
                 )}
                 {(userRole === "isEmployee" || userRole === "isAdmin" || userRole === "isOwner") && (
                   <Route path="/mascotes" element={<Mascotes currentUser={currentUser} />} />
