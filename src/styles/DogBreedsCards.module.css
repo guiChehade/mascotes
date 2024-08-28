@@ -49,3 +49,12 @@
 .breedImage:hover {
   transform: scale(1.05);
 }
+
+.button {
+  background-color: var(--button-background);
+  color: var(--button-color);
+  border: none;
+  border-radius: 20px;
+  font-size: 1rem;
+  padding: 0.25rem;
+}
