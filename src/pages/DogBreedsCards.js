@@ -141,7 +141,7 @@ const DogBreedsCards = () => {
               alt={breed.nome}
               className={styles.breedImage}
             />
-            <h4>{breed.nome}</h4>
+            <h3>{breed.nome}</h3>
             <p>{breed.destaque}</p>
             <Button to={`/racas/${breed.id}`} className={styles.button}>
               Saiba Mais
