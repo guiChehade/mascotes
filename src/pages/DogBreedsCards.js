@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { collection, getDocs, query, startAfter, getDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, query } from 'firebase/firestore';
 import { firestore } from '../firebase';
 import Button from '../components/Button';
 import DogBreedPopup from '../components/DogBreedPopup';
@@ -11,15 +11,13 @@ const DogBreedsCards = () => {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedBreed, setSelectedBreed] = useState(null);
-  const [lastVisible, setLastVisible] = useState(null);
 
-  // Função para buscar as raças
   const fetchBreeds = useCallback(async () => {
     setLoading(true);
 
     try {
       const breedsRef = collection(firestore, 'racas');
-      const breedsQuery = query(breedsRef); // Consulta sem paginação
+      const breedsQuery = query(breedsRef);
 
       const breedSnapshot = await getDocs(breedsQuery);
       const breedsData = breedSnapshot.docs.map((doc) => ({
@@ -41,23 +39,20 @@ const DogBreedsCards = () => {
   }, []);
 
   useEffect(() => {
-    // Filtra as raças com base no termo de busca
-    const filtered = breeds.filter((breed) =>
-      breed.busca.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredBreeds(filtered);
-  }, [searchTerm, breeds]); // Executa sempre que searchTerm ou breeds mudarem
+    fetchBreeds();
+  }, [fetchBreeds]);
 
   const handleSearchChange = (e) => {
     const term = e.target.value.toLowerCase();
     setSearchTerm(term);
-
-    const filtered = breeds.filter((breed) =>
-      breed.busca.toLowerCase().includes(term)
-    );
-
-    setFilteredBreeds(filtered); // Atualiza o estado com os resultados filtrados
   };
+
+  useEffect(() => {
+    const filtered = breeds.filter((breed) =>
+      breed.busca.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredBreeds(filtered);
+  }, [searchTerm, breeds]);
 
   const fetchBreedDetails = useCallback(async (breedId) => {
     setLoading(true);
