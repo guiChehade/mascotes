@@ -68,6 +68,9 @@ const DogBreedsCards = () => {
         {filteredBreeds.map((breed) => (
           <div key={breed.id} className={styles.card}>
             <div className={styles.imageContainer}>
+              {/* <svg className={styles.overlayImage} width='100%' height='100%'>
+                <rect width='100%' height='100%' fill='transparent'/>
+              </svg> */}
               <img
                 src={
                   breed.imagem_card ||
