@@ -71,7 +71,7 @@ const DogBreedsCards = () => {
       {/* Cards das Raças */}
       <div className={styles.cardsContainer}>
         {filteredBreeds.map((breed) => (
-          <div key={breed.id} className={styles.card}>
+          <div key={breed.id} className={styles.card} onClick={() => handleBreedClick(breed)}>
             <div className={styles.imageContainer}>
               {/* <svg className={styles.overlayImage} width='100%' height='100%'>
                 <rect width='100%' height='100%' fill='transparent'/>
