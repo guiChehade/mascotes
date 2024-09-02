@@ -13,7 +13,8 @@ const DogBreedsCards = () => {
   const [selectedBreed, setSelectedBreed] = useState(null);
   const [lastVisible, setLastVisible] = useState(null);
 
-  const fetchBreeds = useCallback(async(loadMore = false) => {
+  // Função para buscar as raças
+  const fetchBreeds = useCallback(async (loadMore = false) => {
     setLoading(true);
 
     try {
@@ -36,6 +37,7 @@ const DogBreedsCards = () => {
       setLastVisible(breedSnapshot.docs[breedSnapshot.docs.length - 1]);
 
       setBreeds((prevBreeds) => (loadMore ? [...prevBreeds, ...breedsData] : breedsData));
+      setFilteredBreeds(breedsData);  // Atualiza o estado filtrado inicialmente
     } catch (error) {
       console.error('Erro ao buscar raças:', error);
     } finally {
@@ -43,22 +45,19 @@ const DogBreedsCards = () => {
     }
   }, [lastVisible]);
 
-  // Carregar todos os dados ao montar o componente
   useEffect(() => {
     fetchBreeds();
   }, [fetchBreeds]);
 
-  // Função para aplicar a pesquisa localmente com base no campo 'busca'
   const handleSearchChange = (e) => {
     const term = e.target.value.toLowerCase();
     setSearchTerm(term);
 
-    // Filtrando localmente com base no campo 'busca'
     const filtered = breeds.filter((breed) =>
       breed.busca.toLowerCase().includes(term)
     );
 
-    setFilteredBreeds(filtered);
+    setFilteredBreeds(filtered); // Atualiza o estado com os resultados filtrados
   };
 
   const fetchBreedDetails = useCallback(async (breedId) => {
@@ -80,7 +79,7 @@ const DogBreedsCards = () => {
 
   const handleBreedClick = (breedId) => {
     fetchBreedDetails(breedId);
-  }
+  };
 
   return (
     <div className={styles.pageContainer}>
@@ -98,11 +97,8 @@ const DogBreedsCards = () => {
       {/* Cards das Raças */}
       <div className={styles.cardsContainer}>
         {filteredBreeds.map((breed) => (
-          <div key={breed.id} className={styles.card} onClick={() => handleBreedClick(breed)}>
+          <div key={breed.id} className={styles.card} onClick={() => handleBreedClick(breed.id)}>
             <div className={styles.imageContainer}>
-              {/* <svg className={styles.overlayImage} width='100%' height='100%'>
-                <rect width='100%' height='100%' fill='transparent'/>
-              </svg> */}
               <img
                 src={
                   breed.imagem_card ||
@@ -110,12 +106,12 @@ const DogBreedsCards = () => {
                 }
                 alt={breed.nome}
                 className={styles.breedImage}
-                loading="lazy" // Lazy loading da imagem
+                loading="lazy"
               />
             </div>
             <h3 className={styles.raca}>{breed.nome}</h3>
             <p className={styles.destaque}>{breed.destaque}</p>
-            <Button className={styles.button} onClick={handleBreedClick}>
+            <Button className={styles.button} onClick={() => handleBreedClick(breed.id)}>
               Saiba Mais
             </Button>
           </div>
