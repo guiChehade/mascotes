@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { collection, getDocs, query, limit, startAfter, getDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, query, startAfter, getDoc, doc } from 'firebase/firestore';
 import { firestore } from '../firebase';
 import Button from '../components/Button';
 import DogBreedPopup from '../components/DogBreedPopup';
@@ -19,10 +19,10 @@ const DogBreedsCards = () => {
 
     try {
       const breedsRef = collection(firestore, 'racas');
-      let breedsQuery = query(breedsRef, limit(12));
+      let breedsQuery = query(breedsRef);
 
       if (loadMore && lastVisible) {
-        breedsQuery = query(breedsRef, startAfter(lastVisible), limit(12));
+        breedsQuery = query(breedsRef, startAfter(lastVisible));
       }
 
       const breedSnapshot = await getDocs(breedsQuery);

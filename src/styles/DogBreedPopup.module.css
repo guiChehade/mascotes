@@ -28,7 +28,8 @@
     position: absolute;
     top: 1rem;
     right: 1rem;
-    background-color: transparent;
+    padding: 0.5rem;
+    background-color: var(--red-pastel);
     border: none;
     color: var(--text-color);
     font-size: 1.5rem;
@@ -36,18 +37,19 @@
   }
   
   .closeButton:hover {
-    color: var(--button-background);
+    color: var(--red-pastel-hover);
   }
   
   .title {
     margin-bottom: 0.5rem;
     font-size: 2rem;
+    color: var(--yellow-logo);
   }
   
   .subtitle {
     margin-bottom: 1.5rem;
     font-size: 1.25rem;
-    color: var(--yellow-pastel);
+    color: var(--yellow-logo);
   }
   
   .detailItem {
@@ -56,7 +58,7 @@
   }
   
   .detailItem strong {
-    color: var(--button-background);
+    color: var(--yellow-pastel);
   }
   
   .detailItem span {

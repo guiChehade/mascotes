@@ -18,7 +18,7 @@ const DogBreedPopup = ({ breedDetails, onClose }) => {
     <div className={styles.popupContainer}>
       <div className={styles.popupContent}>
         <button className={styles.closeButton} onClick={onClose}>X</button>
-        <h1 className={styles.title}>{breedDetails.raca}</h1>
+        <h1 className={styles.title}>{breedDetails.nome}</h1>
         <h2 className={styles.subtitle}>{breedDetails.destaque}</h2>
 
         {/* Renderizando os detalhes da raça */}
