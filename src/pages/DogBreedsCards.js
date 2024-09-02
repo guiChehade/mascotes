@@ -88,7 +88,7 @@ const DogBreedsCards = () => {
             </div>
             <h3 className={styles.raca}>{breed.nome}</h3>
             <p className={styles.destaque}>{breed.destaque}</p>
-            <Button to={`/racas/${breed.id}`} className={styles.button}>
+            <Button className={styles.button} onClick={handleBreedClick}>
               Saiba Mais
             </Button>
           </div>
