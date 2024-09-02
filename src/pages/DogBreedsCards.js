@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { firestore } from '../firebase';
 import Button from '../components/Button';
-import fotoDefault from '../assets/dogBreeds/images/border-collie.png';
+import DogBreedPopup from '../components/DogBreedPopup';
 import styles from '../styles/DogBreedsCards.module.css';
 
 const DogBreedsCards = () => {
@@ -10,6 +10,7 @@ const DogBreedsCards = () => {
   const [filteredBreeds, setFilteredBreeds] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedBreed, setSelectedBreed] = useState(null);
 
   // Função para buscar todos os documentos de uma vez
   const fetchAllBreeds = useCallback(async () => {
@@ -48,6 +49,10 @@ const DogBreedsCards = () => {
     );
 
     setFilteredBreeds(filtered);
+  };
+
+  const handleBreedClick = (breed) => {
+    setSelectedBreed(breed);
   };
 
   return (
@@ -91,6 +96,12 @@ const DogBreedsCards = () => {
       </div>
 
       {loading && <p>Carregando...</p>}
+      {selectedBreed && (
+        <DogBreedPopup
+          breedDetails={selectedBreed}
+          onClose={() => setSelectedBreed(null)}
+        />
+      )}
     </div>
   );
 };
