@@ -14,16 +14,12 @@ const DogBreedsCards = () => {
   const [lastVisible, setLastVisible] = useState(null);
 
   // Função para buscar as raças
-  const fetchBreeds = useCallback(async (loadMore = false) => {
+  const fetchBreeds = useCallback(async () => {
     setLoading(true);
 
     try {
       const breedsRef = collection(firestore, 'racas');
-      let breedsQuery = query(breedsRef);
-
-      if (loadMore && lastVisible) {
-        breedsQuery = query(breedsRef, startAfter(lastVisible));
-      }
+      const breedsQuery = query(breedsRef); // Consulta sem paginação
 
       const breedSnapshot = await getDocs(breedsQuery);
       const breedsData = breedSnapshot.docs.map((doc) => ({
@@ -32,22 +28,25 @@ const DogBreedsCards = () => {
         imagem_card: doc.data().imagem_card,
         destaque: doc.data().destaque,
         busca: doc.data().busca,
+        // Adicione outros campos básicos necessários para o card
       }));
 
-      setLastVisible(breedSnapshot.docs[breedSnapshot.docs.length - 1]);
-
-      setBreeds((prevBreeds) => (loadMore ? [...prevBreeds, ...breedsData] : breedsData));
-      setFilteredBreeds(breedsData);  // Atualiza o estado filtrado inicialmente
+      setBreeds(breedsData);
+      setFilteredBreeds(breedsData); 
     } catch (error) {
       console.error('Erro ao buscar raças:', error);
     } finally {
       setLoading(false);
     }
-  }, [lastVisible]);
+  }, []);
 
   useEffect(() => {
-    fetchBreeds();
-  }, [fetchBreeds]);
+    // Filtra as raças com base no termo de busca
+    const filtered = breeds.filter((breed) =>
+      breed.busca.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredBreeds(filtered);
+  }, [searchTerm, breeds]); // Executa sempre que searchTerm ou breeds mudarem
 
   const handleSearchChange = (e) => {
     const term = e.target.value.toLowerCase();
