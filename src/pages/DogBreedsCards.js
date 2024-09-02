@@ -27,7 +27,7 @@ const DogBreedsCards = () => {
       const breedSnapshot = await getDocs(breedsQuery);
       const breedsData = breedSnapshot.docs.map((doc) => ({
         id: doc.id,
-        name: doc.data().name,
+        nome: doc.data().nome,
         imagem_card: doc.data().imagem_card,
         destaque: doc.data().destaque,
         busca: doc.data().busca,
