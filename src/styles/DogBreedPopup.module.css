@@ -9,7 +9,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 10000;
   }
   
   .popupContent {
@@ -47,7 +47,7 @@
   .subtitle {
     margin-bottom: 1.5rem;
     font-size: 1.25rem;
-    color: var(--button-background);
+    color: var(--yellow-pastel);
   }
   
   .detailItem {

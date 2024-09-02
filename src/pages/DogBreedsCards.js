@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, limit, startAfter, getDoc, doc } from 'firebase/firestore';
 import { firestore } from '../firebase';
 import Button from '../components/Button';
 import DogBreedPopup from '../components/DogBreedPopup';
@@ -11,32 +11,42 @@ const DogBreedsCards = () => {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedBreed, setSelectedBreed] = useState(null);
+  const [lastVisible, setLastVisible] = useState(null);
 
-  // Função para buscar todos os documentos de uma vez
-  const fetchAllBreeds = useCallback(async () => {
+  const fetchBreeds = useCallback(async(loadMore = false) => {
     setLoading(true);
 
     try {
       const breedsRef = collection(firestore, 'racas');
-      const breedSnapshot = await getDocs(breedsRef);
+      let breedsQuery = query(breedsRef, limit(12));
+
+      if (loadMore && lastVisible) {
+        breedsQuery = query(breedsRef, startAfter(lastVisible), limit(12));
+      }
+
+      const breedSnapshot = await getDocs(breedsQuery);
       const breedsData = breedSnapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data(),
+        name: doc.data().name,
+        imagem_card: doc.data().imagem_card,
+        destaque: doc.data().destaque,
+        busca: doc.data().busca,
       }));
 
-      setBreeds(breedsData);
-      setFilteredBreeds(breedsData); // Inicializa com todos os dados
+      setLastVisible(breedSnapshot.docs[breedSnapshot.docs.length - 1]);
+
+      setBreeds((prevBreeds) => (loadMore ? [...prevBreeds, ...breedsData] : breedsData));
     } catch (error) {
       console.error('Erro ao buscar raças:', error);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [lastVisible]);
 
   // Carregar todos os dados ao montar o componente
   useEffect(() => {
-    fetchAllBreeds();
-  }, [fetchAllBreeds]);
+    fetchBreeds();
+  }, [fetchBreeds]);
 
   // Função para aplicar a pesquisa localmente com base no campo 'busca'
   const handleSearchChange = (e) => {
@@ -51,9 +61,26 @@ const DogBreedsCards = () => {
     setFilteredBreeds(filtered);
   };
 
-  const handleBreedClick = (breed) => {
-    setSelectedBreed(breed);
-  };
+  const fetchBreedDetails = useCallback(async (breedId) => {
+    setLoading(true);
+
+    try {
+      const breedDoc = await getDoc(doc(firestore, 'racas', breedId));
+      if (breedDoc.exists()) {
+        setSelectedBreed({ id: breedDoc.id, ...breedDoc.data() });
+      } else {
+        console.error('Erro ao encontrar raça com este ID');
+      }
+    } catch (error) {
+      console.error('Erro ao buscar detalhes da raça:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const handleBreedClick = (breedId) => {
+    fetchBreedDetails(breedId);
+  }
 
   return (
     <div className={styles.pageContainer}>
