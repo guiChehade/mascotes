@@ -22,7 +22,7 @@ const Menu = ({ userRoles }) => {
       { to: "/cadastro", label: "Cadastro" },
       { to: "/mascotes", label: "Mascotes" },
       { to: "/registros", label: "Registros" },
-      { to: "/financas", label: "Finanças" },
+      { to: "/ponto", label: "Ponto" },
       { to: "/usuarios", label: "Usuários" },
       { to: "/racas", label: "Raças" },
     ],
@@ -31,12 +31,14 @@ const Menu = ({ userRoles }) => {
       { to: "/cadastro", label: "Cadastro" },
       { to: "/mascotes", label: "Mascotes" },
       { to: "/registros", label: "Registros" },
+      { to: "/ponto", label: "Ponto" },
       { to: "/racas", label: "Raças" },
     ],
     isEmployee: [
       { to: "/", label: "Início" },
       { to: "/mascotes", label: "Mascotes" },
       { to: "/registros", label: "Registros" },
+      { to: "/ponto", label: "Ponto" },
       { to: "racas", label: "Raças" },
     ],
     isTutor: [

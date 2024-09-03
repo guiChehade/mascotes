@@ -1,0 +1,33 @@
+.tableContainer {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 20px;
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .tableHeader {
+    background-color: var(--button-background);
+    color: var(--text-color);
+    padding: 12px;
+    text-align: left;
+    font-weight: bold;
+  }
+  
+  .tableRow:nth-child(even) {
+    background-color: var(--container-background);
+  }
+  
+  .tableRow:hover {
+    background-color: var(--background-color);
+  }
+  
+  .tableCell {
+    padding: 10px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+  }
+  

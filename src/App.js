@@ -20,9 +20,10 @@ import UploadBreeds from "./pages/UploadBreeds";
 import ControleRedirect from "./pages/ControleRedirect";
 import EditarPet from "./pages/EditarPet";
 import Registros from "./pages/Registros";
-import Financas from "./pages/Financas";
+import Ponto from "./pages/Ponto";
 import Usuarios from "./pages/Usuarios";
 import styles from "./styles/App.module.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import "./styles/global.css";
 
 const App = () => {
@@ -69,6 +70,9 @@ const App = () => {
             <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} setUserRoles={setUserRoles} setCurrentUser={setCurrentUser} />} />
             {isAuthenticated && (
               <>
+                {(userRole === "isEmployee" || userRole === "isAdmin" || userRole === "isOwner") && (
+                  <Route path="/ponto" element={<Ponto currentUser={currentUser} />} />
+                )}
                 {(userRole === "isAdmin" || userRole === "isOwner") && (
                   <Route path="/cadastro" element={<Cadastro currentUser={currentUser} />} />
                 )}
@@ -83,9 +87,6 @@ const App = () => {
                 )}
                 {(userRole === "isEmployee" || userRole === "isAdmin" || userRole === "isOwner") && (
                   <Route path="/registros" element={<Registros currentUser={currentUser} />} />
-                )}
-                {userRole === "isOwner" && (
-                  <Route path="/financas" element={<Financas currentUser={currentUser} />} />
                 )}
                 {userRole === "isOwner" && (
                   <Route path="/usuarios" element={<Usuarios currentUser={currentUser} />} />
