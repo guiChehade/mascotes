@@ -44,7 +44,7 @@ const LoginModal = ({ onClose, onLoginSuccess }) => {
             placeholder="Digite sua senha"
             required
           />
-          <Button type="submit">Entrar</Button>
+          <Button className={styles.button} type="submit">Entrar</Button>
         </form>
       </div>
     </div>

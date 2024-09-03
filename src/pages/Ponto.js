@@ -121,7 +121,7 @@ const Ponto = ({ currentUser }) => {
   }, [pontos]);
 
   if (loading) {
-    return <div className={styles.pontoPage}>Carregando...</div>;
+    return <div className={styles.pontoPage}>Esta página exige acesso, caso não carregue em instantes, verifique se você fez Login</div>;
   }
 
   if (!currentUser || !auth.currentUser) {
