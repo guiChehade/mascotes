@@ -91,7 +91,7 @@ const DogBreedsCards = () => {
       {/* Cards das Raças */}
       <div className={styles.cardsContainer}>
         {filteredBreeds.map((breed) => (
-          <div key={breed.id} className={styles.card} onClick={() => handleBreedClick(breed.id)}>
+          <div key={breed.id} className={styles.card}>
             <div className={styles.imageContainer}>
               <img
                 src={

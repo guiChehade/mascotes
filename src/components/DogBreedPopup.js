@@ -3,7 +3,17 @@ import styles from '../styles/DogBreedPopup.module.css';
 
 const DogBreedPopup = ({ breedDetails, onClose }) => {
   // Função para renderizar cada campo de detalhes da raça de cachorro
-  const renderDetail = (label, value) => {
+  const renderDetail = (value) => {
+    if (!value) return null; // Se o campo não estiver preenchido, não renderizar nada
+
+    return (
+      <div className={styles.detailItem}>
+        <span>{value}</span>
+      </div>
+    );
+  };
+
+  const renderFichaTecnica = (label, value) => {
     if (!value) return null; // Se o campo não estiver preenchido, não renderizar nada
 
     return (
@@ -14,6 +24,20 @@ const DogBreedPopup = ({ breedDetails, onClose }) => {
     );
   };
 
+  // Função para renderizar um subtítulo caso haja conteúdo na seção
+  const renderSection = (title, content) => {
+    if (!content.some(detail => detail)) return null;
+
+    return (
+      <>
+        <h3 className={styles.sectionTitle}>{title}</h3>
+        {content.map((detail, index) => (
+          renderDetail(detail)
+        ))}
+      </>
+    );
+  };
+
   return (
     <div className={styles.popupContainer}>
       <div className={styles.popupContent}>
@@ -21,46 +45,61 @@ const DogBreedPopup = ({ breedDetails, onClose }) => {
         <h1 className={styles.title}>{breedDetails.nome}</h1>
         <h2 className={styles.subtitle}>{breedDetails.destaque}</h2>
 
-        {/* Renderizando os detalhes da raça */}
-        {renderDetail('Porte', breedDetails.porte)}
-        {renderDetail('Nível de Latido', breedDetails.nivel_latido)}
-        {renderDetail('Nível de Energia', breedDetails.nivel_energia)}
-        {renderDetail('Nível de Socialização', breedDetails.nivel_socializacao)}
-        {renderDetail('Nível de Treinamento', breedDetails.nivel_treinamento)}
-        {renderDetail('Grupo', breedDetails.grupo)}
-        {renderDetail('Origem', breedDetails.origem)}
-        {renderDetail('Peso Médio', `${breedDetails.peso_medio} kg`)}
-        {renderDetail('Altura na Cernelha', `${breedDetails.altura_cernelha} cm`)}
-        {renderDetail('Expectativa de Vida', `${breedDetails.expectativa_vida} anos`)}
-        {renderDetail('Introdução', breedDetails.detalhes?.introducao)}
+        {/* Ficha Técnica */}
+        <h3 className={styles.sectionTitle}>Ficha Técnica</h3>
+        {renderFichaTecnica('Porte', breedDetails.porte)}
+        {renderFichaTecnica('Nível de Latido', breedDetails.nivel_latido)}
+        {renderFichaTecnica('Nível de Energia', breedDetails.nivel_energia)}
+        {renderFichaTecnica('Nível de Socialização', breedDetails.nivel_socializacao)}
+        {renderFichaTecnica('Nível de Treinamento', breedDetails.nivel_treinamento)}
+        {renderFichaTecnica('Grupo', breedDetails.grupo)}
+        {renderFichaTecnica('Origem', breedDetails.origem)}
+        {renderFichaTecnica('Peso Médio', `${breedDetails.peso_medio} kg`)}
+        {renderFichaTecnica('Altura na Cernelha', `${breedDetails.altura_cernelha} cm`)}
+        {renderFichaTecnica('Expectativa de Vida', `${breedDetails.expectativa_vida} anos`)}
+
+        {/* Introdução */}
+        {renderSection('Introdução', [
+          breedDetails.detalhes?.introducao
+        ])}
         
-        {/* Detalhes sobre aparência */}
-        {renderDetail('Pelagem', breedDetails.detalhes?.aparencia?.pelagem)}
-        {renderDetail('Tamanho', breedDetails.detalhes?.aparencia?.tamanho)}
-        {renderDetail('Características', breedDetails.detalhes?.aparencia?.caracteristicas)}
-        
+        {/* Aparência */}
+        {renderSection('Aparência', [
+          breedDetails.detalhes?.aparencia?.pelagem,
+          breedDetails.detalhes?.aparencia?.tamanho,
+          breedDetails.detalhes?.aparencia?.caracteristicas,
+        ])}
+
         {/* Temperamento */}
-        {renderDetail('Temperamento 1', breedDetails.detalhes?.temperamento?.caracteristica1)}
-        {renderDetail('Temperamento 2', breedDetails.detalhes?.temperamento?.caracteristica2)}
-        {renderDetail('Temperamento 3', breedDetails.detalhes?.temperamento?.caracteristica3)}
-        {renderDetail('Temperamento 4', breedDetails.detalhes?.temperamento?.caracteristica4)}
+        {renderSection('Temperamento', [
+          breedDetails.detalhes?.temperamento?.caracteristica1,
+          breedDetails.detalhes?.temperamento?.caracteristica2,
+          breedDetails.detalhes?.temperamento?.caracteristica3,
+          breedDetails.detalhes?.temperamento?.caracteristica4,
+        ])}
 
         {/* Cuidados */}
-        {renderDetail('Cuidados 1', breedDetails.detalhes?.cuidados?.cuidado1)}
-        {renderDetail('Cuidados 2', breedDetails.detalhes?.cuidados?.cuidado2)}
-        {renderDetail('Cuidados 3', breedDetails.detalhes?.cuidados?.cuidado3)}
-        {renderDetail('Cuidados 4', breedDetails.detalhes?.cuidados?.cuidado4)}
-        {renderDetail('Cuidados 5', breedDetails.detalhes?.cuidados?.cuidado5)}
-        {renderDetail('Cuidados 6', breedDetails.detalhes?.cuidados?.cuidado6)}
+        {renderSection('Cuidados', [
+          breedDetails.detalhes?.cuidados?.cuidado1,
+          breedDetails.detalhes?.cuidados?.cuidado2,
+          breedDetails.detalhes?.cuidados?.cuidado3,
+          breedDetails.detalhes?.cuidados?.cuidado4,
+          breedDetails.detalhes?.cuidados?.cuidado5,
+          breedDetails.detalhes?.cuidados?.cuidado6,
+        ])}
 
         {/* História e Curiosidades */}
-        {renderDetail('História', breedDetails.detalhes?.historia)}
-        {renderDetail('Curiosidade 1', breedDetails.detalhes?.curiosidades?.curiosidade1)}
-        {renderDetail('Curiosidade 2', breedDetails.detalhes?.curiosidades?.curiosidade2)}
-        {renderDetail('Curiosidade 3', breedDetails.detalhes?.curiosidades?.curiosidade3)}
+        {renderSection('História e Curiosidades', [
+          breedDetails.detalhes?.historia,
+          breedDetails.detalhes?.curiosidades?.curiosidade1,
+          breedDetails.detalhes?.curiosidades?.curiosidade2,
+          breedDetails.detalhes?.curiosidades?.curiosidade3,
+        ])}
 
         {/* Considerações finais */}
-        {renderDetail('Considerações', breedDetails.detalhes?.consideracoes)}
+        {renderSection('Considerações Finais', [
+          breedDetails.detalhes?.consideracoes
+        ])}
       </div>
     </div>
   );
