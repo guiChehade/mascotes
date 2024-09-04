@@ -47,10 +47,10 @@ const UserMenu = ({ currentUser, setCurrentUser }) => {
               menuOpen ? styles.dropdownMenuOpen : ''
             }`}
           >
-            <Button className={styles.userButton} onClick={handleQuizClick}>
+            <Button className={styles.navUserButton} onClick={handleQuizClick}>
               Quiz
             </Button>
-            <Button onClick={handleLogout}>Sair</Button>
+            <Button className={styles.navUserButton} onClick={handleLogout}>Sair</Button>
           </div>
         </>
       ) : (

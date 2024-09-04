@@ -37,6 +37,7 @@
   visibility: hidden;
   flex-direction: column;
   align-items: flex-start;
+  justify-content: center;
   background-color: var(--button-background);
   position: fixed;
   top: 13vh;
