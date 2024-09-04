@@ -164,7 +164,7 @@ const Ponto = ({ currentUser }) => {
       <div className={styles.tableContainer}>
         <Table headers={headers} data={pontos.map(ponto => ({
           data: ponto.data,
-          usuarioNome: currentUser.role === 'isOwner' || currentUser.role === 'isAdmin' ? ponto.usuarioNome : null,
+          usuarioNome: ponto.usuarioNome || '-',
           entrada: ponto.registrarentrada || '-',
           saidaAlmoco: ponto.registrarsaídaparaalmoço || '-',
           voltaAlmoco: ponto.registrarvoltadoalmoço || '-',

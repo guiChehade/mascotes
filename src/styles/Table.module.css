@@ -8,33 +8,35 @@
   .table {
     width: 100%;
     border-collapse: collapse;
-    color: var(--yellow-pastel);
+    /* color: var(--yellow-logo); */
   }
   
   .tableHeader {
-    background-color: var(--container-background);
+    /* background-color: var(--container-background); */
     padding: 12px;
     text-align: center;
     font-weight: bold;
   }
   
   .tableRow {
-    background-color: var(--button-background);
+    /* background-color: var(--button-background); */
+    border-radius: 20px;
     transition: all 1s ease;
   }
   
   .tableRow:nth-child(even) {
-    background-color: var(--container-background);
+    /* background-color: var(--container-background); */
     transition: all 1s ease;
   }
   
   .tableRow:hover {
+    border-radius: 20px;
     background-color: var(--background-color);
   }
   
   .tableCell {
     padding: 10px;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--yellow-logo);
     color: var(--text-color);
     text-align: center;
   }

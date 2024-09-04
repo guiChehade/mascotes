@@ -17,27 +17,15 @@ button:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* button {
-  background: linear-gradient(135deg, var(--background-color), var(--secondary-color));
-  border: none;
-  border-radius: 20px;
-  color: var(--text-color);
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-button:hover {
-  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
-} */
-
 button:disabled {
   background-color: #aaa;
   cursor: not-allowed;
+  transition: none;
 }
 
 button:disabled:hover {
   background-color: #aaa;
+  transform: scale(1)
 }
 
 button.buttonSim {
