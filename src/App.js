@@ -23,7 +23,6 @@ import Registros from "./pages/Registros";
 import Ponto from "./pages/Ponto";
 import Usuarios from "./pages/Usuarios";
 import styles from "./styles/App.module.css";
-import 'bootstrap/dist/css/bootstrap.min.css';
 import "./styles/global.css";
 
 const App = () => {

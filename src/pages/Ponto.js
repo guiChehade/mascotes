@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { collection, query, where, orderBy, getDocs, addDoc, doc, updateDoc } from 'firebase/firestore';
+import { collection, query, where, orderBy, getDocs, addDoc, doc, updateDoc, setDoc } from 'firebase/firestore';
 import { firestore, auth } from '../firebase';
 import Button from '../components/Button';
 import Table from '../components/Table';
@@ -10,7 +10,7 @@ const Ponto = ({ currentUser }) => {
   const [pontos, setPontos] = useState([]);
   const [confirmModal, setConfirmModal] = useState(false);
   const [currentAction, setCurrentAction] = useState('');
-  const [loading, setLoading] = useState(true); // Adiciona estado de carregamento
+  const [loading, setLoading] = useState(true);
 
   const headers = ['Data', 'Entrada', 'Saída Almoço', 'Volta Almoço', 'Saída'];
   if (currentUser.role === 'isOwner') headers.splice(1, 0, 'Usuário');
@@ -18,28 +18,41 @@ const Ponto = ({ currentUser }) => {
   const formatDate = (date) => date.toISOString().split('T')[0];
   const formatTime = (date) => date.toTimeString().split(' ')[0];
 
+  // Função para buscar pontos do Firestore
   const fetchPontos = async () => {
-    const userId = auth.currentUser?.uid;  
+    const userId = auth.currentUser?.uid;
     if (!currentUser || !userId) {
       console.error('Usuário atual ou ID não estão definidos corretamente.');
-      setLoading(false); 
+      setLoading(false);
       return;
     }
 
     try {
-      let pontosQuery;
-      if (currentUser.role === 'isOwner') {
-        pontosQuery = query(collection(firestore, 'pontos'), orderBy('data', 'desc'));
+      const fetchedPontos = [];
+
+      if (currentUser.role === 'isOwner' || currentUser.role === 'isManager') {
+        // Proprietário ou gerente visualiza todos os registros de todos os usuários
+        const usersQuery = query(collection(firestore, 'users'));
+        const usersSnapshot = await getDocs(usersQuery);
+        for (const userDoc of usersSnapshot.docs) {
+          const userId = userDoc.id;
+          const pontosRef = collection(firestore, 'users', userId, 'pontos');
+          const pontosQuery = query(pontosRef, orderBy('data', 'desc'));
+          const pontosSnapshot = await getDocs(pontosQuery);
+          pontosSnapshot.docs.forEach((doc) => {
+            fetchedPontos.push({ id: doc.id, usuarioNome: userDoc.data().name, ...doc.data() });
+          });
+        }
       } else {
-        pontosQuery = query(
-          collection(firestore, 'pontos'),
-          where('usuarioId', '==', userId), 
-          orderBy('data', 'desc')
-        );
+        // Usuário visualiza apenas seus próprios registros
+        const pontosRef = collection(firestore, 'users', userId, 'pontos');
+        const pontosQuery = query(pontosRef, orderBy('data', 'desc'));
+        const querySnapshot = await getDocs(pontosQuery);
+        querySnapshot.docs.forEach((doc) => {
+          fetchedPontos.push({ id: doc.id, ...doc.data() });
+        });
       }
 
-      const querySnapshot = await getDocs(pontosQuery);
-      const fetchedPontos = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setPontos(fetchedPontos);
       setLoading(false);
       definirProximaAcao(fetchedPontos);
@@ -67,24 +80,29 @@ const Ponto = ({ currentUser }) => {
 
     try {
       const now = new Date();
-      const hoje = formatDate(now); 
-      const pontoHoje = pontos.find(p => p.data === hoje && p.usuarioId === userId);
+      const hoje = formatDate(now);
+      const pontosRef = collection(firestore, 'users', userId, 'pontos');
+      const pontoDocRef = doc(pontosRef, hoje);
+
+      // Obter o ponto do dia de hoje
+      const pontoHojeSnapshot = await getDocs(query(pontosRef, where('data', '==', hoje)));
+      const pontoHoje = pontoHojeSnapshot.docs.length > 0 ? pontoHojeSnapshot.docs[0].data() : null;
       const campoAtualizar = currentAction.toLowerCase().replace(/\s/g, '');
 
       if (pontoHoje) {
-        const docRef = doc(firestore, 'pontos', pontoHoje.id); 
-        await updateDoc(docRef, {
+        // Atualizar o ponto existente
+        await updateDoc(pontoDocRef, {
           [campoAtualizar]: formatTime(now),
         });
       } else {
+        // Criar um novo ponto
         const novoPonto = {
-          data: hoje, 
-          horario: formatTime(now), 
-          usuarioId: userId, 
+          data: hoje,
+          usuarioId: userId,
           usuarioNome: currentUser.name,
           [campoAtualizar]: formatTime(now),
         };
-        await addDoc(collection(firestore, 'pontos'), novoPonto);
+        await setDoc(pontoDocRef, novoPonto);
       }
 
       setConfirmModal(false);
@@ -100,16 +118,15 @@ const Ponto = ({ currentUser }) => {
       return;
     }
 
-    const hoje = new Date().toISOString().split('T')[0];
-    const pontoHoje = pontosAtualizados.find(p => p.data === hoje);
-
-    if (!pontoHoje) {
+    // Verificar o último ponto batido para o usuário atual
+    const ultimoPonto = pontosAtualizados.find(p => p.usuarioId === auth.currentUser?.uid);
+    if (!ultimoPonto) {
       setCurrentAction('Registrar Entrada');
-    } else if (!pontoHoje.registrarsaídaparaalmoço) {
+    } else if (!ultimoPonto.registrarsaídaparaalmoço) {
       setCurrentAction('Registrar Saída para Almoço');
-    } else if (!pontoHoje.registrarvoltadoalmoço) {
+    } else if (!ultimoPonto.registrarvoltadoalmoço) {
       setCurrentAction('Registrar Volta do Almoço');
-    } else if (!pontoHoje.registrarsaída) {
+    } else if (!ultimoPonto.registrarsaída) {
       setCurrentAction('Registrar Saída');
     } else {
       setCurrentAction('Ponto Completo');
@@ -143,7 +160,7 @@ const Ponto = ({ currentUser }) => {
       <div className={styles.tableContainer}>
         <Table headers={headers} data={pontos.map(ponto => ({
           data: ponto.data,
-          usuarioNome: currentUser.role === 'isOwner' ? ponto.usuarioNome : null,
+          usuarioNome: currentUser.role === 'isOwner' || currentUser.role === 'isManager' ? ponto.usuarioNome : null,
           entrada: ponto.registrarentrada || '-',
           saidaAlmoco: ponto.registrarsaídaparaalmoço || '-',
           voltaAlmoco: ponto.registrarvoltadoalmoço || '-',
