@@ -16,20 +16,21 @@
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  transition: background-color 0.5s ease-in-out, transform 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
   position: fixed;
   left: 4vh;
   top: 4vh;
 }
 
 .hamburger:hover {
-  background-color: var(--button-hover-background);
+  background-color: var(--button-background);
 }
 
 /* Garantir que a rotação seja aplicada independentemente do estado de hover */
 .hamburger.hamburgerOpen,
 .hamburger:hover.hamburgerOpen {
   transform: rotate(90deg);
+  box-shadow: 4px 0 8px rgba(0, 0, 0, 0.3);
 }
 
 .nav {
@@ -65,10 +66,11 @@
 .li {
   padding: 0.5rem 1rem;
   border-radius: 20px;
+  transition: all 0.5s ease-in-out;
 }
 
 .li:hover {
-  background-color: var(--container-background);
+  background-color: var(--button-hover-background);
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
 }
 

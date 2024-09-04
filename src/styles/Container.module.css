@@ -1,7 +1,7 @@
 .container {
-    width: 100%;
-    padding: 20px;
-    box-sizing: border-box;
-    height: fit-content;
-    border-radius: 20px;
-  }
+  background-color: var(--container-background);
+  width: 100%;
+  padding: 20px;
+  height: fit-content;
+  border-radius: 20px;
+}

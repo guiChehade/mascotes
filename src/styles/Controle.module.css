@@ -43,6 +43,12 @@
   padding: 0.1rem 0.5rem;
 }
 
+p {
+  font-size: 1.25rem;
+  margin: 0;
+  text-align: center;
+}
+
 .controleButtons {
   width: 100%;
   display: flex;

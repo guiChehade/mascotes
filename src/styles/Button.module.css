@@ -5,22 +5,34 @@ button {
   border-radius: 20px;
   font-size: 1.25rem;
   font-weight: 500;
-  padding: 0.75rem 1.5rem;
+  padding: 0.5rem 1.5rem;
   cursor: pointer;
-  transition: background-color 0.5s ease-in-out, transform 0.5s ease-in-out;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.5s ease-in-out, transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
 button:hover {
   background-color: var(--button-hover-background);
   transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
+
+/* button {
+  background: linear-gradient(135deg, var(--background-color), var(--secondary-color));
+  border: none;
+  border-radius: 20px;
+  color: var(--text-color);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+} */
 
 button:disabled {
   background-color: #aaa;
-  border: none;
-  font-size: 1rem;
-  border-radius: 20px;
-  padding: 0.75rem 1.5rem;
   cursor: not-allowed;
 }
 

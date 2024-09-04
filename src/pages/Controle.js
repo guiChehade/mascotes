@@ -208,7 +208,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
           )}
         </div>
       ) : (
-        <p>Esta página exige acesso, caso não carregue em instantes, verifique se você fez Login ou contate um administrador.</p>
+        <p>Esta página exige acesso, verifique se você fez login, aguarde seu nome aparecer e recarregue a página.</p>
       )}
 
       {showServiceModal && (

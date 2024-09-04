@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { collection, query, where, orderBy, getDocs, addDoc, doc, updateDoc, setDoc } from 'firebase/firestore';
 import { firestore, auth } from '../firebase';
 import Button from '../components/Button';
+import Container from '../components/Container';
 import Table from '../components/Table';
 import Modal from '../components/Modal';
 import styles from '../styles/Ponto.module.css';  // Importa o CSS module
@@ -148,7 +149,7 @@ const Ponto = ({ currentUser }) => {
   const mesCapitalizado = mes.charAt(0).toUpperCase() + mes.slice(1);
 
   return (
-    <div className={styles.pontoPage}>
+    <Container className={styles.pontoPage}>
     
       <Button onClick={() => setConfirmModal(true)} disabled={currentAction === 'Ponto Completo'} className={styles.registerButton}>
         {currentAction !== 'Ponto Completo' ? currentAction : 'Ponto do Dia Completo'}
@@ -163,14 +164,14 @@ const Ponto = ({ currentUser }) => {
       <div className={styles.tableContainer}>
         <Table headers={headers} data={pontos.map(ponto => ({
           data: ponto.data,
-          usuarioNome: currentUser.role === 'isOwner' || currentUser.role === 'isManager' ? ponto.usuarioNome : null,
+          usuarioNome: currentUser.role === 'isOwner' || currentUser.role === 'isAdmin' ? ponto.usuarioNome : null,
           entrada: ponto.registrarentrada || '-',
           saidaAlmoco: ponto.registrarsaídaparaalmoço || '-',
           voltaAlmoco: ponto.registrarvoltadoalmoço || '-',
           saida: ponto.registrarsaída || '-',
         }))} />
       </div>
-    </div>
+    </Container>
   );
 };
 
