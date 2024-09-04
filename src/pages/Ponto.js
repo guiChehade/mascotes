@@ -12,7 +12,7 @@ const Ponto = ({ currentUser }) => {
   const [currentAction, setCurrentAction] = useState('');
   const [loading, setLoading] = useState(true);
 
-  const headers = ['Data', 'Entrada', 'Saída Almoço', 'Volta Almoço', 'Saída'];
+  const headers = ['Data', 'Usuário' ,'Entrada', 'Saída Almoço', 'Volta Almoço', 'Saída'];
 
   const formatDate = (date) => date.toISOString().split('T')[0];
   const formatTime = (date) => date.toTimeString().split(' ')[0];
@@ -144,9 +144,14 @@ const Ponto = ({ currentUser }) => {
     return <div className={styles.pontoPage}>Usuário não definido corretamente.</div>;
   }
 
+  const mes = new Date().toLocaleString('pt-BR', { month: 'long' });
+  const mesCapitalizado = mes.charAt(0).toUpperCase() + mes.slice(1);
+
   return (
     <div className={styles.pontoPage}>
-      <h2 className={styles.pontoTitle}>Pontos de {new Date().toLocaleString('pt-BR', { month: 'long' })}</h2>
+    
+
+      <h2 className={styles.pontoTitle}>Pontos de {mesCapitalizado}</h2>
 
       <Button onClick={() => setConfirmModal(true)} disabled={currentAction === 'Ponto Completo'} className={styles.registerButton}>
         {currentAction !== 'Ponto Completo' ? currentAction : 'Ponto do Dia Completo'}

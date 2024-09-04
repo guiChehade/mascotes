@@ -13,7 +13,7 @@
     background-color: var(--button-background);
     color: var(--text-color);
     padding: 12px;
-    text-align: left;
+    text-align: center;
     font-weight: bold;
   }
   
@@ -29,5 +29,18 @@
     padding: 10px;
     border-bottom: 1px solid var(--border-color);
     color: var(--text-color);
+    text-align: center;
+  }
+  
+  @media (max-width: 768px) {
+
+    .tableHeader {
+      padding: 6px;
+      font-size: 0.75rem;
+    }
+    .tableCell {
+      padding: 5px;
+      font-size: 0.75rem;
+    }
   }
   
