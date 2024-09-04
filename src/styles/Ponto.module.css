@@ -7,6 +7,7 @@
   }
   
   .pontoTitle {
+    color: var(--yellow-logo);
     font-size: 1.5rem;
     font-weight: bold;
     margin-bottom: 1rem;
@@ -14,19 +15,19 @@
   }
   
   .registerButton {
-    background-color: var(--yellow-logo);
+    background-color: var(--button-background);
     color: var(--text-color);
     border: none;
-    border-radius: 20px;
-    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    padding: 0.75rem 1rem;
     font-size: 1rem;
     cursor: pointer;
     margin-bottom: 1rem;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
   }
   
   .registerButton:hover {
-    background-color: var(--yellow-pastel);
+    background-color: var(--button-hover-background);
   }
   
   .confirmModal {

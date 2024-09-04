@@ -1,24 +1,31 @@
 .tableContainer {
     width: 100%;
+    border-radius: 20px 20px 0 0;
     overflow-x: auto;
-    margin-top: 20px;
+    margin-top: 0.5rem;
   }
   
   .table {
     width: 100%;
     border-collapse: collapse;
+    color: var(--yellow-pastel);
   }
   
   .tableHeader {
-    background-color: var(--button-background);
-    color: var(--text-color);
+    background-color: var(--container-background);
     padding: 12px;
     text-align: center;
     font-weight: bold;
   }
   
+  .tableRow {
+    background-color: var(--button-background);
+    transition: all 1s ease;
+  }
+  
   .tableRow:nth-child(even) {
     background-color: var(--container-background);
+    transition: all 1s ease;
   }
   
   .tableRow:hover {

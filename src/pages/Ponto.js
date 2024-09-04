@@ -150,13 +150,12 @@ const Ponto = ({ currentUser }) => {
   return (
     <div className={styles.pontoPage}>
     
-
-      <h2 className={styles.pontoTitle}>Pontos de {mesCapitalizado}</h2>
-
       <Button onClick={() => setConfirmModal(true)} disabled={currentAction === 'Ponto Completo'} className={styles.registerButton}>
         {currentAction !== 'Ponto Completo' ? currentAction : 'Ponto do Dia Completo'}
       </Button>
 
+      <h2 className={styles.pontoTitle}>Pontos de {mesCapitalizado}</h2>
+      
       <Modal isOpen={confirmModal} onClose={() => setConfirmModal(false)} title="Confirmação de Ponto" onConfirm={registrarPonto}>
         <p className={styles.modalContent}>Você tem certeza que deseja {currentAction}?</p>
       </Modal>
