@@ -30,7 +30,7 @@ const Ponto = ({ currentUser }) => {
     try {
       const fetchedPontos = [];
 
-      if (currentUser.role === 'isOwner' || currentUser.role === 'isManager') {
+      if (currentUser.role === 'isOwner' || currentUser.role === 'isAdmin') {
         // Proprietário ou gerente visualiza todos os registros de todos os usuários
         const usersQuery = query(collection(firestore, 'users'));
         const usersSnapshot = await getDocs(usersQuery);
