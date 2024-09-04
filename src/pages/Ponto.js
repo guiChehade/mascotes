@@ -13,7 +13,6 @@ const Ponto = ({ currentUser }) => {
   const [loading, setLoading] = useState(true);
 
   const headers = ['Data', 'Entrada', 'Saída Almoço', 'Volta Almoço', 'Saída'];
-  if (currentUser.role === 'isOwner') headers.splice(1, 0, 'Usuário');
 
   const formatDate = (date) => date.toISOString().split('T')[0];
   const formatTime = (date) => date.toTimeString().split(' ')[0];
