@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { collection, query, where, orderBy, getDocs, addDoc, doc, updateDoc, setDoc } from 'firebase/firestore';
+import { collection, query, where, orderBy, getDocs, doc, updateDoc, setDoc } from 'firebase/firestore';
 import { firestore, auth } from '../firebase';
 import Button from '../components/Button';
 import Container from '../components/Container';
@@ -138,7 +138,7 @@ const Ponto = ({ currentUser }) => {
   }, [pontos]);
 
   if (loading) {
-    return <div className={styles.pontoPage}>Esta página exige acesso, caso não carregue em instantes, verifique se você fez Login</div>;
+    return <div className={styles.pontoPage}>Caso esta página não carregue em instantes verifique se você fez login ou contate um administrador.</div>;
   }
 
   if (!currentUser || !auth.currentUser) {

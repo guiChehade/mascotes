@@ -3,6 +3,7 @@
   color: var(--button-color);
   text-align: center;
   padding: 1rem 0;
+  margin: 0;
   position: fixed;
   bottom: 0;
   height: 3vh;

@@ -71,20 +71,18 @@ const EditarPet = ({ currentUser }) => {
 
       // Verifique se há uma nova foto a ser enviada
       if (photo instanceof File) {
-        const photoBlob = await new Promise((resolve) => {
-          const xhr = new XMLHttpRequest();
-          xhr.open('POST', 'your-upload-url', true);
-          xhr.onload = () => resolve(xhr.response);
-          xhr.onerror = (err) => console.error('Error uploading image:', err);
-          xhr.send(photo);
-        });
+        const photoRef = ref(storage, `pets/${Date.now()}_${photo.name}`);
+        await uploadBytes(photoRef, photo);
+        const foto = await getDownloadURL(photoRef);
+        console.log('File available at', foto);
       } else { // This block handles the case where a resized image is set using data URL
         const photoBlob = await fetch(photo); // Fetch the image from data URL
         const photoData = await photoBlob.blob();
-      
+        
         const photoRef = ref(storage, `pets/${Date.now()}_${photo.name}`); // Assuming 'photo' contains the filename
         await uploadBytes(photoRef, photoData);
-        foto = await getDownloadURL(photoRef);
+        const foto = await getDownloadURL(photoRef);
+        console.log('File available at', foto);
       }
 
       // Atualize o documento no Firestore com a URL da foto

@@ -70,7 +70,7 @@ const Registros = () => {
     <div className={styles.registrosContainer}>
       <h1>Registros</h1>
       {/* Filtros */}
-      <div className={styles.filters}>
+      {/* <div className={styles.filters}>
         <input
           type="text"
           placeholder="Mascotinho"
@@ -82,21 +82,21 @@ const Registros = () => {
           placeholder="Data"
           onChange={(e) => setFilterDate(e.target.value)}
         />
-      </div>
+      </div> */}
 
       <table className={styles.registrosTable}>
         <thead>
           <tr>
             <th>Foto</th>
-            <th>Mascotinho</th>
+            <th>Mascote</th>
             <th>Raça</th>
-            <th>Tutor</th>
+            <th>Creche/Hotel</th>
             <th>Data de Entrada</th>
             <th>Entrada Creche</th>
             <th>Data de Saída</th>
             <th>Saída Creche</th>
+            <th>Comentário Saúde</th>
             <th>Comentário Comportamento</th>
-            <th>Comentário Veterinário</th>
             <th>Pertences</th>
           </tr>
         </thead>
@@ -112,7 +112,7 @@ const Registros = () => {
               </td>
               <td>{registro.mascotinho}</td>
               <td>{registro.raca}</td>
-              <td>{registro.tutor}</td>
+              <td>{registro.local}</td>
               <td onClick={() => handleClick(registro, "entradaCrecheUsuario")}>{registro.dataEntrada}</td>
               <td onClick={() => handleClick(registro, "entradaCrecheUsuario")}>{registro.entradaCreche}</td>
               <td onClick={() => handleClick(registro, "saidaCrecheUsuario")}>{registro.saidaData}</td>

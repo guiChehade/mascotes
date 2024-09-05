@@ -9,6 +9,8 @@
   width: 100vw;
   z-index: 1000;
   height: 16vh;
+  padding: 0;
+  margin: 0;
 }
 
 .logo {
