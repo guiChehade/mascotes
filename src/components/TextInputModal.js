@@ -13,9 +13,9 @@ const TextInputModal = ({ onSubmit, onClose }) => {
   return (
     <div className={styles.modalContainer}>
       <div className={styles.modalContent}>
-        <h2>Registrar Pertences</h2>
+        <h2>Registrar Comentário</h2>
         <textarea
-          placeholder="Descreva os pertences do pet..."
+          placeholder="Descreva o comentário..."
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           className={styles.textarea}

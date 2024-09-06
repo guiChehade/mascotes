@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { firestore } from "../firebase";
-import { collection, query, orderBy, getDocs, where, getDoc, doc } from "firebase/firestore";
+import { collection, query, orderBy, getDocs, doc, getDoc } from "firebase/firestore";
 import styles from '../styles/Registros.module.css';
 import Button from "../components/Button";
 import PopupUsuario from "../components/PopupUsuario"; // Componente de popup
@@ -9,54 +9,60 @@ const Registros = () => {
   const [registros, setRegistros] = useState([]);
   const [selectedRecord, setSelectedRecord] = useState(null); // Para armazenar o registro selecionado para o popup
   const [filterMascotinho, setFilterMascotinho] = useState("");
-  const [filterMonth] = useState("");
   const [filterDate, setFilterDate] = useState("");
 
   useEffect(() => {
     const fetchRegistros = async () => {
       try {
-        let q = query(collection(firestore, "registros"), orderBy("dataEntrada", "desc"));
+        const petsSnapshot = await getDocs(collection(firestore, "pets"));
 
-        if (filterMascotinho) {
-          q = query(q, where("mascotinho", "==", filterMascotinho));
-        }
-
-        if (filterMonth) {
-          q = query(q, where("dataEntrada", ">=", `01/${filterMonth}`), where("dataEntrada", "<=", `31/${filterMonth}`));
-        }
-
-        if (filterDate) {
-          q = query(q, where("dataEntrada", "==", filterDate));
-        }
-
-        const querySnapshot = await getDocs(q);
-
+        // Para cada pet, buscar os registros na subcoleção 'controle'
         const registrosData = await Promise.all(
-          querySnapshot.docs.map(async (docSnapshot) => {
-            const registro = docSnapshot.data();
+          petsSnapshot.docs.map(async (petDoc) => {
+            const petData = petDoc.data();
+            const controleRef = collection(firestore, "pets", petDoc.id, "controle");
+            const controleQuery = query(controleRef, orderBy("dataEntrada", "desc"));
 
-            // Busca as informações do pet na coleção "pets"
-            const petDoc = await getDoc(doc(firestore, "pets", registro.petId));
-            const petData = petDoc.exists ? petDoc.data() : {};
+            const controleSnapshot = await getDocs(controleQuery);
+            const registrosPorPet = await Promise.all(
+              controleSnapshot.docs.map(async (controleDoc) => {
+                const controleData = controleDoc.data();
 
-            return {
-              ...registro,
-              foto: petData.foto || null,
-              mascotinho: petData.mascotinho || "Desconhecido",
-              raca: petData.raca || "Desconhecida",
-              tutor: petData.tutor || "Desconhecido",
-            };
+                // Coletar comentários de subcoleções
+                const comentariosPertencesRef = collection(firestore, "pets", petDoc.id, "controle", controleDoc.id, "comentarioPertences");
+                const comentariosVetRef = collection(firestore, "pets", petDoc.id, "controle", controleDoc.id, "comentarioVet");
+                const comentariosComportamentoRef = collection(firestore, "pets", petDoc.id, "controle", controleDoc.id, "comentarioComportamento");
+
+                const comentariosPertencesSnapshot = await getDocs(comentariosPertencesRef);
+                const comentariosVetSnapshot = await getDocs(comentariosVetRef);
+                const comentariosComportamentoSnapshot = await getDocs(comentariosComportamentoRef);
+
+                return {
+                  ...controleData,
+                  foto: petData.foto || null,
+                  mascotinho: petData.mascotinho || "Desconhecido",
+                  raca: petData.raca || "Desconhecida",
+                  tutor: petData.tutor || "Desconhecido",
+                  comentarioPertences: comentariosPertencesSnapshot.docs.map(doc => doc.data().comentario).join(', ') || "N/A",
+                  comentarioVet: comentariosVetSnapshot.docs.map(doc => doc.data().comentario).join(', ') || "N/A",
+                  comentarioComportamento: comentariosComportamentoSnapshot.docs.map(doc => doc.data().comentario).join(', ') || "N/A",
+                };
+              })
+            );
+
+            return registrosPorPet;
           })
         );
 
-        setRegistros(registrosData);
+        // Flatten the array of arrays
+        setRegistros(registrosData.flat());
       } catch (error) {
         console.error("Erro ao buscar registros:", error);
       }
     };
 
     fetchRegistros();
-  }, [filterMascotinho, filterMonth, filterDate]);
+  }, [filterMascotinho, filterDate]);
 
   const handleClick = (record, field) => {
     setSelectedRecord({ record, field });
@@ -90,11 +96,11 @@ const Registros = () => {
             <th>Foto</th>
             <th>Mascote</th>
             <th>Raça</th>
-            <th>Creche/Hotel</th>
+            <th>Serviço</th>
             <th>Data de Entrada</th>
-            <th>Entrada Creche</th>
+            <th>Horário de Entrada</th>
             <th>Data de Saída</th>
-            <th>Saída Creche</th>
+            <th>Horário de Saída</th>
             <th>Comentário Saúde</th>
             <th>Comentário Comportamento</th>
             <th>Pertences</th>
@@ -112,14 +118,14 @@ const Registros = () => {
               </td>
               <td>{registro.mascotinho}</td>
               <td>{registro.raca}</td>
-              <td>{registro.local}</td>
-              <td onClick={() => handleClick(registro, "entradaCrecheUsuario")}>{registro.dataEntrada}</td>
-              <td onClick={() => handleClick(registro, "entradaCrecheUsuario")}>{registro.entradaCreche}</td>
-              <td onClick={() => handleClick(registro, "saidaCrecheUsuario")}>{registro.saidaData}</td>
-              <td onClick={() => handleClick(registro, "saidaCrecheUsuario")}>{registro.saidaCreche}</td>
-              <td onClick={() => handleClick(registro, "comportamentoUsuario")}>{registro.comportamento || "N/A"}</td>
-              <td onClick={() => handleClick(registro, "veterinarioUsuario")}>{registro.veterinario || "N/A"}</td>
-              <td onClick={() => handleClick(registro, "pertencesUsuario")}>{registro.pertences || "N/A"}</td>
+              <td>{registro.servico}</td>
+              <td onClick={() => handleClick(registro, "usuarioEntrada")}>{registro.dataEntrada}</td>
+              <td onClick={() => handleClick(registro, "usuarioEntrada")}>{registro.horarioEntrada}</td>
+              <td onClick={() => handleClick(registro, "usuarioSaida")}>{registro.dataSaida}</td>
+              <td onClick={() => handleClick(registro, "usuarioSaida")}>{registro.horarioSaida}</td>
+              <td onClick={() => handleClick(registro, "comentarioVet")}>{registro.comentarioVet}</td>
+              <td onClick={() => handleClick(registro, "comentarioComportamento")}>{registro.comentarioComportamento}</td>
+              <td onClick={() => handleClick(registro, "comentarioPertences")}>{registro.comentarioPertences}</td>
             </tr>
           ))}
         </tbody>

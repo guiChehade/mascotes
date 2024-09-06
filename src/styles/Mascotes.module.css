@@ -1,19 +1,21 @@
-.mascoteContainer {
-  margin-top: -5vh;
-  width: 100%;
-  padding: 20px;
+.mascotesContainer {
+  max-width: 90%;
   box-sizing: border-box;
 }
 
 .searchContainer {
-  display: flex;
-  justify-content:space-between;
   background-color: var(--button-background);
   border-radius: 20px;
-  background-color: '--container-background';
-  max-width: 1200px;
   padding: 20px;
-  margin: 10px auto;
+  margin: 0.5rem auto 1rem;
+  width: 90%;
+}
+
+label {
+  text-align: center;
+  font-size: 1.5rem !important;
+  font-weight: bold;
+  margin-right: 1rem;
 }
 
 .cardsContainer {
@@ -22,17 +24,12 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
-  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+  width: 90%;
+
 }
 
 .mascoteCard {
   margin-bottom: 20px;
-}
-
-@media (min-width: 768px) {
-  .searchContainer {
-    display: block;
-  }
 }

@@ -2,7 +2,7 @@
   background-color: var(--container-background);
   width: fit-content;
   height: fit-content;
-  margin: 0 1rem;
+  /* max-width: 95%; */
   padding: 20px;
   border-radius: 20px;
   /* background-image: url('../assets/texture/white-grungy-wall-textured-background_53876-103916.avif');

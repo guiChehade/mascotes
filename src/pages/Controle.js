@@ -1,12 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { firestore } from "../firebase";
-import { doc, getDoc, setDoc, query, where, collection, getDocs } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  setDoc,
+  addDoc,
+  collection,
+  getDocs,
+  query,
+  orderBy,
+  updateDoc,
+} from "firebase/firestore";
 import Container from "../components/Container";
 import Button from "../components/Button";
 import LoginModal from "../components/LoginModal";
 import TextInputModal from "../components/TextInputModal";
 import ActionOptions from "../components/ActionOptions";
+import ComentarioOptions from "../components/ComentarioOptions"; // Novo componente
 import logoLarge from '../assets/logo/logo-large.png';
 import styles from '../styles/Controle.module.css';
 import { v4 as uuidv4 } from 'uuid';
@@ -17,10 +28,11 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
   const [pet, setPet] = useState(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showPertenceQuestion, setShowPertenceQuestion] = useState(false);
-  const [showPertenceModal, setShowPertenceModal] = useState(false);
+  const [showComentarioModal, setShowComentarioModal] = useState(false); // Alterado de showPertenceModal
   const [showServiceModal, setShowServiceModal] = useState(false);
-  const [selectedAction, setSelectedAction] = useState(null); // Para diferenciar entre entrada e saída
-  const [lastRecord, setLastRecord] = useState(null); // Armazena o último registro de entrada
+  const [selectedAction, setSelectedAction] = useState(null);
+  const [lastRecord, setLastRecord] = useState(null);
+  const [selectedComentarioType, setSelectedComentarioType] = useState(null); // Tipo de comentário
 
   useEffect(() => {
     const fetchPetData = async () => {
@@ -41,7 +53,8 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     const fetchLastRecord = async () => {
       if (petId) {
         try {
-          const q = query(collection(firestore, "registros"), where("petId", "==", petId), where("local", "==", "Creche"));
+          const controleRef = collection(firestore, "pets", petId, "controle");
+          const q = query(controleRef, orderBy("dataEntrada", "desc"));
           const querySnapshot = await getDocs(q);
           if (!querySnapshot.empty) {
             const latestRecord = querySnapshot.docs[0].data();
@@ -68,9 +81,10 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
   };
 
   const handleServiceSelection = (service) => {
-    if (service === "Creche") {
+    if (service === "Creche" || service === "Hotel") {
       setShowServiceModal(false);
       if (selectedAction === "entrada") {
+        registerEntrada(service);
         setShowPertenceQuestion(true);
       } else if (selectedAction === "saida") {
         showPertenceInfo();
@@ -79,84 +93,107 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
   };
 
   const showPertenceInfo = () => {
-    if (lastRecord && lastRecord.pertences) {
-      alert(`Pertences registrados na entrada: ${lastRecord.pertences}`);
+    if (lastRecord && lastRecord.comentarioPertences) {
+      alert(`Pertences registrados na entrada: ${lastRecord.comentarioPertences.join(', ')}`);
     } else {
       alert("Nenhum pertence registrado na entrada.");
     }
     registerSaida();
   };
 
-  const handlePertenceSubmit = async (pertences) => {
+  const handleComentario = () => {
+    setShowComentarioModal(true); // Abre o modal de seleção de comentário
+  };
+
+  const handleComentarioSubmit = async (comentario) => {
     const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0'); // meses começam em 0
-    const day = String(now.getDate()).padStart(2, '0');
-    const formattedTime = now.toLocaleTimeString();
+    const formattedDate = now.toISOString().split('T')[0];
+    let subCollectionPath;
 
-    // Gerar um ID único para cada período de permanência
-    const recordId = lastRecord ? lastRecord.recordId : uuidv4();
+    switch (selectedComentarioType) {
+      case "Pertences":
+        subCollectionPath = "comentarioPertences";
+        break;
+      case "Veterinário":
+        subCollectionPath = "comentarioVet";
+        break;
+      case "Comportamento":
+        subCollectionPath = "comentarioComportamento";
+        break;
+      default:
+        return;
+    }
 
-    const record = {
-      petId,
-      recordId, // ID único para esta estadia
-      local: "Creche",
-      dataEntrada: `${day}/${month}/${year}`, // Data no formato DD/MM/YYYY para exibição
-      entradaCreche: formattedTime,
-      entradaCrecheUsuario: currentUser.name,
-      pertences: pertences || null,
-      pertencesUsuario: pertences ? currentUser.name : null,
-    };
-
-    await setDoc(doc(firestore, "registros", recordId), record, { merge: true });
-
-    alert(`Entrada na Creche registrada com sucesso.\n${pertences ? 'Pertences: ' + pertences : 'Sem pertences.'}`);
-    setShowPertenceModal(false);
-    setShowPertenceQuestion(false);
-    navigate("/mascotes");
+    try {
+      const comentariosRef = collection(firestore, "pets", petId, "controle", formattedDate, subCollectionPath);
+      await addDoc(comentariosRef, { comentario, usuario: currentUser.name });
+      alert(`${selectedComentarioType} registrado: ${comentario}`);
+      setShowComentarioModal(false);
+      setSelectedComentarioType(null); // Reseta o tipo de comentário
+    } catch (error) {
+      console.error(`Erro ao adicionar ${selectedComentarioType.toLowerCase()}:`, error);
+    }
   };
 
   const handleNoPertence = () => {
-    handlePertenceSubmit(null);
+    handleComentarioSubmit(null);
     setShowPertenceQuestion(false);
+  };
+
+  const registerEntrada = async (service) => {
+    const now = new Date();
+    const formattedDate = now.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+    const formattedTime = now.toTimeString().split(' ')[0]; // Formato HH:MM:SS
+
+    const controleRef = collection(firestore, "pets", petId, "controle");
+
+    const newRecord = {
+      servico: service,
+      dataEntrada: formattedDate,
+      horarioEntrada: formattedTime,
+      usuarioEntrada: currentUser.name,
+    };
+
+    try {
+      await setDoc(doc(controleRef, formattedDate), newRecord, { merge: true });
+      setPet((prev) => ({ ...prev, localAtual: service })); // Atualiza o localAtual no pet
+      await updateDoc(doc(firestore, "pets", petId), { localAtual: service }); // Salva no Firestore
+    } catch (error) {
+      console.error("Erro ao registrar entrada:", error);
+    }
   };
 
   const registerSaida = async () => {
     const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0'); // meses começam em 0
-    const day = String(now.getDate()).padStart(2, '0');
-    const formattedTime = now.toLocaleTimeString();
+    const formattedDate = now.toISOString().split('T')[0];
+    const formattedTime = now.toTimeString().split(' ')[0]; // Formato HH:MM:SS
+    const pernoites = calculatePernoites(lastRecord?.dataEntrada, formattedDate);
 
-    const diarias = calculateDiarias(lastRecord?.dataEntrada, `${day}/${month}/${year}`);
+    try {
+      const controleRef = doc(firestore, "pets", petId, "controle", lastRecord.dataEntrada);
+      await updateDoc(controleRef, {
+        dataSaida: formattedDate,
+        horarioSaida: formattedTime,
+        usuarioSaida: currentUser.name,
+        pernoites,
+      });
 
-    const record = {
-      saidaData: `${day}/${month}/${year}`,
-      saidaCreche: formattedTime,
-      saidaCrecheUsuario: currentUser.name,
-      diarias,
-      local: null, // Pet não está mais na creche
-    };
-
-    await setDoc(doc(firestore, "registros", lastRecord.recordId), record, { merge: true });
-
-    alert(`Saída da Creche registrada com sucesso. Diárias: ${diarias}`);
-    navigate("/mascotes");
+      setPet((prev) => ({ ...prev, localAtual: null })); // Remove o localAtual
+      await updateDoc(doc(firestore, "pets", petId), { localAtual: null }); // Atualiza no Firestore
+      alert(`Saída registrada com sucesso. Pernoites: ${pernoites}`);
+      navigate("/mascotes");
+    } catch (error) {
+      console.error("Erro ao registrar saída:", error);
+    }
   };
 
-  const calculateDiarias = (entradaData, saidaData) => {
+  const calculatePernoites = (entradaData, saidaData) => {
     if (!entradaData) return 0;
 
-    const [entradaDia, entradaMes, entradaAno] = entradaData.split("/");
-    const [saidaDia, saidaMes, saidaAno] = saidaData.split("/");
-
-    const entrada = new Date(`${entradaAno}-${entradaMes}-${entradaDia}`);
-    const saida = new Date(`${saidaAno}-${saidaMes}-${saidaDia}`);
-
+    const entrada = new Date(entradaData);
+    const saida = new Date(saidaData);
     const diffTime = Math.abs(saida - entrada);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    return diffDays > 0 ? diffDays : 0;
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
 
   const handleLoginSuccess = async (user) => {
@@ -196,12 +233,17 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
           <div className={styles.value}>{pet.celularTutor}</div>
           {currentUser && (currentUser.role === 'isEmployee' || currentUser.role === 'isAdmin' || currentUser.role === 'isOwner') ? (
             <div className={styles.controleButtons}>
-              {!lastRecord || lastRecord.local !== "Creche" ? (
-                <Button onClick={handleEntrada}>Entrada</Button>
+              {pet.localAtual ? (
+                <>
+                  <Button onClick={handleSaida}>Saída</Button>
+                  <Button onClick={handleComentario}>Comentário</Button>
+                </>
               ) : (
-                <Button onClick={handleSaida}>Saída</Button>
+                <>
+                  <Button onClick={handleEntrada}>Entrada</Button>
+                  <Button onClick={handleEditar}>Editar</Button>
+                </>
               )}
-              <Button onClick={handleEditar}>Editar</Button>
             </div>
           ) : (
             <Button onClick={() => setShowLoginModal(true)}>Login</Button>
@@ -214,7 +256,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
       {showServiceModal && (
         <ActionOptions
           actionType="Selecione o Serviço"
-          options={["Creche"]}
+          options={["Creche", "Hotel"]}
           onSelectOption={handleServiceSelection}
           onBack={() => setShowServiceModal(false)}
         />
@@ -226,7 +268,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
           options={["Não", "Sim"]}
           onSelectOption={(option) => {
             if (option === "Sim") {
-              setShowPertenceModal(true);
+              setShowComentarioModal(true); // Exibe modal de comentário
             } else {
               handleNoPertence();
             }
@@ -236,11 +278,18 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
         />
       )}
 
-      {showPertenceModal && (
+      {showComentarioModal && (
+        <ComentarioOptions
+          onSelectOption={(type) => setSelectedComentarioType(type)}
+          onBack={() => setShowComentarioModal(false)}
+        />
+      )}
+
+      {selectedComentarioType && (
         <TextInputModal
-          placeholder="Descreva os pertences do pet (se houver)..."
-          onSubmit={(text) => handlePertenceSubmit(text)}
-          onClose={() => setShowPertenceModal(false)}
+          placeholder={`Adicione um comentário para ${selectedComentarioType}...`}
+          onSubmit={(text) => handleComentarioSubmit(text)}
+          onClose={() => setSelectedComentarioType(null)}
         />
       )}
 
