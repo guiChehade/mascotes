@@ -13,7 +13,7 @@ const Ponto = ({ currentUser }) => {
   const [currentAction, setCurrentAction] = useState('');
   const [loading, setLoading] = useState(true);
 
-  const headers = ['Data', 'Usuário' ,'Entrada', 'Saída Almoço', 'Volta Almoço', 'Saída'];
+  const headers = ['Data', 'Usuário', 'Entrada', 'Saída Almoço', 'Volta Almoço', 'Saída'];
 
   const formatDate = (date) => date.toISOString().split('T')[0];
   const formatTime = (date) => date.toTimeString().split(' ')[0];
@@ -118,15 +118,16 @@ const Ponto = ({ currentUser }) => {
       return;
     }
 
-    // Verificar o último ponto batido para o usuário atual
-    const ultimoPonto = pontosAtualizados.find(p => p.usuarioId === auth.currentUser?.uid);
-    if (!ultimoPonto) {
+    const hoje = new Date().toISOString().split('T')[0];
+    const pontoHoje = pontosAtualizados.find(p => p.usuarioId === auth.currentUser?.uid && p.data === hoje);
+
+    if (!pontoHoje) {
       setCurrentAction('Registrar Entrada');
-    } else if (!ultimoPonto.registrarsaídaparaalmoço) {
+    } else if (!pontoHoje.registrarsaídaparaalmoço) {
       setCurrentAction('Registrar Saída para Almoço');
-    } else if (!ultimoPonto.registrarvoltadoalmoço) {
+    } else if (!pontoHoje.registrarvoltadoalmoço) {
       setCurrentAction('Registrar Volta do Almoço');
-    } else if (!ultimoPonto.registrarsaída) {
+    } else if (!pontoHoje.registrarsaída) {
       setCurrentAction('Registrar Saída');
     } else {
       setCurrentAction('Ponto Completo');
