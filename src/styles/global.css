@@ -38,6 +38,7 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  animation: fadeIn 1s ease-in;
 }
 
 @media (max-width: 768px) {

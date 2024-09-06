@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { firestore } from "../firebase";
-import { collection, query, orderBy, getDocs, doc, getDoc } from "firebase/firestore";
+import { collection, query, orderBy, getDocs, doc } from "firebase/firestore";
 import styles from '../styles/Registros.module.css';
+import Modal from "../components/Modal"; // Importa o modal
+import Table from "../components/Table"; // Importa o componente de tabela
 import Button from "../components/Button";
-import PopupUsuario from "../components/PopupUsuario"; // Componente de popup
+import iconClick from "../assets/icon/click.png"; // Ícone de clique
 
 const Registros = () => {
   const [registros, setRegistros] = useState([]);
-  const [selectedRecord, setSelectedRecord] = useState(null); // Para armazenar o registro selecionado para o popup
+  const [selectedComment, setSelectedComment] = useState(null); // Para armazenar o comentário selecionado
   const [filterMascotinho, setFilterMascotinho] = useState("");
   const [filterDate, setFilterDate] = useState("");
 
@@ -43,9 +45,9 @@ const Registros = () => {
                   mascotinho: petData.mascotinho || "Desconhecido",
                   raca: petData.raca || "Desconhecida",
                   tutor: petData.tutor || "Desconhecido",
-                  comentarioPertences: comentariosPertencesSnapshot.docs.map(doc => doc.data().comentario).join(', ') || "N/A",
-                  comentarioVet: comentariosVetSnapshot.docs.map(doc => doc.data().comentario).join(', ') || "N/A",
-                  comentarioComportamento: comentariosComportamentoSnapshot.docs.map(doc => doc.data().comentario).join(', ') || "N/A",
+                  comentarioPertences: comentariosPertencesSnapshot.docs.map(doc => ({ ...doc.data(), tipo: 'Pertences' })) || [],
+                  comentarioVet: comentariosVetSnapshot.docs.map(doc => ({ ...doc.data(), tipo: 'Vet' })) || [],
+                  comentarioComportamento: comentariosComportamentoSnapshot.docs.map(doc => ({ ...doc.data(), tipo: 'Comportamento' })) || [],
                 };
               })
             );
@@ -64,31 +66,18 @@ const Registros = () => {
     fetchRegistros();
   }, [filterMascotinho, filterDate]);
 
-  const handleClick = (record, field) => {
-    setSelectedRecord({ record, field });
+  const handleCommentClick = (comentarios, tipo) => {
+    const comentariosOrdenados = comentarios.sort((a, b) => a.horario.localeCompare(b.horario)); // Ordena por horário
+    setSelectedComment({ comentarios: comentariosOrdenados, tipo });
   };
 
-  const handleClosePopup = () => {
-    setSelectedRecord(null);
+  const handleCloseModal = () => {
+    setSelectedComment(null);
   };
 
   return (
     <div className={styles.registrosContainer}>
       <h1>Registros</h1>
-      {/* Filtros */}
-      {/* <div className={styles.filters}>
-        <input
-          type="text"
-          placeholder="Mascotinho"
-          value={filterMascotinho}
-          onChange={(e) => setFilterMascotinho(e.target.value)}
-        />
-        <input
-          type="date"
-          placeholder="Data"
-          onChange={(e) => setFilterDate(e.target.value)}
-        />
-      </div> */}
 
       <table className={styles.registrosTable}>
         <thead>
@@ -101,7 +90,7 @@ const Registros = () => {
             <th>Horário de Entrada</th>
             <th>Data de Saída</th>
             <th>Horário de Saída</th>
-            <th>Comentário Saúde</th>
+            <th>Comentário Veterinário</th>
             <th>Comentário Comportamento</th>
             <th>Pertences</th>
           </tr>
@@ -119,30 +108,57 @@ const Registros = () => {
               <td>{registro.mascotinho}</td>
               <td>{registro.raca}</td>
               <td>{registro.servico}</td>
-              <td onClick={() => handleClick(registro, "usuarioEntrada")}>{registro.dataEntrada}</td>
-              <td onClick={() => handleClick(registro, "usuarioEntrada")}>{registro.horarioEntrada}</td>
-              <td onClick={() => handleClick(registro, "usuarioSaida")}>{registro.dataSaida}</td>
-              <td onClick={() => handleClick(registro, "usuarioSaida")}>{registro.horarioSaida}</td>
-              <td onClick={() => handleClick(registro, "comentarioVet")}>{registro.comentarioVet}</td>
-              <td onClick={() => handleClick(registro, "comentarioComportamento")}>{registro.comentarioComportamento}</td>
-              <td onClick={() => handleClick(registro, "comentarioPertences")}>{registro.comentarioPertences}</td>
+              <td>{registro.dataEntrada}</td>
+              <td>{registro.horarioEntrada}</td>
+              <td>{registro.dataSaida}</td>
+              <td>{registro.horarioSaida}</td>
+              <td>
+                {registro.comentarioVet.length > 0 && (
+                  <img 
+                    src={iconClick} 
+                    alt="Ver Comentários" 
+                    className={styles.commentIcon} 
+                    onClick={() => handleCommentClick(registro.comentarioVet, 'Vet')}
+                  />
+                )}
+              </td>
+              <td>
+                {registro.comentarioComportamento.length > 0 && (
+                  <img 
+                    src={iconClick} 
+                    alt="Ver Comentários" 
+                    className={styles.commentIcon} 
+                    onClick={() => handleCommentClick(registro.comentarioComportamento, 'Comportamento')}
+                  />
+                )}
+              </td>
+              <td>
+                {registro.comentarioPertences.length > 0 && (
+                  <img 
+                    src={iconClick} 
+                    alt="Ver Comentários" 
+                    className={styles.commentIcon} 
+                    onClick={() => handleCommentClick(registro.comentarioPertences, 'Pertences')}
+                  />
+                )}
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      {/* Popup para exibir detalhes do usuário */}
-      {selectedRecord && (
-        <PopupUsuario onClose={handleClosePopup}>
-          <h2>Detalhes do Registro</h2>
-          <p>
-            <strong>Campo:</strong> {selectedRecord.field.replace("Usuario", "")}
-          </p>
-          <p>
-            <strong>Usuário:</strong> {selectedRecord.record[selectedRecord.field]}
-          </p>
-          <Button onClick={handleClosePopup}>Fechar</Button>
-        </PopupUsuario>
+      {/* Modal para exibir comentários */}
+      {selectedComment && (
+        <Modal isOpen={!!selectedComment} onClose={handleCloseModal} title={`Comentários de ${selectedComment.tipo}`}>
+          <Table 
+            headers={['Comentário', 'Usuário', 'Horário']}
+            data={selectedComment.comentarios.map(comentario => ({
+              comentario: comentario.comentario,
+              usuario: comentario.usuario,
+              horario: comentario.horario,
+            }))}
+          />
+        </Modal>
       )}
     </div>
   );

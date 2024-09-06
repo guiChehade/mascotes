@@ -36,7 +36,7 @@
 
 .tableCell {
   padding: 10px;
-  border-bottom: 1px solid var(--yellow-logo);
+  border-top: 1px solid var(--yellow-logo);
   color: var(--text-color);
   text-align: center;
 }
@@ -47,8 +47,10 @@
     padding: 6px;
     font-size: 0.75rem;
   }
+
   .tableCell {
     padding: 5px;
     font-size: 0.75rem;
   }
+
 }

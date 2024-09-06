@@ -20,7 +20,6 @@ import ActionOptions from "../components/ActionOptions";
 import ComentarioOptions from "../components/ComentarioOptions"; // Novo componente
 import logoLarge from '../assets/logo/logo-large.png';
 import styles from '../styles/Controle.module.css';
-import { v4 as uuidv4 } from 'uuid';
 
 const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUser }) => {
   const { petId } = useParams();
@@ -28,11 +27,11 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
   const [pet, setPet] = useState(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showPertenceQuestion, setShowPertenceQuestion] = useState(false);
-  const [showComentarioModal, setShowComentarioModal] = useState(false); // Alterado de showPertenceModal
+  const [showComentarioModal, setShowComentarioModal] = useState(false);
   const [showServiceModal, setShowServiceModal] = useState(false);
   const [selectedAction, setSelectedAction] = useState(null);
   const [lastRecord, setLastRecord] = useState(null);
-  const [selectedComentarioType, setSelectedComentarioType] = useState(null); // Tipo de comentário
+  const [selectedComentarioType, setSelectedComentarioType] = useState(null);
 
   useEffect(() => {
     const fetchPetData = async () => {
@@ -54,7 +53,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
       if (petId) {
         try {
           const controleRef = collection(firestore, "pets", petId, "controle");
-          const q = query(controleRef, orderBy("dataEntrada", "desc"));
+          const q = query(controleRef, orderBy("dataEntrada", "asc"), orderBy("horarioEntrada", "asc"));
           const querySnapshot = await getDocs(q);
           if (!querySnapshot.empty) {
             const latestRecord = querySnapshot.docs[0].data();
@@ -107,7 +106,8 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
 
   const handleComentarioSubmit = async (comentario) => {
     const now = new Date();
-    const formattedDate = now.toISOString().split('T')[0];
+    const formattedDate = now.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+    const formattedTime = now.toTimeString().split(' ')[0]; // Formato HH:MM:SS
     let subCollectionPath;
 
     switch (selectedComentarioType) {
@@ -126,7 +126,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
 
     try {
       const comentariosRef = collection(firestore, "pets", petId, "controle", formattedDate, subCollectionPath);
-      await addDoc(comentariosRef, { comentario, usuario: currentUser.name });
+      await addDoc(comentariosRef, { comentario, usuario: currentUser.name, horario: formattedTime });
       alert(`${selectedComentarioType} registrado: ${comentario}`);
       setShowComentarioModal(false);
       setSelectedComentarioType(null); // Reseta o tipo de comentário

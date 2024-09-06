@@ -59,6 +59,19 @@ th {
   display: block;
 }
 
+.commentIcon {
+  width: 24px; /* Tamanho do ícone */
+  height: 24px;
+  cursor: pointer; /* Cursor de clique */
+  filter: invert(100%) sepia(100%) saturate(1200%) hue-rotate(-30deg) brightness(1) contrast(1); /* Torna o ícone branco */
+  transition: all 0.2s ease; /* Transição suave ao passar o mouse */
+}
+
+.commentIcon:hover {
+  transform: scale(1.1); /* Efeito de zoom ao passar o mouse */
+  filter: invert(100%) sepia(100%) saturate(5000%) hue-rotate(-30deg) brightness(1) contrast(1); /* Altera a cor para var(--yellow-logo) */
+}
+
 @media (max-width: 1280px) {
   td {
     font-size: 0.625rem;

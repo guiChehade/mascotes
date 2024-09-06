@@ -69,25 +69,25 @@ const App = () => {
             <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} setUserRoles={setUserRoles} setCurrentUser={setCurrentUser} />} />
             {isAuthenticated && (
               <>
-                {(userRole === "isEmployee" || userRole === "isAdmin" || userRole === "isOwner") && (
+                {(userRole === "isEmployee" || userRole === "isAdmin" || userRole === "isTrainer" || userRole === "isOwner") && (
                   <Route path="/ponto" element={<Ponto currentUser={currentUser} />} />
                 )}
-                {(userRole === "isAdmin" || userRole === "isOwner") && (
+                {(userRole === "isAdmin" || userRole === "isTrainer" || userRole === "isOwner") && (
                   <Route path="/cadastro" element={<Cadastro currentUser={currentUser} />} />
                 )}
                 {(userRole === "isOwner") && (
                   <Route path="/upload-racas" element={<UploadBreeds />} />
                 )}
-                {(userRole === "isEmployee" || userRole === "isAdmin" || userRole === "isOwner") && (
+                {(userRole === "isEmployee" || userRole === "isTrainer" || userRole === "isAdmin" || userRole === "isOwner") && (
                   <Route path="/mascotes" element={<Mascotes currentUser={currentUser} />} />
                 )}
-                {(userRole === "isAdmin" || userRole === "isOwner") && (
+                {(userRole === "isAdmin" || userRole === "isTrainer" || userRole === "isOwner") && (
                   <Route path="/editar/:petId" element={<EditarPet currentUser={currentUser} />} />
                 )}
-                {(userRole === "isEmployee" || userRole === "isAdmin" || userRole === "isOwner") && (
+                {(userRole === "isEmployee" || userRole === "isTrainer" || userRole === "isAdmin" || userRole === "isOwner") && (
                   <Route path="/registros" element={<Registros currentUser={currentUser} />} />
                 )}
-                {userRole === "isOwner" && (
+                {(userRole === "isTrainer" || userRole === "isOwner") && (
                   <Route path="/usuarios" element={<Usuarios currentUser={currentUser} />} />
                 )}
               </>
