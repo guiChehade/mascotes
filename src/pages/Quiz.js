@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from '../styles/Quiz.module.css';
 
-const Quiz = ({ onClose }) => {
+const Quiz = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [showAnswers, setShowAnswers] = useState(false);
   const [score, setScore] = useState(0);
