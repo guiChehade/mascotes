@@ -2,10 +2,9 @@ import React, { useState, useEffect } from "react";
 import { firestore } from "../firebase";
 import { collection, query, orderBy, getDocs, doc } from "firebase/firestore";
 import styles from '../styles/Registros.module.css';
-import Modal from "../components/Modal"; // Importa o modal
-import Table from "../components/Table"; // Importa o componente de tabela
-import Button from "../components/Button";
-import iconClick from "../assets/icon/click.png"; // Ícone de clique
+import Modal from "../components/Modal";
+import Table from "../components/Table";
+import iconClick from "../assets/icon/click.png";
 
 const Registros = () => {
   const [registros, setRegistros] = useState([]);

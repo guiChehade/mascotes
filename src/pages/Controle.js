@@ -9,6 +9,7 @@ import {
   collection,
   getDocs,
   query,
+  where,
   orderBy,
   updateDoc,
 } from "firebase/firestore";
@@ -17,7 +18,7 @@ import Button from "../components/Button";
 import LoginModal from "../components/LoginModal";
 import TextInputModal from "../components/TextInputModal";
 import ActionOptions from "../components/ActionOptions";
-import ComentarioOptions from "../components/ComentarioOptions"; // Novo componente
+import ComentarioOptions from "../components/ComentarioOptions";
 import logoLarge from '../assets/logo/logo-large.png';
 import styles from '../styles/Controle.module.css';
 
@@ -36,32 +37,21 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
   useEffect(() => {
     const fetchPetData = async () => {
       if (petId) {
-        try {
-          const petDoc = await getDoc(doc(firestore, "pets", petId));
-          if (petDoc.exists) {
-            setPet(petDoc.data());
-          } else {
-            console.error("Pet não encontrado");
-          }
-        } catch (error) {
-          console.error("Erro ao buscar dados do pet:", error);
+        const petDoc = await getDoc(doc(firestore, "pets", petId));
+        if (petDoc.exists()) {
+          setPet(petDoc.data());
+        } else {
+          console.error("Pet não encontrado");
         }
       }
     };
 
     const fetchLastRecord = async () => {
-      if (petId) {
-        try {
-          const controleRef = collection(firestore, "pets", petId, "controle");
-          const q = query(controleRef, orderBy("dataEntrada", "asc"), orderBy("horarioEntrada", "asc"));
-          const querySnapshot = await getDocs(q);
-          if (!querySnapshot.empty) {
-            const latestRecord = querySnapshot.docs[0].data();
-            setLastRecord(latestRecord);
-          }
-        } catch (error) {
-          console.error("Erro ao buscar o último registro:", error);
-        }
+      const controleRef = collection(firestore, "pets", petId, "controle");
+      const q = query(controleRef, orderBy("dataEntrada", "asc"), orderBy("horarioEntrada", "asc"));
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        setLastRecord(querySnapshot.docs[0].data());
       }
     };
 
@@ -80,22 +70,24 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
   };
 
   const handleServiceSelection = (service) => {
-    if (service === "Creche" || service === "Hotel") {
-      setShowServiceModal(false);
-      if (selectedAction === "entrada") {
-        registerEntrada(service);
-        setShowPertenceQuestion(true);
-      } else if (selectedAction === "saida") {
-        showPertenceInfo();
-      }
+    setShowServiceModal(false);
+    if (selectedAction === "entrada") {
+      registerEntrada(service);
+    } else if (selectedAction === "saida") {
+      showPertenceInfo();
     }
   };
 
-  const showPertenceInfo = () => {
-    if (lastRecord && lastRecord.comentarioPertences) {
-      alert(`Pertences registrados na entrada: ${lastRecord.comentarioPertences.join(', ')}`);
-    } else {
-      alert("Nenhum pertence registrado na entrada.");
+  const showPertenceInfo = async () => {
+    if (lastRecord) {
+      const comentariosRef = collection(firestore, "pets", petId, "controle", lastRecord.dataEntrada, "comentarioPertences");
+      const comentariosSnapshot = await getDocs(comentariosRef);
+      const comentarios = comentariosSnapshot.docs.map(doc => doc.data().comentario);
+      if (comentarios.length > 0) {
+        alert(`Pertences registrados na entrada: ${comentarios.join(', ')}`);
+      } else {
+        alert("Nenhum pertence registrado na entrada.");
+      }
     }
     registerSaida();
   };
@@ -106,8 +98,11 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
 
   const handleComentarioSubmit = async (comentario) => {
     const now = new Date();
-    const formattedDate = now.toISOString().split('T')[0]; // Formato YYYY-MM-DD
-    const formattedTime = now.toTimeString().split(' ')[0]; // Formato HH:MM:SS
+    const saoPauloOffset = -3 * 60; // Offset de São Paulo em minutos (-3 horas)
+    const localTime = new Date(now.getTime() + (saoPauloOffset * 60 * 1000));
+  
+    const formattedDate = localTime.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+    const formattedTime = localTime.toTimeString().split(' ')[0]; // Formato HH:MM:SS
     let subCollectionPath;
 
     switch (selectedComentarioType) {
@@ -142,8 +137,11 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
 
   const registerEntrada = async (service) => {
     const now = new Date();
-    const formattedDate = now.toISOString().split('T')[0]; // Formato YYYY-MM-DD
-    const formattedTime = now.toTimeString().split(' ')[0]; // Formato HH:MM:SS
+    const saoPauloOffset = -3 * 60; // Offset de São Paulo em minutos (-3 horas)
+    const localTime = new Date(now.getTime() + (saoPauloOffset * 60 * 1000));
+  
+    const formattedDate = localTime.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+    const formattedTime = localTime.toTimeString().split(' ')[0]; // Formato HH:MM:SS
 
     const controleRef = collection(firestore, "pets", petId, "controle");
 
@@ -165,26 +163,25 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
 
   const registerSaida = async () => {
     const now = new Date();
-    const formattedDate = now.toISOString().split('T')[0];
-    const formattedTime = now.toTimeString().split(' ')[0]; // Formato HH:MM:SS
+    const saoPauloOffset = -3 * 60; // Offset de São Paulo em minutos (-3 horas)
+    const localTime = new Date(now.getTime() + (saoPauloOffset * 60 * 1000));
+  
+    const formattedDate = localTime.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+    const formattedTime = localTime.toTimeString().split(' ')[0]; // Formato HH:MM:SS
     const pernoites = calculatePernoites(lastRecord?.dataEntrada, formattedDate);
 
-    try {
-      const controleRef = doc(firestore, "pets", petId, "controle", lastRecord.dataEntrada);
-      await updateDoc(controleRef, {
-        dataSaida: formattedDate,
-        horarioSaida: formattedTime,
-        usuarioSaida: currentUser.name,
-        pernoites,
-      });
+    const controleRef = doc(firestore, "pets", petId, "controle", lastRecord.dataEntrada);
+    await updateDoc(controleRef, {
+      dataSaida: formattedDate,
+      horarioSaida: formattedTime,
+      usuarioSaida: currentUser.name,
+      pernoites,
+      localAtual: "Casa",
+    });
 
-      setPet((prev) => ({ ...prev, localAtual: null })); // Remove o localAtual
-      await updateDoc(doc(firestore, "pets", petId), { localAtual: null }); // Atualiza no Firestore
-      alert(`Saída registrada com sucesso. Pernoites: ${pernoites}`);
-      navigate("/mascotes");
-    } catch (error) {
-      console.error("Erro ao registrar saída:", error);
-    }
+    setPet(prev => ({ ...prev, localAtual: "Casa" }));
+    alert("Saída registrada com sucesso.");
+    navigate("/registros");
   };
 
   const calculatePernoites = (entradaData, saidaData) => {
@@ -256,25 +253,9 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
       {showServiceModal && (
         <ActionOptions
           actionType="Selecione o Serviço"
-          options={["Creche", "Hotel"]}
+          options={["Creche", "Hotel", "Adestramento"]}
           onSelectOption={handleServiceSelection}
           onBack={() => setShowServiceModal(false)}
-        />
-      )}
-
-      {showPertenceQuestion && selectedAction === "entrada" && (
-        <ActionOptions
-          actionType="O pet possui pertences?"
-          options={["Não", "Sim"]}
-          onSelectOption={(option) => {
-            if (option === "Sim") {
-              setShowComentarioModal(true); // Exibe modal de comentário
-            } else {
-              handleNoPertence();
-            }
-            setShowPertenceQuestion(false);
-          }}
-          onBack={() => setShowPertenceQuestion(false)}
         />
       )}
 

@@ -11,7 +11,7 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import AgendarVisita from "./pages/AgendarVisita";
 import Login from "./pages/Login";
-import Quiz from "./components/Quiz";
+import Quiz from "./pages/Quiz";
 import Cadastro from "./pages/Cadastro";
 import Mascotes from "./pages/Mascotes";
 import Controle from "./pages/Controle";
