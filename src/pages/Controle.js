@@ -37,7 +37,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     const fetchPetData = async () => {
       if (petId) {
         const petDoc = await getDoc(doc(firestore, "pets", petId));
-        if (petDoc.exists()) {
+        if (petDoc.exists) {
           setPet(petDoc.data());
         } else {
           console.error("Pet não encontrado");

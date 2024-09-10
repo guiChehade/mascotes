@@ -21,6 +21,7 @@ import ControleRedirect from "./pages/ControleRedirect";
 import EditarPet from "./pages/EditarPet";
 import Registros from "./pages/Registros";
 import Ponto from "./pages/Ponto";
+import NoLocal from "./pages/NoLocal";
 import Usuarios from "./pages/Usuarios";
 import styles from "./styles/App.module.css";
 import "./styles/global.css";
@@ -80,6 +81,9 @@ const App = () => {
                 )}
                 {(userRole === "isEmployee" || userRole === "isTrainer" || userRole === "isAdmin" || userRole === "isOwner") && (
                   <Route path="/mascotes" element={<Mascotes currentUser={currentUser} />} />
+                )}
+                {(userRole === "isEmployee" || userRole === "isTrainer" || userRole === "isAdmin" || userRole === "isOwner") && (
+                  <Route path="/no-local" element={<NoLocal currentUser={currentUser} />} />
                 )}
                 {(userRole === "isAdmin" || userRole === "isTrainer" || userRole === "isOwner") && (
                   <Route path="/editar/:petId" element={<EditarPet currentUser={currentUser} />} />
