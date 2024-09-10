@@ -49,12 +49,17 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
       if (petId) {
         try {
           const controleRef = collection(firestore, "pets", petId, "controle");
-          // Busca o último registro baseado na data de entrada e horário de entrada
           const q = query(controleRef, orderBy("dataEntrada", "desc"), orderBy("horarioEntrada", "desc"), limit(1));
           const querySnapshot = await getDocs(q);
           if (!querySnapshot.empty) {
-            const latestRecord = querySnapshot.docs[0].data();
-            setLastRecord(latestRecord);
+            // Use o documento diretamente
+            const latestRecordDoc = querySnapshot.docs[0];
+            setLastRecord({
+              id: latestRecordDoc.id,
+              ...latestRecordDoc.data()
+            });
+          } else {
+            setLastRecord(null); // Garante que lastRecord é null se não houver registros
           }
         } catch (error) {
           console.error("Erro ao buscar o último registro:", error);
@@ -172,18 +177,22 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     const formattedTime = now.toTimeString().split(' ')[0]; // Formato HH:MM:SS
     const pernoites = calculatePernoites(lastRecord?.dataEntrada, formattedDate);
 
-    const controleRef = doc(firestore, "pets", petId, "controle", lastRecord.id);
-    await updateDoc(controleRef, {
-      dataSaida: formattedDate,
-      horarioSaida: formattedTime,
-      usuarioSaida: currentUser.name,
-      pernoites,
-      localAtual: "Casa",
-    });
+    if (lastRecord && lastRecord.id) {
+      const controleRef = doc(firestore, "pets", petId, "controle", lastRecord.id);
+      await updateDoc(controleRef, {
+        dataSaida: formattedDate,
+        horarioSaida: formattedTime,
+        usuarioSaida: currentUser.name,
+        pernoites,
+        localAtual: "Casa",
+      });
 
-    setPet(prev => ({ ...prev, localAtual: "Casa" }));
-    alert("Saída registrada com sucesso.");
-    navigate("/registros");
+      setPet(prev => ({ ...prev, localAtual: "Casa" }));
+      alert("Saída registrada com sucesso.");
+      navigate("/registros");
+    } else {
+      console.error("Erro: Não foi possível encontrar o registro mais recente para atualizar.");
+    }
   };
 
   const calculatePernoites = (entradaData, saidaData) => {
