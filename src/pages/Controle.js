@@ -26,7 +26,6 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
   const navigate = useNavigate();
   const [pet, setPet] = useState(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const [showPertenceQuestion, setShowPertenceQuestion] = useState(false);
   const [showComentarioModal, setShowComentarioModal] = useState(false);
   const [showServiceModal, setShowServiceModal] = useState(false);
   const [selectedAction, setSelectedAction] = useState(null);
@@ -46,11 +45,19 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     };
 
     const fetchLastRecord = async () => {
-      const controleRef = collection(firestore, "pets", petId, "controle");
-      const q = query(controleRef, orderBy("dataEntrada", "asc"), orderBy("horarioEntrada", "asc"));
-      const querySnapshot = await getDocs(q);
-      if (!querySnapshot.empty) {
-        setLastRecord(querySnapshot.docs[0].data());
+      if (petId) {
+        try {
+          const controleRef = collection(firestore, "pets", petId, "controle");
+          // Busca o último registro baseado na data de entrada e horário de entrada
+          const q = query(controleRef, orderBy("dataEntrada", "desc"), orderBy("horarioEntrada", "desc"), limit(1));
+          const querySnapshot = await getDocs(q);
+          if (!querySnapshot.empty) {
+            const latestRecord = querySnapshot.docs[0].data();
+            setLastRecord(latestRecord);
+          }
+        } catch (error) {
+          console.error("Erro ao buscar o último registro:", error);
+        }
       }
     };
 
@@ -129,11 +136,6 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     }
   };
 
-  const handleNoPertence = () => {
-    handleComentarioSubmit(null);
-    setShowPertenceQuestion(false);
-  };
-
   const registerEntrada = async (service) => {
     const now = new Date();
     const saoPauloOffset = -3 * 60; // Offset de São Paulo em minutos (-3 horas)
@@ -169,7 +171,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     const formattedTime = localTime.toTimeString().split(' ')[0]; // Formato HH:MM:SS
     const pernoites = calculatePernoites(lastRecord?.dataEntrada, formattedDate);
 
-    const controleRef = doc(firestore, "pets", petId, "controle", lastRecord.dataEntrada);
+    const controleRef = doc(firestore, "pets", petId, "controle", lastRecord.id);
     await updateDoc(controleRef, {
       dataSaida: formattedDate,
       horarioSaida: formattedTime,
