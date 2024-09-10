@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { firestore } from "../firebase";
-import { collection, query, orderBy, getDocs, doc } from "firebase/firestore";
+import { collection, query, orderBy, getDocs, limit } from "firebase/firestore";
 import styles from '../styles/Registros.module.css';
 import Modal from "../components/Modal";
 import Table from "../components/Table";
@@ -9,61 +9,60 @@ import iconClick from "../assets/icon/click.png";
 const Registros = () => {
   const [registros, setRegistros] = useState([]);
   const [selectedComment, setSelectedComment] = useState(null); // Para armazenar o comentário selecionado
-  const [filterMascotinho, setFilterMascotinho] = useState("");
-  const [filterDate, setFilterDate] = useState("");
 
   useEffect(() => {
     const fetchRegistros = async () => {
       try {
         const petsSnapshot = await getDocs(collection(firestore, "pets"));
 
-        // Para cada pet, buscar os registros na subcoleção 'controle'
+        // Para cada pet, buscar o registro mais recente na subcoleção 'controle'
         const registrosData = await Promise.all(
           petsSnapshot.docs.map(async (petDoc) => {
             const petData = petDoc.data();
             const controleRef = collection(firestore, "pets", petDoc.id, "controle");
-            const controleQuery = query(controleRef, orderBy("dataEntrada", "desc"));
-
+            // Buscar apenas o registro mais recente
+            const controleQuery = query(controleRef, orderBy("dataEntrada", "desc"), orderBy("horarioEntrada", "desc"), limit(1));
             const controleSnapshot = await getDocs(controleQuery);
-            const registrosPorPet = await Promise.all(
-              controleSnapshot.docs.map(async (controleDoc) => {
-                const controleData = controleDoc.data();
 
-                // Coletar comentários de subcoleções
-                const comentariosPertencesRef = collection(firestore, "pets", petDoc.id, "controle", controleDoc.id, "comentarioPertences");
-                const comentariosVetRef = collection(firestore, "pets", petDoc.id, "controle", controleDoc.id, "comentarioVet");
-                const comentariosComportamentoRef = collection(firestore, "pets", petDoc.id, "controle", controleDoc.id, "comentarioComportamento");
+            if (!controleSnapshot.empty) {
+              const controleDoc = controleSnapshot.docs[0];
+              const controleData = controleDoc.data();
 
-                const comentariosPertencesSnapshot = await getDocs(comentariosPertencesRef);
-                const comentariosVetSnapshot = await getDocs(comentariosVetRef);
-                const comentariosComportamentoSnapshot = await getDocs(comentariosComportamentoRef);
+              // Coletar comentários de subcoleções
+              const comentariosPertencesRef = collection(firestore, "pets", petDoc.id, "controle", controleDoc.id, "comentarioPertences");
+              const comentariosVetRef = collection(firestore, "pets", petDoc.id, "controle", controleDoc.id, "comentarioVet");
+              const comentariosComportamentoRef = collection(firestore, "pets", petDoc.id, "controle", controleDoc.id, "comentarioComportamento");
 
-                return {
-                  ...controleData,
-                  foto: petData.foto || null,
-                  mascotinho: petData.mascotinho || "Desconhecido",
-                  raca: petData.raca || "Desconhecida",
-                  tutor: petData.tutor || "Desconhecido",
-                  comentarioPertences: comentariosPertencesSnapshot.docs.map(doc => ({ ...doc.data(), tipo: 'Pertences' })) || [],
-                  comentarioVet: comentariosVetSnapshot.docs.map(doc => ({ ...doc.data(), tipo: 'Vet' })) || [],
-                  comentarioComportamento: comentariosComportamentoSnapshot.docs.map(doc => ({ ...doc.data(), tipo: 'Comportamento' })) || [],
-                };
-              })
-            );
+              const comentariosPertencesSnapshot = await getDocs(comentariosPertencesRef);
+              const comentariosVetSnapshot = await getDocs(comentariosVetRef);
+              const comentariosComportamentoSnapshot = await getDocs(comentariosComportamentoRef);
 
-            return registrosPorPet;
+              return {
+                ...controleData,
+                foto: petData.foto || null,
+                mascotinho: petData.mascotinho || "Não cadastrado",
+                raca: petData.raca || "Não cadastrada",
+                tutor: petData.tutor || "Não cadastrado",
+                localAtual: petData.localAtual || "Casa",  // Substituir 'servico' por 'localAtual'
+                comentarioPertences: comentariosPertencesSnapshot.docs.map(doc => ({ ...doc.data(), tipo: 'Pertences' })) || [],
+                comentarioVet: comentariosVetSnapshot.docs.map(doc => ({ ...doc.data(), tipo: 'Vet' })) || [],
+                comentarioComportamento: comentariosComportamentoSnapshot.docs.map(doc => ({ ...doc.data(), tipo: 'Comportamento' })) || [],
+              };
+            }
+
+            return null; // Caso não tenha registros na subcoleção controle
           })
         );
 
-        // Flatten the array of arrays
-        setRegistros(registrosData.flat());
+        // Flatten the array and remove any null entries
+        setRegistros(registrosData.flat().filter(registro => registro !== null));
       } catch (error) {
         console.error("Erro ao buscar registros:", error);
       }
     };
 
     fetchRegistros();
-  }, [filterMascotinho, filterDate]);
+  }, []);
 
   const handleCommentClick = (comentarios, tipo) => {
     const comentariosOrdenados = comentarios.sort((a, b) => a.horario.localeCompare(b.horario)); // Ordena por horário
@@ -84,7 +83,7 @@ const Registros = () => {
             <th>Foto</th>
             <th>Mascote</th>
             <th>Raça</th>
-            <th>Serviço</th>
+            <th>Local Atual</th>
             <th>Data de Entrada</th>
             <th>Horário de Entrada</th>
             <th>Data de Saída</th>
@@ -106,7 +105,7 @@ const Registros = () => {
               </td>
               <td>{registro.mascotinho}</td>
               <td>{registro.raca}</td>
-              <td>{registro.servico}</td>
+              <td>{registro.localAtual}</td> {/* Mostrar localAtual em vez de serviço */}
               <td>{registro.dataEntrada}</td>
               <td>{registro.horarioEntrada}</td>
               <td>{registro.dataSaida}</td>

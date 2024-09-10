@@ -127,6 +127,12 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
       case "Comportamento":
         subCollectionPath = "comentarioComportamento";
         break;
+      case "Observações":
+        subCollectionPath = "comentarioObservacoes";
+        break;
+      case "Alimentação":
+        subCollectionPath = "comentarioAlimentacao";
+        break;
       default:
         return;
     }
