@@ -1,73 +1,82 @@
 import React, { useState, useEffect } from "react";
 import { firestore } from "../firebase";
-import { collection, query, orderBy, getDocs, where } from "firebase/firestore";
+import { collection, query, getDocs, doc, orderBy, addDoc } from "firebase/firestore";
 import Container from "../components/Container";
 import Table from "../components/Table";
 import Modal from "../components/Modal";
-import styles from '../styles/Registros.module.css'; // Reaproveitando estilos de registros
+import TextInputModal from "../components/TextInputModal";
 import iconClick from "../assets/icon/click.png";
+import styles from '../styles/Registros.module.css';
 
 const NoLocal = () => {
   const [pets, setPets] = useState([]);
   const [selectedComment, setSelectedComment] = useState(null);
+  const [commentDetails, setCommentDetails] = useState(null);
 
   useEffect(() => {
     const fetchPets = async () => {
-      const services = ["Creche", "Hotel", "Adestramento", "Passeio", "Banho", "Veterinário"];
       const petsRef = collection(firestore, "pets");
       const petsSnapshot = await getDocs(petsRef);
+      let petData = [];
 
-      const petData = await Promise.all(petsSnapshot.docs.map(async (petDoc) => {
-        const petData = petDoc.data();
-
-        // Only proceed if the pet is in an active service
-        if (services.includes(petData.localAtual)) {
-          // Fetch the latest 'controle' entry
+      for (const petDoc of petsSnapshot.docs) {
+        const pet = petDoc.data();
+        if (["Creche", "Hotel", "Adestramento", "Passeio", "Banho", "Veterinário"].includes(pet.localAtual)) {
           const controleRef = collection(firestore, "pets", petDoc.id, "controle");
-          const controleQuery = query(controleRef, orderBy("dataEntrada", "desc"));
+          const controleQuery = query(controleRef, orderBy("dataEntrada", "desc"), orderBy("horarioEntrada", "desc"));
           const controleSnapshot = await getDocs(controleQuery);
-
-          // Process the latest entry if it exists
           if (!controleSnapshot.empty) {
-            const latestEntry = controleSnapshot.docs[0];
-            const entryData = latestEntry.data();
-
-            // Get comments if they exist
-            const comentarios = {
-              pertences: await fetchComments(latestEntry.ref, "comentarioPertences"),
-              vet: await fetchComments(latestEntry.ref, "comentarioVet"),
-              comportamento: await fetchComments(latestEntry.ref, "comentarioComportamento")
-            };
-
-            return {
-              ...petData,
-              ...entryData,
-              comentarios
-            };
+            const latestEntry = controleSnapshot.docs[0].data();
+            petData.push({
+              ...pet,
+              ...latestEntry,
+              petId: petDoc.id // Store the pet ID for reference
+            });
           }
         }
-        return null;
-      }));
+      }
 
-      setPets(petData.filter(p => p)); // Filter out null entries
+      // Now order the array by localAtual
+      petData.sort((a, b) => a.localAtual.localeCompare(b.localAtual));
+      setPets(petData);
     };
 
     fetchPets();
   }, []);
 
-  const fetchComments = async (controleRef, subCollection) => {
-    const commentsRef = collection(controleRef, subCollection);
-    const snapshot = await getDocs(commentsRef);
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-  };
+  const handleCommentClick = async (petId, type) => {
+    const controleRef = doc(firestore, "pets", petId, "controle", "latestEntryId");
+    const comentariosRef = collection(controleRef, type);
+    const snapshot = await getDocs(comentariosRef);
+    const comments = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => a.horario.localeCompare(b.horario));
 
-  const handleCommentClick = (comments, type) => {
-    const sortedComments = comments.sort((a, b) => a.horario.localeCompare(b.horario));
-    setSelectedComment({ comments: sortedComments, type });
+    setSelectedComment(type);
+    setCommentDetails(comments);
   };
 
   const handleCloseModal = () => {
     setSelectedComment(null);
+    setCommentDetails(null);
+  };
+
+  const handleAddComment = async (text) => {
+    // Assuming you have the petId and the type of comment
+    const now = new Date();
+    const saoPauloOffset = -3 * 60; // Offset de São Paulo em minutos (-3 horas)
+    const localTime = new Date(now.getTime() + (saoPauloOffset * 60 * 1000));
+  
+    const comment = {
+      comentario: text,
+      usuario: "Current User", // Replace with actual user
+      horario: localTime.toISOString()
+    };
+
+    const petId = "petId"; // Replace with actual petId
+    const type = "comentarioPertences"; // Replace with actual comment type
+    const controleRef = doc(firestore, "pets", petId, "controle", "latestEntryId");
+    const comentariosRef = collection(controleRef, type);
+    await addDoc(comentariosRef, comment);
+    handleCommentClick(petId, type);
   };
 
   return (
@@ -76,25 +85,26 @@ const NoLocal = () => {
       <Table
         headers={['Foto', 'Nome', 'Local', 'Data Entrada', 'Almoço', 'Janta', 'Veterinário', 'Comportamento', 'Pertences']}
         data={pets.map(pet => ({
-          foto: pet.foto ? <img src={pet.foto} alt={pet.mascotinho} className={styles.petThumbnail} /> : "Sem foto",
+          foto: pet.foto ? <img src={pet.foto} alt="Pet" className={styles.petThumbnail} /> : "No Photo",
           nome: pet.mascotinho,
           local: pet.localAtual,
           dataEntrada: pet.dataEntrada,
-          almoço: pet.almoco ? <img src={iconClick} alt="Almoço" className={styles.commentIcon} /> : null,
+          almoço: <img src={iconClick} alt="Almoço" className={styles.commentIcon} />,
           janta: <img src={iconClick} alt="Janta" className={styles.commentIcon} />,
-          veterinario: pet.comentariosVet ? <img src={iconClick} alt="Veterinário" className={styles.commentIcon} onClick={() => handleCommentClick(pet.comentariosVet, 'Veterinário')} /> : null,
-          comportamento: pet.comentariosComportamento ? <img src={iconClick} alt="Comportamento" className={styles.commentIcon} onClick={() => handleCommentClick(pet.comentariosComportamento, 'Comportamento')} /> : null,
-          pertences: pet.comentariosPertences ? <img src={iconClick} alt="Pertences" className={styles.commentIcon} onClick={() => handleCommentClick(pet.comentariosPertences, 'Pertences')} /> : null,
+          veterinario: <img src={iconClick} alt="Veterinário" className={styles.commentIcon} onClick={() => handleCommentClick(pet.petId, 'comentarioVet')} />,
+          comportamento: <img src={iconClick} alt="Comportamento" className={styles.commentIcon} onClick={() => handleCommentClick(pet.petId, 'comentarioComportamento')} />,
+          pertences: <img src={iconClick} alt="Pertences" className={styles.commentIcon} onClick={() => handleCommentClick(pet.petId, 'comentarioPertences')} />,
         }))}
       />
       {selectedComment && (
-        <Modal isOpen={!!selectedComment} onClose={handleCloseModal} title={`Comentários de ${selectedComment.type}`}>
-          <Table 
+        <Modal isOpen={!!selectedComment} onClose={handleCloseModal} title={`Comentários sobre ${selectedComment}`}>
+          <TextInputModal onSubmit={handleAddComment} placeholder={`Adicione um comentário sobre ${selectedComment}...`} />
+          <Table
             headers={['Comentário', 'Usuário', 'Horário']}
-            data={selectedComment.comments.map(comment => ({
-              comentario: comment.comentario,
-              usuario: comment.usuario,
-              horario: comment.horario,
+            data={commentDetails.map(detail => ({
+              comentario: detail.comentario,
+              usuario: detail.usuario,
+              horario: detail.horario
             }))}
           />
         </Modal>
