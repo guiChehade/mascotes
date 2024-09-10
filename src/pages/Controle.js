@@ -11,6 +11,7 @@ import {
   query,
   orderBy,
   updateDoc,
+  limit
 } from "firebase/firestore";
 import Container from "../components/Container";
 import Button from "../components/Button";
