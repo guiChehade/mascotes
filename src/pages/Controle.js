@@ -109,7 +109,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     const localTime = new Date(now.getTime() + (saoPauloOffset * 60 * 1000));
   
     const formattedDate = localTime.toISOString().split('T')[0]; // Formato YYYY-MM-DD
-    const formattedTime = localTime.toTimeString().split(' ')[0]; // Formato HH:MM:SS
+    const formattedTime = now.toTimeString().split(' ')[0]; // Formato HH:MM:SS
     let subCollectionPath;
 
     switch (selectedComentarioType) {
@@ -143,7 +143,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     const localTime = new Date(now.getTime() + (saoPauloOffset * 60 * 1000));
   
     const formattedDate = localTime.toISOString().split('T')[0]; // Formato YYYY-MM-DD
-    const formattedTime = localTime.toTimeString().split(' ')[0]; // Formato HH:MM:SS
+    const formattedTime = now.toTimeString().split(' ')[0]; // Formato HH:MM:SS
 
     const controleRef = collection(firestore, "pets", petId, "controle");
 
@@ -169,7 +169,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     const localTime = new Date(now.getTime() + (saoPauloOffset * 60 * 1000));
   
     const formattedDate = localTime.toISOString().split('T')[0]; // Formato YYYY-MM-DD
-    const formattedTime = localTime.toTimeString().split(' ')[0]; // Formato HH:MM:SS
+    const formattedTime = now.toTimeString().split(' ')[0]; // Formato HH:MM:SS
     const pernoites = calculatePernoites(lastRecord?.dataEntrada, formattedDate);
 
     const controleRef = doc(firestore, "pets", petId, "controle", lastRecord.id);
