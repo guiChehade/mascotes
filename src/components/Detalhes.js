@@ -6,10 +6,12 @@ import styles from '../styles/Detalhes.module.css';
 const Detalhes = () => {
   const [petsByLocal, setPetsByLocal] = useState({
     Creche: [],
+    Hotel: [],
     Adestramento: [],
     Passeio: [],
     Banho: [],
     Veterinário: [],
+    Casa: [],
     Inativo: []
   });
 

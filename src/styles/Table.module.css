@@ -12,20 +12,18 @@
 }
 
 .tableHeader {
-  /* background-color: var(--container-background); */
   padding: 12px;
   text-align: center;
   font-weight: bold;
 }
 
 .tableRow {
-  /* background-color: var(--button-background); */
+  height: 100px;
   border-radius: 20px;
   transition: all 1s ease;
 }
 
 .tableRow:nth-child(even) {
-  /* background-color: var(--container-background); */
   transition: all 1s ease;
 }
 
@@ -41,16 +39,20 @@
   text-align: center;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1280px) {
 
   .tableHeader {
-    padding: 6px;
+    padding: 3px;
     font-size: 0.75rem;
   }
 
   .tableCell {
-    padding: 5px;
+    padding: 3px;
     font-size: 0.75rem;
+  }
+  
+  .tableRow {
+    height: 50px;
   }
 
 }

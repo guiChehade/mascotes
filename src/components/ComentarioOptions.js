@@ -9,9 +9,11 @@ const ComentarioOptions = ({ onSelectOption, onBack }) => {
         <button className={styles.closeButton} onClick={onBack}>X</button>
         <h2>Adicionar Comentário</h2>
         <div className={styles.options}>
-          <Button onClick={() => onSelectOption('Pertences')}>Pertences</Button>
+          <Button onClick={() => onSelectOption('Alimentação')}>Alimentação</Button>
           <Button onClick={() => onSelectOption('Veterinário')}>Veterinário</Button>
           <Button onClick={() => onSelectOption('Comportamento')}>Comportamento</Button>
+          <Button onClick={() => onSelectOption('Pertences')}>Pertences</Button>
+          <Button onClick={() => onSelectOption('Observações')}>Observações</Button>
         </div>
       </div>
     </div>

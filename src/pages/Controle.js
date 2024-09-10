@@ -190,7 +190,11 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
         horarioSaida: formattedTime,
         usuarioSaida: currentUser.name,
         pernoites,
-        localAtual: "Casa",
+      });
+
+      const petsRef = doc(firestore, "pets", petId);
+      await updateDoc(petsRef, {
+        localAtual: "Casa"
       });
 
       setPet(prev => ({ ...prev, localAtual: "Casa" }));
@@ -247,15 +251,16 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
           <div className={styles.value}>{pet.celularTutor}</div>
           {currentUser && (currentUser.role === 'isEmployee' || currentUser.role === 'isAdmin' || currentUser.role === 'isOwner') ? (
             <div className={styles.controleButtons}>
-              {pet.localAtual ? (
-                <>
-                  <Button onClick={handleSaida}>Saída</Button>
-                  <Button onClick={handleComentario}>Comentário</Button>
-                </>
-              ) : (
+              {pet.localAtual === "Casa" || pet.localAtual === "Inativo" || pet.localAtual === null ?  (
                 <>
                   <Button onClick={handleEntrada}>Entrada</Button>
                   <Button onClick={handleEditar}>Editar</Button>
+                </>
+              ) : (
+                <>
+                <Button onClick={handleSaida}>Saída</Button>
+                <Button onClick={handleComentario}>Comentário</Button>
+                <Button onClick={handleEditar}>Editar</Button>
                 </>
               )}
             </div>
