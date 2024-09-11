@@ -261,15 +261,15 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
           <div className={styles.value}>{pet.celularTutor}</div>
           {currentUser && (currentUser.role === 'isEmployee' || currentUser.role === 'isAdmin' || currentUser.role === 'isOwner') ? (
             <div className={styles.controleButtons}>
-              {pet.localAtual === "Creche" || pet.localAtual === "Hotel" || pet.localAtual === Adestramento ?  (
+              {pet.localAtual === "Casa" || pet.localAtual === "Inativo" || pet.localAtual === undefined || pet.localAtual === null ?  (
                 <>
-                <Button onClick={handleSaida}>Saída</Button>
-                <Button onClick={handleComentario}>Comentário</Button>
+                  <Button onClick={handleEntrada}>Entrada</Button>
+                  <Button onClick={handleEditar}>Editar</Button>
                 </>
               ) : (
                 <>
-                <Button onClick={handleEntrada}>Entrada</Button>
-                <Button onClick={handleEditar}>Editar</Button>
+                <Button onClick={handleSaida}>Saída</Button>
+                <Button onClick={handleComentario}>Comentário</Button>
                 </>
               )}
             </div>
