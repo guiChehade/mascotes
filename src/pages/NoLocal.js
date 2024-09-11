@@ -4,15 +4,15 @@ import { collection, query, getDocs, doc, orderBy, addDoc, limit } from "firebas
 import Container from "../components/Container";
 import Table from "../components/Table";
 import Modal from "../components/Modal";
-import TextInputModal from "../components/TextInputModal";
 import iconLapis from "../assets/icon/lapis.png";
 import iconInfo from "../assets/icon/informacao.png";
 import styles from '../styles/NoLocal.module.css';
 
-const NoLocal = () => {
+const NoLocal = ({ currentUser }) => {
   const [pets, setPets] = useState([]);
   const [selectedComment, setSelectedComment] = useState(null);
   const [commentDetails, setCommentDetails] = useState([]);
+  const [currentPetId, setCurrentPetId] = useState(null);
 
   useEffect(() => {
     const fetchPets = async () => {
@@ -27,16 +27,26 @@ const NoLocal = () => {
           const controleQuery = query(controleRef, orderBy("dataEntrada", "desc"), orderBy("horarioEntrada", "desc"), limit(1));
           const controleSnapshot = await getDocs(controleQuery);
           if (!controleSnapshot.empty) {
-            const latestEntry = controleSnapshot.docs[0].data();
+            const latestEntryDoc = controleSnapshot.docs[0];
+            const latestEntry = latestEntryDoc.data();
+            const petId = petDoc.id;
+
+            // Fetch comments for the latest entry
+            const comentariosAlimentacao = await fetchComments(latestEntryDoc.ref, "comentarioAlimentacao");
+            const comentariosVet = await fetchComments(latestEntryDoc.ref, "comentarioVet");
+            const comentariosComportamento = await fetchComments(latestEntryDoc.ref, "comentarioComportamento");
+            const comentariosPertences = await fetchComments(latestEntryDoc.ref, "comentarioPertences");
+            const comentariosObservacoes = await fetchComments(latestEntryDoc.ref, "comentarioObservacoes");
+
             petData.push({
               ...pet,
               ...latestEntry,
-              petId: petDoc.id, // Store the pet ID for reference
-              comentariosAlimentacao: latestEntry.comentarioAlimentacao || [],
-              comentariosVet: latestEntry.comentarioVet || [],
-              comentariosComportamento: latestEntry.comentarioComportamento || [],
-              comentariosPertences: latestEntry.comentarioPertences || [],
-              comentariosObservacoes: latestEntry.comentarioObservacoes || [],
+              petId: petId,
+              comentariosAlimentacao,
+              comentariosVet,
+              comentariosComportamento,
+              comentariosPertences,
+              comentariosObservacoes,
             });
           }
         }
@@ -45,6 +55,12 @@ const NoLocal = () => {
       // Now order the array by localAtual
       petData.sort((a, b) => a.localAtual.localeCompare(b.localAtual));
       setPets(petData);
+    };
+
+    const fetchComments = async (controleRef, subCollection) => {
+      const commentsRef = collection(controleRef, subCollection);
+      const snapshot = await getDocs(commentsRef);
+      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => a.horario.localeCompare(b.horario));
     };
 
     fetchPets();
@@ -63,40 +79,14 @@ const NoLocal = () => {
 
       setSelectedComment(type);
       setCommentDetails(comments);
+      setCurrentPetId(petId); // Store the current petId for later use if needed
     }
   };
 
   const handleCloseModal = () => {
     setSelectedComment(null);
     setCommentDetails([]);
-  };
-
-  const handleAddComment = async (text) => {
-    if (selectedComment) {
-      // Assuming you have the petId and the type of comment
-      const now = new Date();
-      const saoPauloOffset = -3 * 60; // Offset de São Paulo em minutos (-3 horas)
-      const localTime = new Date(now.getTime() + (saoPauloOffset * 60 * 1000));
-    
-      const comment = {
-        comentario: text,
-        usuario: "Current User", // Replace with actual user
-        horario: localTime.toISOString()
-      };
-
-      const petId = "petId"; // Replace with actual petId
-      const type = selectedComment; // Use selectedComment for type
-      const controleRef = collection(firestore, "pets", petId, "controle");
-      const controleQuery = query(controleRef, orderBy("dataEntrada", "desc"), orderBy("horarioEntrada", "desc"), limit(1));
-      const controleSnapshot = await getDocs(controleQuery);
-      
-      if (!controleSnapshot.empty) {
-        const latestEntryId = controleSnapshot.docs[0].id;
-        const comentariosRef = collection(doc(firestore, "pets", petId, "controle", latestEntryId), type);
-        await addDoc(comentariosRef, comment);
-        handleCommentClick(petId, type); // Refresh comments
-      }
-    }
+    setCurrentPetId(null);
   };
 
   return (
@@ -138,7 +128,6 @@ const NoLocal = () => {
       />
       {selectedComment && (
         <Modal isOpen={!!selectedComment} onClose={handleCloseModal} title={`Comentários sobre ${selectedComment}`}>
-          <TextInputModal onSubmit={handleAddComment} placeholder={`Adicione um comentário sobre ${selectedComment}...`} />
           <Table
             headers={['Comentário', 'Usuário', 'Horário']}
             data={commentDetails.map(detail => ({

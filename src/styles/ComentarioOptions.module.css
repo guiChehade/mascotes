@@ -1,0 +1,46 @@
+.modalOverlay {
+    position: fixed; /* Posiciona o overlay como um elemento fixo na tela */
+    top: 0; /* Define a posição superior como 0 */
+    left: 0; /* Define a posição esquerda como 0 */
+    width: 100%; /* O overlay cobre 100% da largura da tela */
+    height: 100%; /* O overlay cobre 100% da altura da tela */
+    background-color: rgba(0, 0, 0, 0.7); /* Fundo semitransparente */
+    display: flex; /* Flexbox para centralização */
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center; /* Centraliza verticalmente */
+    z-index: 1000; /* Coloca o modal acima de outros elementos */
+  }
+  
+  .modal {
+    background-color: var(--container-background); /* Usa a variável de cor de fundo do container */
+    color: var(--text-color); /* Usa a variável de cor de texto */
+    padding: 20px; /* Padding para espaçamento interno */
+    border-radius: 10px; /* Borda arredondada */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra leve */
+    max-width: 400px; /* Largura máxima do modal */
+    width: 90%; /* Largura do modal responsiva */
+    position: relative; /* Para posicionar o botão de fechar */
+  }
+  
+  .closeButton {
+    position: absolute; /* Botão de fechar posicionado absolutamente */
+    top: 10px; /* Distância do topo */
+    right: 10px; /* Distância da direita */
+    background: none; /* Sem fundo */
+    border: none; /* Sem borda */
+    color: var(--text-color); /* Usa a variável de cor de texto */
+    font-size: 18px; /* Tamanho da fonte */
+    cursor: pointer; /* Cursor de ponteiro */
+  }
+  
+  .closeButton:hover {
+    color: var(--button-background); /* Muda a cor ao passar o mouse */
+  }
+  
+  .options {
+    display: flex; /* Flexbox para os botões */
+    flex-direction: column; /* Direção da coluna para os botões */
+    gap: 10px; /* Espaçamento entre os botões */
+    margin-top: 20px; /* Margem superior para o título */
+  }
+  

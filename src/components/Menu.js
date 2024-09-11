@@ -25,6 +25,7 @@ const Menu = ({ userRoles }) => {
       { to: "/usuarios", label: "Usuários" },
       { to: "/mascotes", label: "Mascotes" },
       { to: "/registros", label: "Registros" },
+      { to: "/no-local", label: "No Local" },
       { to: "/ponto", label: "Ponto" },
     ],
     isAdmin: [
@@ -34,6 +35,7 @@ const Menu = ({ userRoles }) => {
       { to: "/cadastro", label: "Cadastro" },
       { to: "/mascotes", label: "Mascotes" },
       { to: "/registros", label: "Registros" },
+      { to: "/no-local", label: "No Local" },
       { to: "/ponto", label: "Ponto" },
     ],
     isEmployee: [
@@ -42,6 +44,7 @@ const Menu = ({ userRoles }) => {
       { to: "racas", label: "Raças" },
       { to: "/mascotes", label: "Mascotes" },
       { to: "/registros", label: "Registros" },
+      { to: "/no-local", label: "No Local" },
       { to: "/ponto", label: "Ponto" },
     ],
     isTutor: [

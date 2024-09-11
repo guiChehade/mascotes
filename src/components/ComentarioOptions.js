@@ -12,8 +12,8 @@ const ComentarioOptions = ({ onSelectOption, onBack }) => {
           <Button onClick={() => onSelectOption('Alimentação')}>Alimentação</Button>
           <Button onClick={() => onSelectOption('Veterinário')}>Veterinário</Button>
           <Button onClick={() => onSelectOption('Comportamento')}>Comportamento</Button>
-          <Button onClick={() => onSelectOption('Pertences')}>Pertences</Button>
           <Button onClick={() => onSelectOption('Observações')}>Observações</Button>
+          <Button onClick={() => onSelectOption('Pertences')}>Pertences</Button>
         </div>
       </div>
     </div>

@@ -19,6 +19,8 @@ import LoginModal from "../components/LoginModal";
 import TextInputModal from "../components/TextInputModal";
 import ActionOptions from "../components/ActionOptions";
 import ComentarioOptions from "../components/ComentarioOptions";
+import Modal from "../components/Modal";
+import Table from "../components/Table";
 import logoLarge from '../assets/logo/logo-large.png';
 import styles from '../styles/Controle.module.css';
 
@@ -32,6 +34,8 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
   const [selectedAction, setSelectedAction] = useState(null);
   const [lastRecord, setLastRecord] = useState(null);
   const [selectedComentarioType, setSelectedComentarioType] = useState(null);
+  const [showCommentsModal, setShowCommentsModal] = useState(false); // Estado para o modal de comentários
+  const [commentsData, setCommentsData] = useState([]); // Estado para os dados dos comentários
 
   useEffect(() => {
     const fetchPetData = async () => {
@@ -52,14 +56,13 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
           const q = query(controleRef, orderBy("dataEntrada", "desc"), orderBy("horarioEntrada", "desc"), limit(1));
           const querySnapshot = await getDocs(q);
           if (!querySnapshot.empty) {
-            // Use o documento diretamente
             const latestRecordDoc = querySnapshot.docs[0];
             setLastRecord({
               id: latestRecordDoc.id,
               ...latestRecordDoc.data()
             });
           } else {
-            setLastRecord(null); // Garante que lastRecord é null se não houver registros
+            setLastRecord(null);
           }
         } catch (error) {
           console.error("Erro ao buscar o último registro:", error);
@@ -86,22 +89,29 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     if (selectedAction === "entrada") {
       registerEntrada(service);
     } else if (selectedAction === "saida") {
-      showPertenceInfo();
+      showCommentInfo();
     }
   };
 
-  const showPertenceInfo = async () => {
+  const showCommentInfo = async () => {
     if (lastRecord) {
-      const comentariosRef = collection(firestore, "pets", petId, "controle", lastRecord.dataEntrada, "comentarioPertences");
-      const comentariosSnapshot = await getDocs(comentariosRef);
-      const comentarios = comentariosSnapshot.docs.map(doc => doc.data().comentario);
-      if (comentarios.length > 0) {
-        alert(`Pertences registrados na entrada: ${comentarios.join(', ')}`);
+      const commentTypes = ["comentarioPertences", "comentarioVet", "comentarioComportamento", "comentarioObservacoes", "comentarioAlimentacao"];
+      let comments = [];
+
+      for (let type of commentTypes) {
+        const comentariosRef = collection(firestore, "pets", petId, "controle", lastRecord.id, type);
+        const comentariosSnapshot = await getDocs(comentariosRef);
+        const comentarios = comentariosSnapshot.docs.map(doc => ({ tipo: type.replace("comentario", ""), ...doc.data() }));
+        comments = [...comments, ...comentarios];
+      }
+
+      if (comments.length > 0) {
+        setCommentsData(comments);
+        setShowCommentsModal(true); // Exibe o modal de comentários
       } else {
-        alert("Nenhum pertence registrado na entrada.");
+        registerSaida(); // Se não houver comentários, registrar a saída diretamente
       }
     }
-    registerSaida();
   };
 
   const handleComentario = () => {
@@ -142,7 +152,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
       await addDoc(comentariosRef, { comentario, usuario: currentUser.name, horario: formattedTime });
       alert(`${selectedComentarioType} registrado: ${comentario}`);
       setShowComentarioModal(false);
-      setSelectedComentarioType(null); // Reseta o tipo de comentário
+      setSelectedComentarioType(null);
     } catch (error) {
       console.error(`Erro ao adicionar ${selectedComentarioType.toLowerCase()}:`, error);
     }
@@ -260,7 +270,6 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
                 <>
                 <Button onClick={handleSaida}>Saída</Button>
                 <Button onClick={handleComentario}>Comentário</Button>
-                <Button onClick={handleEditar}>Editar</Button>
                 </>
               )}
             </div>
@@ -301,6 +310,21 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
           onClose={() => setShowLoginModal(false)}
           onLoginSuccess={handleLoginSuccess}
         />
+      )}
+
+      {showCommentsModal && (
+        <Modal isOpen={showCommentsModal} onClose={() => setShowCommentsModal(false)} title="Comentários Registrados">
+          <Table 
+            headers={['Tipo', 'Comentário', 'Usuário', 'Horário']}
+            data={commentsData.map(comment => ({
+              tipo: comment.tipo,
+              comentario: comment.comentario,
+              usuario: comment.usuario,
+              horario: comment.horario
+            }))}
+          />
+          <Button onClick={registerSaida}>Registrar Saída</Button>
+        </Modal>
       )}
     </Container>
   );
