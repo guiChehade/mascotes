@@ -35,8 +35,8 @@ const NoLocal = ({ currentUser }) => {
             const comentariosAlimentacao = await fetchComments(latestEntryDoc.ref, "comentarioAlimentacao");
             const comentariosVet = await fetchComments(latestEntryDoc.ref, "comentarioVet");
             const comentariosComportamento = await fetchComments(latestEntryDoc.ref, "comentarioComportamento");
-            const comentariosObservacoes = await fetchComments(latestEntryDoc.ref, "comentarioObservacoes");
             const comentariosPertences = await fetchComments(latestEntryDoc.ref, "comentarioPertences");
+            const comentariosObservacoes = await fetchComments(latestEntryDoc.ref, "comentarioObservacoes");
 
             petData.push({
               ...pet,
@@ -93,7 +93,7 @@ const NoLocal = ({ currentUser }) => {
     <Container className={styles.registrosContainer}>
       <h1>Pets No Local</h1>
       <Table
-        headers={['Foto', 'Nome', 'Local', 'Data Entrada', 'Alimentação', 'Veterinário', 'Comportamento', 'Observações', 'Pertences']}
+        headers={['Foto', 'Nome', 'Local', 'Data Entrada', 'Alimentação', 'Veterinário', 'Comportamento', 'Pertences', 'Observações']}
         data={pets.map(pet => ({
           foto: pet.foto ? <img src={pet.foto} alt="Pet" className={styles.petThumbnail} /> : "No Photo",
           nome: pet.mascotinho,
