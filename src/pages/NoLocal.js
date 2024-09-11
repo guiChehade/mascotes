@@ -35,8 +35,8 @@ const NoLocal = ({ currentUser }) => {
             const comentariosAlimentacao = await fetchComments(latestEntryDoc.ref, "comentarioAlimentacao");
             const comentariosVet = await fetchComments(latestEntryDoc.ref, "comentarioVet");
             const comentariosComportamento = await fetchComments(latestEntryDoc.ref, "comentarioComportamento");
-            const comentariosPertences = await fetchComments(latestEntryDoc.ref, "comentarioPertences");
             const comentariosObservacoes = await fetchComments(latestEntryDoc.ref, "comentarioObservacoes");
+            const comentariosPertences = await fetchComments(latestEntryDoc.ref, "comentarioPertences");
 
             petData.push({
               ...pet,
