@@ -18,41 +18,48 @@ const NoLocal = ({ currentUser }) => {
     const fetchPets = async () => {
       const petsRef = collection(firestore, "pets");
       const petsSnapshot = await getDocs(petsRef);
-      let petData = [];
-
-      for (const petDoc of petsSnapshot.docs) {
+      const petDataPromises = petsSnapshot.docs.map(async (petDoc) => {
         const pet = petDoc.data();
         if (["Creche", "Hotel", "Adestramento", "Passeio", "Banho", "Veterinário"].includes(pet.localAtual)) {
-          const controleRef = collection(firestore, "pets", petDoc.id, "controle");
-          const controleQuery = query(controleRef, orderBy("dataEntrada", "desc"), orderBy("horarioEntrada", "desc"), limit(1));
-          const controleSnapshot = await getDocs(controleQuery);
-          if (!controleSnapshot.empty) {
-            const latestEntryDoc = controleSnapshot.docs[0];
-            const latestEntry = latestEntryDoc.data();
-            const petId = petDoc.id;
+          // Denormalized data should be used here if available
+          if (pet.latestControleEntry) {
+            return { ...pet, petId: petDoc.id, ...pet.latestControleEntry };
+          } else {
+            const controleRef = collection(firestore, "pets", petDoc.id, "controle");
+            const controleQuery = query(controleRef, orderBy("dataEntrada", "desc"), orderBy("horarioEntrada", "desc"), limit(1));
+            const controleSnapshot = await getDocs(controleQuery);
 
-            // Fetch comments for the latest entry
-            const comentariosAlimentacao = await fetchComments(latestEntryDoc.ref, "comentarioAlimentacao");
-            const comentariosVet = await fetchComments(latestEntryDoc.ref, "comentarioVet");
-            const comentariosComportamento = await fetchComments(latestEntryDoc.ref, "comentarioComportamento");
-            const comentariosPertences = await fetchComments(latestEntryDoc.ref, "comentarioPertences");
-            const comentariosObservacoes = await fetchComments(latestEntryDoc.ref, "comentarioObservacoes");
+            if (!controleSnapshot.empty) {
+              const latestEntryDoc = controleSnapshot.docs[0];
+              const latestEntry = latestEntryDoc.data();
+              const petId = petDoc.id;
 
-            petData.push({
-              ...pet,
-              ...latestEntry,
-              petId: petId,
-              comentariosAlimentacao,
-              comentariosVet,
-              comentariosComportamento,
-              comentariosPertences,
-              comentariosObservacoes,
-            });
+              // Fetch comments for the latest entry in parallel
+              const [comentariosAlimentacao, comentariosVet, comentariosComportamento, comentariosPertences, comentariosObservacoes] = await Promise.all([
+                fetchComments(latestEntryDoc.ref, "comentarioAlimentacao"),
+                fetchComments(latestEntryDoc.ref, "comentarioVet"),
+                fetchComments(latestEntryDoc.ref, "comentarioComportamento"),
+                fetchComments(latestEntryDoc.ref, "comentarioPertences"),
+                fetchComments(latestEntryDoc.ref, "comentarioObservacoes")
+              ]);
+
+              return {
+                ...pet,
+                ...latestEntry,
+                petId: petId,
+                comentariosAlimentacao,
+                comentariosVet,
+                comentariosComportamento,
+                comentariosPertences,
+                comentariosObservacoes,
+              };
+            }
           }
         }
-      }
+        return null; // Exclude pets not in a valid localAtual state
+      });
 
-      // Now order the array by localAtual
+      const petData = (await Promise.all(petDataPromises)).filter(pet => pet !== null);
       petData.sort((a, b) => a.localAtual.localeCompare(b.localAtual));
       setPets(petData);
     };
@@ -79,7 +86,7 @@ const NoLocal = ({ currentUser }) => {
 
       setSelectedComment(type);
       setCommentDetails(comments);
-      setCurrentPetId(petId); // Store the current petId for later use if needed
+      setCurrentPetId(petId);
     }
   };
 
