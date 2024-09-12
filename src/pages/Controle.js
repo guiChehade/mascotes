@@ -87,9 +87,12 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     setShowSaidaModal(true);
   };
 
-  const handleVolta = () => {
-    setSelectedAction("volta");
-    setShowVoltaModal(true);
+  const handleVoltaParque = () => {
+    setSelectedAction("voltaParque");
+  };
+
+  const handleVoltaCasa = () => {
+    setSelectedAction("voltaCasa");
   };
 
   const handleServiceSelection = (service) => {
@@ -104,10 +107,13 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
       if (service === "Casa") {
         showCommentInfo();
       } else {
-        registerSaidaParaServico(service); // Registrar saída para outro serviço
+        registerSaidaServico(service); // Registrar saída para outro serviço
       }
-    } else if (selectedAction === "volta") {
-      registerVoltaParaParque(service); // Registrar volta para a Creche/Hotel
+    } else if (selectedAction === "voltaParque") {
+      registerVolta(service); // Registrar volta para a Creche/Hotel
+    } else if (selectedAction === "voltaCasa") {
+      registerVolta(service);
+      showCommentInfo();
     }
   };
 
@@ -202,7 +208,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     }
   };
 
-  const registerSaidaParaServico = async (service) => {
+  const registerSaidaServico = async (service) => {
     const now = new Date();
     const saoPauloOffset = -3 * 60; 
     const localTime = new Date(now.getTime() + (saoPauloOffset * 60 * 1000));
@@ -230,7 +236,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     }
   };
 
-  const registerVoltaParaParque = async (service) => {
+  const registerVolta = async (service) => {
     const now = new Date();
     const saoPauloOffset = -3 * 60; 
     const localTime = new Date(now.getTime() + (saoPauloOffset * 60 * 1000));
@@ -254,7 +260,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
       setPet((prev) => ({ ...prev, localAtual: service }));
       alert(`Retorno para ${service} registrado com sucesso.`);
     } catch (error) {
-      console.error("Erro ao registrar retorno para o Parque:", error);
+      console.error(`Erro ao registrar retorno para ${service}: ${error}`);
     }
   };
 
@@ -344,8 +350,8 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
                 </>
               ) : pet.localAtual === "Adestramento" || pet.localAtual === "Passeio" || pet.localAtual === "Banho" || pet.localAtual === "Veterinário" ? (
                 <>
-                  <Button onClick={handleVolta}>Volta pro Parque</Button>
-                  <Button onClick={handleSaida}>Saída pra Casa</Button>
+                  <Button onClick={handleVoltaEntrada}>Retorno pro Parque</Button>
+                  <Button onClick={handleVoltaSaida}>Saída pra Casa</Button>
                   <Button onClick={handleComentario}>Comentário</Button>
                 </>
               ) : (
