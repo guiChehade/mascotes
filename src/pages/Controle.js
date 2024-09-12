@@ -479,7 +479,12 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
       )}
 
       {showCommentsModal && (
-        <Modal isOpen={showCommentsModal} onClose={() => setShowCommentsModal(false)} title="Comentários Registrados">
+        <Modal 
+          isOpen={showCommentsModal} 
+          onClose={() => setShowCommentsModal(false)} 
+          title="Comentários Registrados"
+          onConfirm={registerSaida} // Passa a função registerSaida como onConfirm
+        >
           <Table 
             headers={['Tipo', 'Comentário', 'Usuário', 'Horário']}
             data={commentsData.map(comment => ({
@@ -489,7 +494,6 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
               horario: comment.horario
             }))}
           />
-          <Button onClick={registerSaida}>Registrar Saída</Button>
         </Modal>
       )}
     </Container>
