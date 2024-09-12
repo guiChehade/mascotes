@@ -193,8 +193,35 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
       console.error(`Erro ao adicionar ${selectedComentarioType.toLowerCase()}:`, error);
     }
   };
+
+  const registerEntrada = async (service) => {
+    const now = new Date();
+    const saoPauloOffset = -3 * 60; 
+    const localTime = new Date(now.getTime() + (saoPauloOffset * 60 * 1000));
   
-  const registerSaidaParaServico = async (service) => {
+    const formattedDate = localTime.toISOString().split('T')[0]; 
+    const formattedTime = now.toTimeString().split(' ')[0]; 
+
+    const controleRef = collection(firestore, "pets", petId, "mostRecent"); // Usando subcoleção 'mostRecent' para entradas recentes
+
+    const newRecord = {
+      servico: service,
+      dataEntrada: formattedDate,
+      horarioEntrada: formattedTime,
+      usuarioEntrada: currentUser.name,
+    };
+
+    try {
+      await setDoc(doc(controleRef, formattedDate), newRecord, { merge: true });
+      setPet((prev) => ({ ...prev, localAtual: service }));
+      await updateDoc(doc(firestore, "pets", petId), { localAtual: service, dataEntrada: formattedDate, horarioEntrada: formattedTime });
+      refreshPage();  // Atualiza a página
+    } catch (error) {
+      console.error("Erro ao registrar entrada:", error);
+    }
+  };
+  
+  const registerSaidaServico = async (service) => {
     if (!lastRecord || !lastRecord.id) {
       console.error("Erro: lastRecord ou lastRecord.id é nulo.");
       return; // Evita continuar se lastRecord estiver nulo
@@ -229,41 +256,6 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
       setPet((prev) => ({ ...prev, localAtual: service }));
       alert(`Entrada para ${service} registrada com sucesso.`);
       refreshPage();  // Atualiza a página após registrar a saída para o serviço
-    } catch (error) {
-      console.error("Erro ao registrar saída para serviço:", error);
-    }
-  };
-
-  const registerSaidaServico = async (service) => {
-    const now = new Date();
-    const saoPauloOffset = -3 * 60; 
-    const localTime = new Date(now.getTime() + (saoPauloOffset * 60 * 1000));
-  
-    const formattedDate = localTime.toISOString().split('T')[0]; 
-    const formattedTime = now.toTimeString().split(' ')[0]; 
-
-    try {
-      const serviceRef = collection(doc(firestore, "pets", petId, "controle", lastRecord.id), service);
-      await addDoc(serviceRef, {
-        dataEntrada: formattedDate,
-        horarioEntrada: formattedTime,
-        usuarioEntrada: currentUser.name,
-      });
-
-      const mostRecentRef = collection(firestore, "pets", petId, "mostRecent");
-      await setDoc(doc(mostRecentRef, formattedDate), {
-        localAtual: service,
-        dataEntrada: formattedDate,
-        horarioEntrada: formattedTime,
-        usuarioEntrada: currentUser.name,
-      }, { merge: true });  // Atualiza `mostRecent`
-
-      const petsRef = doc(firestore, "pets", petId);
-      await updateDoc(petsRef, { localAtual: service });
-
-      setPet((prev) => ({ ...prev, localAtual: service }));
-      alert(`Entrada para ${service} registrada com sucesso.`);
-      refreshPage();  // Atualiza a página
     } catch (error) {
       console.error("Erro ao registrar saída para serviço:", error);
     }
