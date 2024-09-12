@@ -96,13 +96,18 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     setShowEntradaModal(false);
     setShowSaidaModal(false);
     setShowVoltaModal(false);
+
     if (selectedAction === "entrada") {
       registerEntrada(service);
       setLastService(service);
     } else if (selectedAction === "saida") {
-      showCommentInfo();
+      if (service === "Casa") {
+        showCommentInfo();
+      } else {
+        registerSaidaParaServico(service); // Registrar saída para outro serviço
+      }
     } else if (selectedAction === "volta") {
-      registerEntrada(service);
+      registerVoltaParaParque(service); // Registrar volta para a Creche/Hotel
     }
   };
 
@@ -191,9 +196,65 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     try {
       await setDoc(doc(controleRef, formattedDate), newRecord, { merge: true });
       setPet((prev) => ({ ...prev, localAtual: service }));
-      await updateDoc(doc(firestore, "pets", petId), { localAtual: service, dataEntrada: formattedDate, horarioEntrada: formattedTime }); // Atualiza o documento principal
+      await updateDoc(doc(firestore, "pets", petId), { localAtual: service, dataEntrada: formattedDate, horarioEntrada: formattedTime });
     } catch (error) {
       console.error("Erro ao registrar entrada:", error);
+    }
+  };
+
+  const registerSaidaParaServico = async (service) => {
+    const now = new Date();
+    const saoPauloOffset = -3 * 60; 
+    const localTime = new Date(now.getTime() + (saoPauloOffset * 60 * 1000));
+  
+    const formattedDate = localTime.toISOString().split('T')[0]; 
+    const formattedTime = now.toTimeString().split(' ')[0]; 
+
+    try {
+      // Criar nova subcoleção do serviço dentro do documento da data atual na subcoleção de controle
+      const serviceRef = collection(doc(firestore, "pets", petId, "controle", lastRecord.id), service);
+      await addDoc(serviceRef, {
+        dataEntrada: formattedDate,
+        horarioEntrada: formattedTime,
+        usuarioEntrada: currentUser.name,
+      });
+
+      // Atualizar o localAtual no documento do pet
+      const petsRef = doc(firestore, "pets", petId);
+      await updateDoc(petsRef, { localAtual: service });
+
+      setPet((prev) => ({ ...prev, localAtual: service }));
+      alert(`Entrada para ${service} registrada com sucesso.`);
+    } catch (error) {
+      console.error("Erro ao registrar saída para serviço:", error);
+    }
+  };
+
+  const registerVoltaParaParque = async (service) => {
+    const now = new Date();
+    const saoPauloOffset = -3 * 60; 
+    const localTime = new Date(now.getTime() + (saoPauloOffset * 60 * 1000));
+  
+    const formattedDate = localTime.toISOString().split('T')[0]; 
+    const formattedTime = now.toTimeString().split(' ')[0]; 
+
+    try {
+      // Registrar o retorno na subcoleção do serviço atual
+      const serviceRef = collection(firestore, "pets", petId, "controle", lastRecord.id, pet.localAtual);
+      await addDoc(serviceRef, {
+        dataVolta: formattedDate,
+        horarioVolta: formattedTime,
+        usuarioVolta: currentUser.name,
+      });
+
+      // Atualizar o localAtual para o último serviço (Creche ou Hotel)
+      const petsRef = doc(firestore, "pets", petId);
+      await updateDoc(petsRef, { localAtual: service });
+
+      setPet((prev) => ({ ...prev, localAtual: service }));
+      alert(`Retorno para ${service} registrado com sucesso.`);
+    } catch (error) {
+      console.error("Erro ao registrar retorno para o Parque:", error);
     }
   };
 
@@ -219,7 +280,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
       await updateDoc(petsRef, {
         localAtual: "Casa",
         dataSaida: formattedDate,
-        horarioSaida: formattedTime
+        horarioSaida: formattedTime,
       });
 
       setPet(prev => ({ ...prev, localAtual: "Casa" }));
@@ -305,7 +366,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
       {showEntradaModal && (
         <ActionOptions
           actionType="Qual o motivo da Entrada?"
-          options={["Creche", "Hotel", "Adestramento"]}
+          options={["Creche", "Hotel"]}
           onSelectOption={handleServiceSelection}
           onBack={() => setShowEntradaModal(false)}
         />
