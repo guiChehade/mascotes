@@ -32,7 +32,6 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
   const [showComentarioModal, setShowComentarioModal] = useState(false);
   const [showEntradaModal, setShowEntradaModal] = useState(false);
   const [showSaidaModal, setShowSaidaModal] = useState(false);
-  const [showVoltaModal, setShowVoltaModal] = useState(false);
   const [lastService, setLastService] = useState(null);
   const [selectedAction, setSelectedAction] = useState(null);
   const [lastRecord, setLastRecord] = useState(null);
@@ -41,41 +40,47 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
   const [commentsData, setCommentsData] = useState([]); 
 
   useEffect(() => {
-    const fetchPetData = async () => {
-      if (petId) {
-        const petDoc = await getDoc(doc(firestore, "pets", petId));
-        if (petDoc.exists) {
-          setPet(petDoc.data());
-        } else {
-          console.error("Pet não encontrado");
-        }
-      }
-    };
-
-    const fetchLastRecord = async () => {
-      if (petId) {
-        try {
-          const controleRef = collection(firestore, "pets", petId, "controle");
-          const q = query(controleRef, orderBy("dataEntrada", "desc"), orderBy("horarioEntrada", "desc"), limit(1));
-          const querySnapshot = await getDocs(q);
-          if (!querySnapshot.empty) {
-            const latestRecordDoc = querySnapshot.docs[0];
-            setLastRecord({
-              id: latestRecordDoc.id,
-              ...latestRecordDoc.data(),
-            });
-          } else {
-            setLastRecord(null);
-          }
-        } catch (error) {
-          console.error("Erro ao buscar o último registro:", error);
-        }
-      }
-    };
-
     fetchPetData();
     fetchLastRecord();
   }, [petId]);
+
+  const fetchPetData = async () => {
+    if (petId) {
+      const petDoc = await getDoc(doc(firestore, "pets", petId));
+      if (petDoc.exists) {
+        setPet(petDoc.data());
+      } else {
+        console.error("Pet não encontrado");
+      }
+    }
+  };
+
+  const fetchLastRecord = async () => {
+    if (petId) {
+      try {
+        const controleRef = collection(firestore, "pets", petId, "mostRecent"); // Usando subcoleção 'mostRecent' para informações recentes
+        const q = query(controleRef, orderBy("dataEntrada", "desc"), orderBy("horarioEntrada", "desc"), limit(1));
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          const latestRecordDoc = querySnapshot.docs[0];
+          setLastRecord({
+            id: latestRecordDoc.id,
+            ...latestRecordDoc.data(),
+          });
+          setLastService(latestRecordDoc.data().localAtual); // Define o serviço mais recente
+        } else {
+          setLastRecord(null);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar o último registro:", error);
+      }
+    }
+  };
+
+  const refreshPage = () => {
+    fetchPetData();
+    fetchLastRecord();
+  };
 
   const handleEntrada = () => {
     setSelectedAction("entrada");
@@ -88,17 +93,21 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
   };
 
   const handleVoltaParque = () => {
-    setSelectedAction("voltaParque");
+    if (lastService) {
+      registerVolta(lastService);  // Usando o serviço mais recente
+    } else {
+      console.error("Serviço mais recente não encontrado.");
+    }
   };
 
   const handleVoltaCasa = () => {
-    setSelectedAction("voltaCasa");
+    registerVolta("Casa");
+    showCommentInfo();
   };
 
   const handleServiceSelection = (service) => {
     setShowEntradaModal(false);
     setShowSaidaModal(false);
-    setShowVoltaModal(false);
 
     if (selectedAction === "entrada") {
       registerEntrada(service);
@@ -109,11 +118,6 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
       } else {
         registerSaidaServico(service); // Registrar saída para outro serviço
       }
-    } else if (selectedAction === "voltaParque") {
-      registerVolta(service); // Registrar volta para a Creche/Hotel
-    } else if (selectedAction === "voltaCasa") {
-      registerVolta(service);
-      showCommentInfo();
     }
   };
 
@@ -177,6 +181,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
       alert(`${selectedComentarioType} registrado: ${comentario}`);
       setShowComentarioModal(false);
       setSelectedComentarioType(null);
+      refreshPage();  // Atualiza a página
     } catch (error) {
       console.error(`Erro ao adicionar ${selectedComentarioType.toLowerCase()}:`, error);
     }
@@ -190,7 +195,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     const formattedDate = localTime.toISOString().split('T')[0]; 
     const formattedTime = now.toTimeString().split(' ')[0]; 
 
-    const controleRef = collection(firestore, "pets", petId, "controle");
+    const controleRef = collection(firestore, "pets", petId, "mostRecent"); // Usando subcoleção 'mostRecent' para entradas recentes
 
     const newRecord = {
       servico: service,
@@ -203,6 +208,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
       await setDoc(doc(controleRef, formattedDate), newRecord, { merge: true });
       setPet((prev) => ({ ...prev, localAtual: service }));
       await updateDoc(doc(firestore, "pets", petId), { localAtual: service, dataEntrada: formattedDate, horarioEntrada: formattedTime });
+      refreshPage();  // Atualiza a página
     } catch (error) {
       console.error("Erro ao registrar entrada:", error);
     }
@@ -217,7 +223,6 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     const formattedTime = now.toTimeString().split(' ')[0]; 
 
     try {
-      // Criar nova subcoleção do serviço dentro do documento da data atual na subcoleção de controle
       const serviceRef = collection(doc(firestore, "pets", petId, "controle", lastRecord.id), service);
       await addDoc(serviceRef, {
         dataEntrada: formattedDate,
@@ -225,12 +230,12 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
         usuarioEntrada: currentUser.name,
       });
 
-      // Atualizar o localAtual no documento do pet
       const petsRef = doc(firestore, "pets", petId);
       await updateDoc(petsRef, { localAtual: service });
 
       setPet((prev) => ({ ...prev, localAtual: service }));
       alert(`Entrada para ${service} registrada com sucesso.`);
+      refreshPage();  // Atualiza a página
     } catch (error) {
       console.error("Erro ao registrar saída para serviço:", error);
     }
@@ -245,7 +250,6 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     const formattedTime = now.toTimeString().split(' ')[0]; 
 
     try {
-      // Registrar o retorno na subcoleção do serviço atual
       const serviceRef = collection(firestore, "pets", petId, "controle", lastRecord.id, pet.localAtual);
       await addDoc(serviceRef, {
         dataVolta: formattedDate,
@@ -253,12 +257,12 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
         usuarioVolta: currentUser.name,
       });
 
-      // Atualizar o localAtual para o último serviço (Creche ou Hotel)
       const petsRef = doc(firestore, "pets", petId);
       await updateDoc(petsRef, { localAtual: service });
 
       setPet((prev) => ({ ...prev, localAtual: service }));
       alert(`Retorno para ${service} registrado com sucesso.`);
+      refreshPage();  // Atualiza a página
     } catch (error) {
       console.error(`Erro ao registrar retorno para ${service}: ${error}`);
     }
@@ -350,8 +354,8 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
                 </>
               ) : pet.localAtual === "Adestramento" || pet.localAtual === "Passeio" || pet.localAtual === "Banho" || pet.localAtual === "Veterinário" ? (
                 <>
-                  <Button onClick={handleVoltaEntrada}>Retorno pro Parque</Button>
-                  <Button onClick={handleVoltaSaida}>Saída pra Casa</Button>
+                  <Button onClick={handleVoltaParque}>Retorno pro Parque</Button>
+                  <Button onClick={handleVoltaCasa}>Saída pra Casa</Button>
                   <Button onClick={handleComentario}>Comentário</Button>
                 </>
               ) : (
@@ -384,15 +388,6 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
           options={["Casa", "Adestramento", "Banho", "Passeio", "Veterinário"]}
           onSelectOption={handleServiceSelection}
           onBack={() => setShowSaidaModal(false)}
-        />
-      )}
-
-      {showVoltaModal && (
-        <ActionOptions
-          actionType="O Pet está voltando ou indo embora?"
-          options={[lastService || "Casa"]}
-          onSelectOption={handleServiceSelection}
-          onBack={() => setShowVoltaModal(false)}
         />
       )}
 
