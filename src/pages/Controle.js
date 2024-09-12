@@ -196,26 +196,36 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
 
   const registerEntrada = async (service) => {
     const now = new Date();
-    const saoPauloOffset = -3 * 60; 
-    const localTime = new Date(now.getTime() + (saoPauloOffset * 60 * 1000));
+    const saoPauloOffset = -3 * 60;
+    const localTime = new Date(now.getTime() + saoPauloOffset * 60 * 1000);
   
-    const formattedDate = localTime.toISOString().split('T')[0]; 
-    const formattedTime = now.toTimeString().split(' ')[0]; 
-
-    const controleRef = collection(firestore, "pets", petId, "mostRecent"); // Usando subcoleção 'mostRecent' para entradas recentes
-
+    const formattedDate = localTime.toISOString().split("T")[0];
+    const formattedTime = now.toTimeString().split(" ")[0];
+  
+    const controleRef = collection(firestore, "pets", petId, "controle");
+  
     const newRecord = {
       servico: service,
       dataEntrada: formattedDate,
       horarioEntrada: formattedTime,
       usuarioEntrada: currentUser.name,
     };
-
+  
     try {
       await setDoc(doc(controleRef, formattedDate), newRecord, { merge: true });
+  
+      // Atualiza o 'mostRecent' com todos os detalhes do registro atual
+      const mostRecentRef = collection(firestore, "pets", petId, "mostRecent");
+      await setDoc(doc(mostRecentRef, "current"), newRecord, { merge: true });
+  
       setPet((prev) => ({ ...prev, localAtual: service }));
-      await updateDoc(doc(firestore, "pets", petId), { localAtual: service, dataEntrada: formattedDate, horarioEntrada: formattedTime });
-      refreshPage();  // Atualiza a página
+      await updateDoc(doc(firestore, "pets", petId), {
+        localAtual: service,
+        dataEntrada: formattedDate,
+        horarioEntrada: formattedTime,
+      });
+  
+      refreshPage(); // Atualiza a página
     } catch (error) {
       console.error("Erro ao registrar entrada:", error);
     }
@@ -228,108 +238,144 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     }
   
     const now = new Date();
-    const saoPauloOffset = -3 * 60; 
-    const localTime = new Date(now.getTime() + (saoPauloOffset * 60 * 1000));
-    
-    const formattedDate = localTime.toISOString().split('T')[0]; 
-    const formattedTime = now.toTimeString().split(' ')[0]; 
+    const saoPauloOffset = -3 * 60;
+    const localTime = new Date(now.getTime() + saoPauloOffset * 60 * 1000);
+  
+    const formattedDate = localTime.toISOString().split("T")[0];
+    const formattedTime = now.toTimeString().split(" ")[0];
   
     try {
-      const serviceRef = collection(doc(firestore, "pets", petId, "controle", lastRecord.id), service);
-      await addDoc(serviceRef, {
+      const serviceRef = doc(
+        firestore,
+        "pets",
+        petId,
+        "controle",
+        lastRecord.id,
+        service,
+        formattedDate
+      ); // Um único ID para o serviço extra
+  
+      await setDoc(serviceRef, {
         dataEntrada: formattedDate,
         horarioEntrada: formattedTime,
         usuarioEntrada: currentUser.name,
       });
   
       const mostRecentRef = collection(firestore, "pets", petId, "mostRecent");
-      await setDoc(doc(mostRecentRef, formattedDate), {
-        localAtual: service,
-        dataEntrada: formattedDate,
-        horarioEntrada: formattedTime,
-        usuarioEntrada: currentUser.name,
-      }, { merge: true });
+      await setDoc(
+        doc(mostRecentRef, "current"),
+        {
+          localAtual: service,
+          dataEntrada: formattedDate,
+          horarioEntrada: formattedTime,
+          usuarioEntrada: currentUser.name,
+        },
+        { merge: true }
+      );
   
       const petsRef = doc(firestore, "pets", petId);
       await updateDoc(petsRef, { localAtual: service });
   
       setPet((prev) => ({ ...prev, localAtual: service }));
       alert(`Entrada para ${service} registrada com sucesso.`);
-      refreshPage();  // Atualiza a página após registrar a saída para o serviço
+      refreshPage(); // Atualiza a página após registrar a saída para o serviço
     } catch (error) {
       console.error("Erro ao registrar saída para serviço:", error);
     }
   };
-
+  
   const registerVolta = async (service) => {
     const now = new Date();
-    const saoPauloOffset = -3 * 60; 
-    const localTime = new Date(now.getTime() + (saoPauloOffset * 60 * 1000));
+    const saoPauloOffset = -3 * 60;
+    const localTime = new Date(now.getTime() + saoPauloOffset * 60 * 1000);
   
-    const formattedDate = localTime.toISOString().split('T')[0]; 
-    const formattedTime = now.toTimeString().split(' ')[0]; 
-
+    const formattedDate = localTime.toISOString().split("T")[0];
+    const formattedTime = now.toTimeString().split(" ")[0];
+  
     try {
-      const serviceRef = collection(firestore, "pets", petId, "controle", lastRecord.id, pet.localAtual);
-      await addDoc(serviceRef, {
+      const serviceRef = doc(
+        firestore,
+        "pets",
+        petId,
+        "controle",
+        lastRecord.id,
+        pet.localAtual,
+        formattedDate
+      ); // Atualiza o mesmo ID de serviço extra
+  
+      await updateDoc(serviceRef, {
         dataVolta: formattedDate,
         horarioVolta: formattedTime,
         usuarioVolta: currentUser.name,
       });
-
+  
       const mostRecentRef = collection(firestore, "pets", petId, "mostRecent");
-      await setDoc(doc(mostRecentRef, formattedDate), {
-        localAtual: service,
-        dataVolta: formattedDate,
-        horarioVolta: formattedTime,
-        usuarioVolta: currentUser.name,
-      }, { merge: true });  // Atualiza `mostRecent`
-
+      await setDoc(
+        doc(mostRecentRef, "current"),
+        {
+          localAtual: service,
+          dataVolta: formattedDate,
+          horarioVolta: formattedTime,
+          usuarioVolta: currentUser.name,
+        },
+        { merge: true }
+      ); // Atualiza `mostRecent`
+  
       const petsRef = doc(firestore, "pets", petId);
       await updateDoc(petsRef, { localAtual: service });
-
+  
       setPet((prev) => ({ ...prev, localAtual: service }));
       alert(`Retorno para ${service} registrado com sucesso.`);
-      refreshPage();  // Atualiza a página
+      refreshPage(); // Atualiza a página
     } catch (error) {
       console.error(`Erro ao registrar retorno para ${service}: ${error}`);
     }
   };
-
+  
   const registerSaida = async () => {
     const now = new Date();
-    const saoPauloOffset = -3 * 60; 
-    const localTime = new Date(now.getTime() + (saoPauloOffset * 60 * 1000));
+    const saoPauloOffset = -3 * 60;
+    const localTime = new Date(now.getTime() + saoPauloOffset * 60 * 1000);
   
-    const formattedDate = localTime.toISOString().split('T')[0]; 
-    const formattedTime = now.toTimeString().split(' ')[0]; 
+    const formattedDate = localTime.toISOString().split("T")[0];
+    const formattedTime = now.toTimeString().split(" ")[0];
     const pernoites = calculatePernoites(lastRecord?.dataEntrada, formattedDate);
-
+  
     if (lastRecord && lastRecord.id) {
-      const controleRef = doc(firestore, "pets", petId, "controle", lastRecord.id);
+      const controleRef = doc(
+        firestore,
+        "pets",
+        petId,
+        "controle",
+        lastRecord.id
+      );
       await updateDoc(controleRef, {
         dataSaida: formattedDate,
         horarioSaida: formattedTime,
         usuarioSaida: currentUser.name,
         pernoites,
       });
-
+  
       const mostRecentRef = collection(firestore, "pets", petId, "mostRecent");
-      await setDoc(doc(mostRecentRef, formattedDate), {
-        localAtual: "Casa",
-        dataSaida: formattedDate,
-        horarioSaida: formattedTime,
-        usuarioSaida: currentUser.name,
-      }, { merge: true });  // Atualiza `mostRecent`
-
+      await setDoc(
+        doc(mostRecentRef, "current"),
+        {
+          localAtual: "Casa",
+          dataSaida: formattedDate,
+          horarioSaida: formattedTime,
+          usuarioSaida: currentUser.name,
+        },
+        { merge: true }
+      ); // Atualiza `mostRecent`
+  
       const petsRef = doc(firestore, "pets", petId);
       await updateDoc(petsRef, {
         localAtual: "Casa",
         dataSaida: formattedDate,
         horarioSaida: formattedTime,
       });
-
-      setPet(prev => ({ ...prev, localAtual: "Casa" }));
+  
+      setPet((prev) => ({ ...prev, localAtual: "Casa" }));
       alert("Saída registrada com sucesso.");
       navigate("/registros");
     } else {
