@@ -47,7 +47,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
   const fetchPetData = async () => {
     if (petId) {
       const petDoc = await getDoc(doc(firestore, "pets", petId));
-      if (petDoc.exists) {
+      if (petDoc.exists()) {
         setPet(petDoc.data());
       } else {
         console.error("Pet não encontrado");
@@ -70,8 +70,15 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
           });
           setLastService(latestData.localAtual); // Define o serviço mais recente
 
-          // Atualiza 'mostRecent' para ser igual ao documento mais recente
-          await setDoc(doc(controleRef, "mostRecent"), latestData);
+          // Atualiza 'mostRecent' para refletir o registro mais recente
+          await setDoc(doc(controleRef, "mostRecent"), {
+            // Inclua apenas os campos principais sem alterar 'servico'
+            servico: latestData.servico,
+            dataEntrada: latestData.dataEntrada,
+            horarioEntrada: latestData.horarioEntrada,
+            usuarioEntrada: latestData.usuarioEntrada,
+            localAtual: latestData.localAtual,
+          }, { merge: true });
         } else {
           setLastRecord(null);
           setLastService(null);
@@ -106,8 +113,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
   };
 
   const handleVoltaCasa = () => {
-    registerVolta("Casa");
-    showCommentInfo();
+    showCommentInfo(); // Exibe os comentários existentes
   };
 
   const handleServiceSelection = (service) => {
@@ -119,7 +125,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
       setLastService(service);
     } else if (selectedAction === "saida") {
       if (service === "Casa") {
-        showCommentInfo();
+        handleVoltaCasa();
       } else {
         registerSaidaServico(service); // Registrar saída para outro serviço
       }
@@ -140,10 +146,9 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
 
       if (comments.length > 0) {
         setCommentsData(comments);
-        setShowCommentsModal(true); 
-      } else {
-        registerSaida(); 
       }
+      // Exibe o modal de comentários para confirmação
+      setShowCommentsModal(true);
     }
   };
 
@@ -156,7 +161,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
       console.error("Erro: lastRecord ou lastRecord.id é nulo.");
       return; // Evita continuar se lastRecord estiver nulo
     }
-  
+
     const now = new Date();
     const saoPauloOffset = -3 * 60; 
     const localTime = new Date(now.getTime() + (saoPauloOffset * 60 * 1000));
@@ -186,16 +191,9 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     }
 
     try {
+      // Adiciona comentário na subcoleção da data mais recente
       const comentariosRef = collection(firestore, "pets", petId, "controle", lastRecord.id, subCollectionPath);
-      await addDoc(comentariosRef, { comentario, usuario: currentUser.name, horario: formattedTime });
-
-      // Atualiza 'mostRecent' com as informações atualizadas de comentários
-      const controleRef = collection(firestore, "pets", petId, "controle");
-      const updatedRecord = {
-        ...lastRecord,
-        [subCollectionPath]: [...(lastRecord[subCollectionPath] || []), { comentario, usuario: currentUser.name, horario: formattedTime }]
-      };
-      await setDoc(doc(controleRef, "mostRecent"), updatedRecord);
+      await addDoc(comentariosRef, { comentario, usuario: currentUser.name, horario: formattedTime, data: formattedDate });
 
       alert(`${selectedComentarioType} registrado: ${comentario}`);
       setShowComentarioModal(false);
@@ -221,21 +219,21 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
       dataEntrada: formattedDate,
       horarioEntrada: formattedTime,
       usuarioEntrada: currentUser.name,
+      localAtual: service,
     };
 
     try {
       // Registrar a entrada na subcoleção 'controle' com ID de data
       await setDoc(doc(controleRef, formattedDate), newRecord, { merge: true });
   
-      // Atualizar a subcoleção 'mostRecent' com os mesmos dados
-      await setDoc(doc(controleRef, "mostRecent"), newRecord);
+      // Atualizar 'mostRecent' com os mesmos dados principais
+      await setDoc(doc(controleRef, "mostRecent"), newRecord, { merge: true });
   
+      // Atualizar o estado local do pet e na base de dados
       setPet((prev) => ({ ...prev, localAtual: service }));
-      await updateDoc(doc(firestore, "pets", petId), {
-        localAtual: service,
-        dataEntrada: formattedDate,
-        horarioEntrada: formattedTime,
-      });
+      await updateDoc(doc(firestore, "pets", petId), { localAtual: service });
+
+      alert(`Entrada para ${service} registrada com sucesso.`);
   
       refreshPage(); // Atualiza a página
     } catch (error) {
@@ -257,30 +255,26 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     const formattedTime = now.toTimeString().split(" ")[0];
   
     try {
-      // Registrar a entrada para o serviço extra na subcoleção de controle usando o ID de data
-      const serviceRef = doc(firestore, "pets", petId, "controle", formattedDate);
-  
-      await updateDoc(serviceRef, {
+      // Criar subcoleção para o serviço dentro do registro da data
+      const serviceData = {
         dataEntrada: formattedDate,
         horarioEntrada: formattedTime,
         usuarioEntrada: currentUser.name,
-        servico: service, // Atualiza o serviço no documento de data atual
-      });
+      };
   
-      // Atualizar a subcoleção 'mostRecent' com os mesmos dados
-      const mostRecentRef = collection(firestore, "pets", petId, "controle");
-      await setDoc(doc(mostRecentRef, "mostRecent"), {
+      const serviceRef = collection(doc(firestore, "pets", petId, "controle", lastRecord.id), service);
+      await addDoc(serviceRef, serviceData);
+  
+      // Atualizar 'mostRecent' apenas com 'localAtual' atualizado
+      await updateDoc(doc(firestore, "pets", petId, "controle", "mostRecent"), {
         localAtual: service,
-        dataEntrada: formattedDate,
-        horarioEntrada: formattedTime,
-        usuarioEntrada: currentUser.name,
       });
   
-      const petsRef = doc(firestore, "pets", petId);
-      await updateDoc(petsRef, { localAtual: service });
-  
+      // Atualizar o estado local do pet e na base de dados
       setPet((prev) => ({ ...prev, localAtual: service }));
-      alert(`Entrada para ${service} registrada com sucesso.`);
+      await updateDoc(doc(firestore, "pets", petId), { localAtual: service });
+  
+      alert(`Saída para ${service} registrada com sucesso.`);
       refreshPage(); // Atualiza a página após registrar a saída para o serviço
     } catch (error) {
       console.error("Erro ao registrar saída para serviço:", error);
@@ -296,31 +290,31 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     const formattedTime = now.toTimeString().split(" ")[0];
   
     try {
-      // Registrar o retorno para o serviço na subcoleção de controle usando o ID de data
-      const serviceRef = doc(firestore, "pets", petId, "controle", formattedDate);
+      // Atualiza a volta no registro da data
+      const serviceRef = doc(firestore, "pets", petId, "controle", lastRecord.id);
       await updateDoc(serviceRef, {
         dataVolta: formattedDate,
         horarioVolta: formattedTime,
         usuarioVolta: currentUser.name,
+        localAtual: service,
       });
   
-      // Atualizar a subcoleção 'mostRecent' com os mesmos dados
-      const mostRecentRef = collection(firestore, "pets", petId, "controle");
-      await setDoc(doc(mostRecentRef, "mostRecent"), {
-        localAtual: service,
+      // Atualiza 'mostRecent' com 'localAtual' atualizado
+      await updateDoc(doc(firestore, "pets", petId, "controle", "mostRecent"), {
         dataVolta: formattedDate,
         horarioVolta: formattedTime,
         usuarioVolta: currentUser.name,
+        localAtual: service,
       });
   
-      const petsRef = doc(firestore, "pets", petId);
-      await updateDoc(petsRef, { localAtual: service });
+      // Atualiza o documento principal do pet
+      await updateDoc(doc(firestore, "pets", petId), { localAtual: service });
   
       setPet((prev) => ({ ...prev, localAtual: service }));
-      alert(`Retorno para ${service} registrado com sucesso.`);
+      alert(`Retorno de ${service} registrado com sucesso.`);
       refreshPage(); // Atualiza a página
     } catch (error) {
-      console.error(`Erro ao registrar retorno para ${service}: ${error}`);
+      console.error(`Erro ao registrar retorno de ${service}: ${error}`);
     }
   };
 
@@ -334,31 +328,28 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     const pernoites = calculatePernoites(lastRecord?.dataEntrada, formattedDate);
   
     if (lastRecord && lastRecord.id) {
-      const controleRef = doc(firestore, "pets", petId, "controle", formattedDate);
+      const controleRef = doc(firestore, "pets", petId, "controle", lastRecord.id);
       await updateDoc(controleRef, {
         dataSaida: formattedDate,
         horarioSaida: formattedTime,
         usuarioSaida: currentUser.name,
         pernoites,
-      });
-  
-      // Atualizar a subcoleção 'mostRecent' com os mesmos dados
-      const mostRecentRef = collection(firestore, "pets", petId, "controle");
-      await setDoc(doc(mostRecentRef, "mostRecent"), {
         localAtual: "Casa",
+      });
+
+      // Atualizar 'mostRecent' com 'localAtual' atualizado
+      await updateDoc(doc(firestore, "pets", petId, "controle", "mostRecent"), {
         dataSaida: formattedDate,
         horarioSaida: formattedTime,
         usuarioSaida: currentUser.name,
-      });
-  
-      const petsRef = doc(firestore, "pets", petId);
-      await updateDoc(petsRef, {
+        pernoites,
         localAtual: "Casa",
-        dataSaida: formattedDate,
-        horarioSaida: formattedTime,
       });
-  
+
       setPet((prev) => ({ ...prev, localAtual: "Casa" }));
+      // Atualizar o documento principal do pet
+      await updateDoc(doc(firestore, "pets", petId), { localAtual: "Casa" });
+  
       alert("Saída registrada com sucesso.");
       navigate("/no-local");
     } else {
@@ -379,7 +370,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     try {
       setIsAuthenticated(true);
       const userDoc = await getDoc(doc(firestore, "users", user.uid));
-      if (userDoc.exists) {
+      if (userDoc.exists()) {
         const userData = userDoc.data();
         setUserRoles(userData);
         setCurrentUser(userData);
@@ -483,17 +474,24 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
           isOpen={showCommentsModal} 
           onClose={() => setShowCommentsModal(false)} 
           title="Comentários Registrados"
-          onConfirm={registerSaida} // Passa a função registerSaida como onConfirm
+          onConfirm={() => {
+            registerSaida(); // Registra a saída somente após a confirmação
+            setShowCommentsModal(false); // Fecha o modal após a confirmação
+          }}
         >
-          <Table 
-            headers={['Tipo', 'Comentário', 'Usuário', 'Horário']}
-            data={commentsData.map(comment => ({
-              tipo: comment.tipo,
-              comentario: comment.comentario,
-              usuario: comment.usuario,
-              horario: comment.horario
-            }))}
-          />
+          {commentsData.length > 0 ? (
+            <Table 
+              headers={['Tipo', 'Comentário', 'Usuário', 'Horário']}
+              data={commentsData.map(comment => ({
+                tipo: comment.tipo,
+                comentario: comment.comentario,
+                usuario: comment.usuario,
+                horario: comment.horario
+              }))}
+            />
+          ) : (
+            <p>Não há comentários registrados.</p>
+          )}
         </Modal>
       )}
     </Container>
