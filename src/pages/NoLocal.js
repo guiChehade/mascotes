@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { firestore } from "../firebase";
-import { collection, query, getDocs, doc, orderBy, addDoc, limit } from "firebase/firestore";
+import { collection, query, getDocs, doc, orderBy, limit } from "firebase/firestore";
 import Container from "../components/Container";
 import Table from "../components/Table";
 import Modal from "../components/Modal";
@@ -12,7 +12,7 @@ const NoLocal = ({ currentUser }) => {
   const [pets, setPets] = useState([]);
   const [selectedComment, setSelectedComment] = useState(null);
   const [commentDetails, setCommentDetails] = useState([]);
-  const [currentPetId, setCurrentPetId] = useState(null);
+  const [setCurrentPetId] = useState(null);
 
   useEffect(() => {
     const fetchPets = async () => {

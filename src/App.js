@@ -19,6 +19,7 @@ import DogBreedsCards from "./pages/DogBreedsCards";
 import UploadBreeds from "./pages/UploadBreeds";
 import ControleRedirect from "./pages/ControleRedirect";
 import EditarPet from "./pages/EditarPet";
+import Pagamentos from "./pages/Pagamentos";
 import Registros from "./pages/Registros";
 import Ponto from "./pages/Ponto";
 import NoLocal from "./pages/NoLocal";
@@ -70,28 +71,31 @@ const App = () => {
             <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} setUserRoles={setUserRoles} setCurrentUser={setCurrentUser} />} />
             {isAuthenticated && (
               <>
-                {(userRole === "isEmployee" || userRole === "isAdmin" || userRole === "isTrainer" || userRole === "isOwner") && (
+                {(userRole === "isEmployee" || userRole === "isAdmin" || userRole === "isManager" || userRole === "isOwner") && (
                   <Route path="/ponto" element={<Ponto currentUser={currentUser} />} />
                 )}
-                {(userRole === "isAdmin" || userRole === "isTrainer" || userRole === "isOwner") && (
+                {(userRole === "isAdmin" || userRole === "isManager" || userRole === "isOwner") && (
                   <Route path="/cadastro" element={<Cadastro currentUser={currentUser} />} />
                 )}
                 {(userRole === "isOwner") && (
                   <Route path="/upload-racas" element={<UploadBreeds />} />
                 )}
-                {(userRole === "isEmployee" || userRole === "isTrainer" || userRole === "isAdmin" || userRole === "isOwner") && (
+                {(userRole === "isEmployee" || userRole === "isManager" || userRole === "isAdmin" || userRole === "isOwner") && (
                   <Route path="/mascotes" element={<Mascotes currentUser={currentUser} />} />
                 )}
-                {(userRole === "isEmployee" || userRole === "isTrainer" || userRole === "isAdmin" || userRole === "isOwner") && (
+                {(userRole === "isEmployee" || userRole === "isManager" || userRole === "isAdmin" || userRole === "isOwner") && (
                   <Route path="/no-local" element={<NoLocal currentUser={currentUser} />} />
                 )}
-                {(userRole === "isAdmin" || userRole === "isTrainer" || userRole === "isOwner") && (
+                {(userRole === "isManager" || userRole === "isTutor" || userRole === "isOwner") && (
+                  <Route path="/pagamentos" element={<Pagamentos currentUser={currentUser} />} />
+                )}
+                {(userRole === "isAdmin" || userRole === "isManager" || userRole === "isOwner") && (
                   <Route path="/editar/:petId" element={<EditarPet currentUser={currentUser} />} />
                 )}
-                {(userRole === "isEmployee" || userRole === "isTrainer" || userRole === "isAdmin" || userRole === "isOwner") && (
+                {(userRole === "isEmployee" || userRole === "isManager" || userRole === "isAdmin" || userRole === "isOwner") && (
                   <Route path="/registros" element={<Registros currentUser={currentUser} />} />
                 )}
-                {(userRole === "isTrainer" || userRole === "isOwner") && (
+                {(userRole === "isManager" || userRole === "isOwner") && (
                   <Route path="/usuarios" element={<Usuarios currentUser={currentUser} />} />
                 )}
               </>

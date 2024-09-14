@@ -1,0 +1,53 @@
+/* Pagamentos.module.css */
+.pagamentosContainer {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: var(--container-background);
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .formContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .button {
+    padding: 10px;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .button:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+  }
+  
+  .qrCodeContainer {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .qrCode {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .error {
+    color: red;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
