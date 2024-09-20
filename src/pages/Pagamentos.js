@@ -107,7 +107,7 @@ const Pagamentos = () => {
     setError('');
     try {
       const response = await axios.get(
-        'http://localhost:5000/check-payment',  // Chama o backend para consultar o pagamento
+        `${backendUrl}/check-payment`,  // Chama o backend para consultar o pagamento
         {
           params: {
             token: token,  // Inclui o token de autenticação
