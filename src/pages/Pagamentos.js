@@ -77,7 +77,7 @@ const Pagamentos = () => {
         }
       );
   
-      setQrCode(response.data.qrCode);
+      setQrCode(response.data.payment_options.url);
       setInvoiceId(response.data.invoiceId);
     } catch (err) {
       console.error('Erro ao gerar o QR Code de pagamento:', err);
