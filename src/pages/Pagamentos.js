@@ -247,7 +247,7 @@ const Pagamentos = () => {
       {qrCode && (
         <div className={styles.qrCodeContainer}>
           <h3>QR Code Gerado</h3>
-          <img src={`data:image/png;base64,${qrCode}`} alt="QR Code de Pagamento" className={styles.qrCode} />
+          <img src={`${qrCode}`} alt="QR Code de Pagamento" className={styles.qrCode} />
         </div>
       )}
     </Container>
