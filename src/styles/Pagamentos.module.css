@@ -15,11 +15,14 @@
     margin-bottom: 20px;
   }
   
-  .input {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+  .select {
+    padding: 0.5rem;
+    border: 1px solid var(--button-hover-background);
+    border-radius: 20px;
+    font-size: 1rem;
+    margin-bottom: 1rem;
   }
+  
   
   .button {
     padding: 10px;
