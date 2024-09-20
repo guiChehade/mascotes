@@ -25,11 +25,13 @@ const Pagamentos = () => {
   const [invoiceId, setInvoiceId] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
   
   useEffect(() => {
     const fetchToken = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/generate-token'); // Atualize com a URL correta
+        const response = await axios.get(`${backendUrl}/generate-token`);
         setToken(response.data.token);
       } catch (err) {
         setError('Erro ao autenticar. Verifique as credenciais.');
@@ -52,7 +54,7 @@ const Pagamentos = () => {
     setError('');
     try {
       const response = await axios.post(
-        'http://localhost:5000/generate-qrcode',  // Chama o backend para gerar o QR Code
+        `${backendUrl}/generate-qrcode`,  // Chama o backend para gerar o QR Code
         {
           token: token,  // Inclui o token de autenticação
           customerName: paymentData.customerName,
