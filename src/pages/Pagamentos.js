@@ -31,7 +31,7 @@ const Pagamentos = () => {
   useEffect(() => {
     const fetchToken = async () => {
       try {
-        const response = await axios.get(`${backendUrl}/generate-token`);
+        const response = await axios.get(`${backendUrl}generate-token`);
         setToken(response.data.token);
       } catch (err) {
         setError('Erro ao autenticar. Verifique as credenciais.');
