@@ -1,0 +1,56 @@
+.cadastroContainer {
+    max-width: 90vw;
+    background-color: var(--container-background);
+    border-radius: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+  
+.cadastroInput {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+}
+
+.selectContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.cadastroButton {
+    display: block;
+    margin: 0 auto;
+}
+
+.cadastroSelect {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+}
+
+.error {
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+@media (min-width: 768px) {
+    .cadastroContainer {
+      max-width: 800px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+  }
+  

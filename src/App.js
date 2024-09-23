@@ -22,6 +22,7 @@ import EditarPet from "./pages/EditarPet";
 import Pagamentos from "./pages/Pagamentos";
 import Registros from "./pages/Registros";
 import Ponto from "./pages/Ponto";
+import CadastroTutor from "./pages/CadastroTutor";
 import NoLocal from "./pages/NoLocal";
 import Usuarios from "./pages/Usuarios";
 import styles from "./styles/App.module.css";
@@ -73,6 +74,9 @@ const App = () => {
               <>
                 {(userRole === "isEmployee" || userRole === "isAdmin" || userRole === "isManager" || userRole === "isOwner") && (
                   <Route path="/ponto" element={<Ponto currentUser={currentUser} />} />
+                )}
+                {(userRole === "isManager" || userRole === "isOwner") && (
+                  <Route path="/cadastro-tutor" element={<CadastroTutor currentUser={currentUser} />} />
                 )}
                 {(userRole === "isAdmin" || userRole === "isManager" || userRole === "isOwner") && (
                   <Route path="/cadastro" element={<Cadastro currentUser={currentUser} />} />
