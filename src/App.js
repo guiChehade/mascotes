@@ -12,7 +12,8 @@ import Home from "./pages/Home";
 import AgendarVisita from "./pages/AgendarVisita";
 import Login from "./pages/Login";
 import Quiz from "./pages/Quiz";
-import Cadastro from "./pages/Cadastro";
+import CadastroPet from "./pages/CadastroPet";
+import CadastroTutor from "./pages/CadastroTutor";
 import Mascotes from "./pages/Mascotes";
 import Controle from "./pages/Controle";
 import DogBreedsCards from "./pages/DogBreedsCards";
@@ -22,7 +23,6 @@ import EditarPet from "./pages/EditarPet";
 import Pagamentos from "./pages/Pagamentos";
 import Registros from "./pages/Registros";
 import Ponto from "./pages/Ponto";
-import CadastroTutor from "./pages/CadastroTutor";
 import NoLocal from "./pages/NoLocal";
 import Usuarios from "./pages/Usuarios";
 import styles from "./styles/App.module.css";
@@ -79,7 +79,7 @@ const App = () => {
                   <Route path="/cadastro-tutor" element={<CadastroTutor currentUser={currentUser} />} />
                 )}
                 {(userRole === "isAdmin" || userRole === "isManager" || userRole === "isOwner") && (
-                  <Route path="/cadastro" element={<Cadastro currentUser={currentUser} />} />
+                  <Route path="/cadastro-pet" element={<CadastroPet currentUser={currentUser} />} />
                 )}
                 {(userRole === "isOwner") && (
                   <Route path="/upload-racas" element={<UploadBreeds />} />

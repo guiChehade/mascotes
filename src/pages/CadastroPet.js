@@ -6,9 +6,9 @@ import PhotoEditor from '../components/PhotoEditor';
 import Container from '../components/Container';
 import Input from '../components/Input';
 import Button from '../components/Button';
-import styles from '../styles/Cadastro.module.css';
+import styles from '../styles/CadastroPet.module.css';
 
-const Cadastro = ({ currentUser }) => {
+const CadastroPet = ({ currentUser }) => {
   const [pet, setPet] = useState({
     mascotinho: '',
     aniversario: '',
@@ -102,4 +102,4 @@ const Cadastro = ({ currentUser }) => {
   );
 };
 
-export default Cadastro;
+export default CadastroPet;
