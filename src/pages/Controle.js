@@ -21,11 +21,16 @@ import ActionOptions from "../components/ActionOptions";
 import ComentarioOptions from "../components/ComentarioOptions";
 import Modal from "../components/Modal";
 import Table from "../components/Table";
-import logoLarge from '../assets/logo/logo-large.png';
-import { staticRoutes } from "./config/staticRoutes";
-import styles from '../styles/Controle.module.css';
+import logoLarge from "../assets/logo/logo-large.png";
+import { staticRoutes } from "../config/staticRoutes";
+import styles from "../styles/Controle.module.css";
 
-const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUser }) => {
+const Controle = ({
+  currentUser,
+  setIsAuthenticated,
+  setUserRoles,
+  setCurrentUser,
+}) => {
   const { petId } = useParams();
   const navigate = useNavigate();
   const [pet, setPet] = useState(null);
@@ -58,7 +63,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
       if (petDoc.exists()) {
         setPet(petDoc.data());
       } else {
-        navigate('/not-found');
+        navigate("/not-found");
       }
     }
   };
@@ -67,7 +72,12 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     if (petId) {
       try {
         const controleRef = collection(firestore, "pets", petId, "controle");
-        const q = query(controleRef, orderBy("dataEntrada", "desc"), orderBy("horarioEntrada", "desc"), limit(1));
+        const q = query(
+          controleRef,
+          orderBy("dataEntrada", "desc"),
+          orderBy("horarioEntrada", "desc"),
+          limit(1)
+        );
         const querySnapshot = await getDocs(q);
         if (!querySnapshot.empty) {
           const latestRecordDoc = querySnapshot.docs[0];
@@ -79,14 +89,18 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
           setLastService(latestData.localAtual); // Define o serviço mais recente
 
           // Atualiza 'mostRecent' para refletir o registro mais recente
-          await setDoc(doc(controleRef, "mostRecent"), {
-            // Inclua apenas os campos principais sem alterar 'servico'
-            servico: latestData.servico,
-            dataEntrada: latestData.dataEntrada,
-            horarioEntrada: latestData.horarioEntrada,
-            usuarioEntrada: latestData.usuarioEntrada,
-            localAtual: latestData.localAtual,
-          }, { merge: true });
+          await setDoc(
+            doc(controleRef, "mostRecent"),
+            {
+              // Inclua apenas os campos principais sem alterar 'servico'
+              servico: latestData.servico,
+              dataEntrada: latestData.dataEntrada,
+              horarioEntrada: latestData.horarioEntrada,
+              usuarioEntrada: latestData.usuarioEntrada,
+              localAtual: latestData.localAtual,
+            },
+            { merge: true }
+          );
         } else {
           setLastRecord(null);
           setLastService(null);
@@ -114,7 +128,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
 
   const handleVoltaParque = () => {
     if (lastService) {
-      registerVolta(lastService);  // Usando o serviço mais recente
+      registerVolta(lastService); // Usando o serviço mais recente
     } else {
       console.error("Serviço mais recente não encontrado.");
     }
@@ -142,13 +156,29 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
 
   const showCommentInfo = async () => {
     if (lastRecord) {
-      const commentTypes = ["comentarioPertences", "comentarioVet", "comentarioComportamento", "comentarioObservacoes", "comentarioAlimentacao"];
+      const commentTypes = [
+        "comentarioPertences",
+        "comentarioVet",
+        "comentarioComportamento",
+        "comentarioObservacoes",
+        "comentarioAlimentacao",
+      ];
       let comments = [];
 
       for (let type of commentTypes) {
-        const comentariosRef = collection(firestore, "pets", petId, "controle", lastRecord.id, type);
+        const comentariosRef = collection(
+          firestore,
+          "pets",
+          petId,
+          "controle",
+          lastRecord.id,
+          type
+        );
         const comentariosSnapshot = await getDocs(comentariosRef);
-        const comentarios = comentariosSnapshot.docs.map(doc => ({ tipo: type.replace("comentario", ""), ...doc.data() }));
+        const comentarios = comentariosSnapshot.docs.map((doc) => ({
+          tipo: type.replace("comentario", ""),
+          ...doc.data(),
+        }));
         comments = [...comments, ...comentarios];
       }
 
@@ -171,11 +201,11 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     }
 
     const now = new Date();
-    const saoPauloOffset = -3 * 60; 
-    const localTime = new Date(now.getTime() + (saoPauloOffset * 60 * 1000));
+    const saoPauloOffset = -3 * 60;
+    const localTime = new Date(now.getTime() + saoPauloOffset * 60 * 1000);
 
-    const formattedDate = localTime.toISOString().split('T')[0]; 
-    const formattedTime = now.toTimeString().split(' ')[0]; 
+    const formattedDate = localTime.toISOString().split("T")[0];
+    const formattedTime = now.toTimeString().split(" ")[0];
     let subCollectionPath;
 
     switch (selectedComentarioType) {
@@ -200,28 +230,43 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
 
     try {
       // Adiciona comentário na subcoleção da data mais recente
-      const comentariosRef = collection(firestore, "pets", petId, "controle", lastRecord.id, subCollectionPath);
-      await addDoc(comentariosRef, { comentario, usuario: currentUser.name, horario: formattedTime, data: formattedDate });
+      const comentariosRef = collection(
+        firestore,
+        "pets",
+        petId,
+        "controle",
+        lastRecord.id,
+        subCollectionPath
+      );
+      await addDoc(comentariosRef, {
+        comentario,
+        usuario: currentUser.name,
+        horario: formattedTime,
+        data: formattedDate,
+      });
 
       alert(`${selectedComentarioType} registrado: ${comentario}`);
       setShowComentarioModal(false);
       setSelectedComentarioType(null);
-      refreshPage();  // Atualiza a página após registrar o comentário
+      refreshPage(); // Atualiza a página após registrar o comentário
     } catch (error) {
-      console.error(`Erro ao adicionar ${selectedComentarioType.toLowerCase()}:`, error);
+      console.error(
+        `Erro ao adicionar ${selectedComentarioType.toLowerCase()}:`,
+        error
+      );
     }
   };
 
   const registerEntrada = async (service) => {
     const now = new Date();
     const saoPauloOffset = -3 * 60;
-    const localTime = new Date(now.getTime() + (saoPauloOffset * 60 * 1000));
-  
-    const formattedDate = localTime.toISOString().split('T')[0];
-    const formattedTime = now.toTimeString().split(' ')[0];
-  
+    const localTime = new Date(now.getTime() + saoPauloOffset * 60 * 1000);
+
+    const formattedDate = localTime.toISOString().split("T")[0];
+    const formattedTime = now.toTimeString().split(" ")[0];
+
     const controleRef = collection(firestore, "pets", petId, "controle");
-  
+
     const newRecord = {
       servico: service,
       dataEntrada: formattedDate,
@@ -233,16 +278,16 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     try {
       // Registrar a entrada na subcoleção 'controle' com ID de data
       await setDoc(doc(controleRef, formattedDate), newRecord, { merge: true });
-  
+
       // Atualizar 'mostRecent' com os mesmos dados principais
       await setDoc(doc(controleRef, "mostRecent"), newRecord, { merge: true });
-  
+
       // Atualizar o estado local do pet e na base de dados
       setPet((prev) => ({ ...prev, localAtual: service }));
       await updateDoc(doc(firestore, "pets", petId), { localAtual: service });
 
       alert(`Entrada para ${service} registrada com sucesso.`);
-  
+
       refreshPage(); // Atualiza a página
     } catch (error) {
       console.error("Erro ao registrar entrada:", error);
@@ -254,14 +299,14 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
       console.error("Erro: lastRecord ou lastRecord.id é nulo.");
       return; // Evita continuar se lastRecord estiver nulo
     }
-  
+
     const now = new Date();
     const saoPauloOffset = -3 * 60;
     const localTime = new Date(now.getTime() + saoPauloOffset * 60 * 1000);
-  
+
     const formattedDate = localTime.toISOString().split("T")[0];
     const formattedTime = now.toTimeString().split(" ")[0];
-  
+
     try {
       // Criar subcoleção para o serviço dentro do registro da data
       const serviceData = {
@@ -269,19 +314,22 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
         horarioEntrada: formattedTime,
         usuarioEntrada: currentUser.name,
       };
-  
-      const serviceRef = collection(doc(firestore, "pets", petId, "controle", lastRecord.id), service);
+
+      const serviceRef = collection(
+        doc(firestore, "pets", petId, "controle", lastRecord.id),
+        service
+      );
       await addDoc(serviceRef, serviceData);
-  
+
       // Atualizar 'mostRecent' apenas com 'localAtual' atualizado
       await updateDoc(doc(firestore, "pets", petId, "controle", "mostRecent"), {
         localAtual: service,
       });
-  
+
       // Atualizar o estado local do pet e na base de dados
       setPet((prev) => ({ ...prev, localAtual: service }));
       await updateDoc(doc(firestore, "pets", petId), { localAtual: service });
-  
+
       alert(`Saída para ${service} registrada com sucesso.`);
       refreshPage(); // Atualiza a página após registrar a saída para o serviço
     } catch (error) {
@@ -293,20 +341,26 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     const now = new Date();
     const saoPauloOffset = -3 * 60;
     const localTime = new Date(now.getTime() + saoPauloOffset * 60 * 1000);
-  
+
     const formattedDate = localTime.toISOString().split("T")[0];
     const formattedTime = now.toTimeString().split(" ")[0];
-  
+
     try {
       // Atualiza a volta no registro da data
-      const serviceRef = doc(firestore, "pets", petId, "controle", lastRecord.id);
+      const serviceRef = doc(
+        firestore,
+        "pets",
+        petId,
+        "controle",
+        lastRecord.id
+      );
       await updateDoc(serviceRef, {
         dataVolta: formattedDate,
         horarioVolta: formattedTime,
         usuarioVolta: currentUser.name,
         localAtual: service,
       });
-  
+
       // Atualiza 'mostRecent' com 'localAtual' atualizado
       await updateDoc(doc(firestore, "pets", petId, "controle", "mostRecent"), {
         dataVolta: formattedDate,
@@ -314,10 +368,10 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
         usuarioVolta: currentUser.name,
         localAtual: service,
       });
-  
+
       // Atualiza o documento principal do pet
       await updateDoc(doc(firestore, "pets", petId), { localAtual: service });
-  
+
       setPet((prev) => ({ ...prev, localAtual: service }));
       alert(`Retorno de ${service} registrado com sucesso.`);
       refreshPage(); // Atualiza a página
@@ -330,13 +384,22 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
     const now = new Date();
     const saoPauloOffset = -3 * 60;
     const localTime = new Date(now.getTime() + saoPauloOffset * 60 * 1000);
-  
+
     const formattedDate = localTime.toISOString().split("T")[0];
     const formattedTime = now.toTimeString().split(" ")[0];
-    const pernoites = calculatePernoites(lastRecord?.dataEntrada, formattedDate);
-  
+    const pernoites = calculatePernoites(
+      lastRecord?.dataEntrada,
+      formattedDate
+    );
+
     if (lastRecord && lastRecord.id) {
-      const controleRef = doc(firestore, "pets", petId, "controle", lastRecord.id);
+      const controleRef = doc(
+        firestore,
+        "pets",
+        petId,
+        "controle",
+        lastRecord.id
+      );
       await updateDoc(controleRef, {
         dataSaida: formattedDate,
         horarioSaida: formattedTime,
@@ -357,11 +420,13 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
       setPet((prev) => ({ ...prev, localAtual: "Casa" }));
       // Atualizar o documento principal do pet
       await updateDoc(doc(firestore, "pets", petId), { localAtual: "Casa" });
-  
+
       alert("Saída registrada com sucesso.");
       navigate("/no-local");
     } else {
-      console.error("Erro: Não foi possível encontrar o registro mais recente para atualizar.");
+      console.error(
+        "Erro: Não foi possível encontrar o registro mais recente para atualizar."
+      );
     }
   };
 
@@ -385,7 +450,7 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
       }
       setShowLoginModal(false);
     } catch (err) {
-      console.error('Erro ao buscar dados do usuário:', err);
+      console.error("Erro ao buscar dados do usuário:", err);
       setShowLoginModal(false);
     }
   };
@@ -403,22 +468,33 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
             className={styles.petPhoto}
             src={pet.foto || logoLarge}
             alt={pet.mascotinho}
-            style={pet.foto ? {} : { filter: 'grayscale(100%)' }}
+            style={pet.foto ? {} : { filter: "grayscale(100%)" }}
           />
           <div className={styles.label}>Tutor</div>
           <div className={styles.value}>{pet.tutor}</div>
           <div className={styles.label}>Contato</div>
           <div className={styles.value}>{pet.celularTutor}</div>
-          {currentUser && (currentUser.role === 'isEmployee' || currentUser.role === 'isAdmin' || currentUser.role === 'isOwner') ? (
+          {currentUser &&
+          (currentUser.role === "isEmployee" ||
+            currentUser.role === "isAdmin" ||
+            currentUser.role === "isOwner") ? (
             <div className={styles.controleButtons}>
-              {pet.localAtual === "Casa" || pet.localAtual === "Inativo" || pet.localAtual === undefined || pet.localAtual === null ? (
+              {pet.localAtual === "Casa" ||
+              pet.localAtual === "Inativo" ||
+              pet.localAtual === undefined ||
+              pet.localAtual === null ? (
                 <>
                   <Button onClick={handleEntrada}>Entrada</Button>
                   <Button onClick={handleEditar}>Editar</Button>
                 </>
-              ) : pet.localAtual === "Adestramento" || pet.localAtual === "Passeio" || pet.localAtual === "Banho" || pet.localAtual === "Veterinário" ? (
+              ) : pet.localAtual === "Adestramento" ||
+                pet.localAtual === "Passeio" ||
+                pet.localAtual === "Banho" ||
+                pet.localAtual === "Veterinário" ? (
                 <>
-                  <Button onClick={handleVoltaParque}>Retorno pro Parque</Button>
+                  <Button onClick={handleVoltaParque}>
+                    Retorno pro Parque
+                  </Button>
                   <Button onClick={handleVoltaCasa}>Saída pra Casa</Button>
                   <Button onClick={handleComentario}>Comentário</Button>
                 </>
@@ -434,7 +510,10 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
           )}
         </div>
       ) : (
-        <p>Esta página exige acesso, verifique se você fez login, aguarde seu nome aparecer e recarregue a página.</p>
+        <p>
+          Esta página exige acesso, verifique se você fez login, aguarde seu
+          nome aparecer e recarregue a página.
+        </p>
       )}
 
       {showEntradaModal && (
@@ -478,9 +557,9 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
       )}
 
       {showCommentsModal && (
-        <Modal 
-          isOpen={showCommentsModal} 
-          onClose={() => setShowCommentsModal(false)} 
+        <Modal
+          isOpen={showCommentsModal}
+          onClose={() => setShowCommentsModal(false)}
           title="Comentários Registrados"
           onConfirm={() => {
             registerSaida(); // Registra a saída somente após a confirmação
@@ -488,13 +567,13 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
           }}
         >
           {commentsData.length > 0 ? (
-            <Table 
-              headers={['Tipo', 'Comentário', 'Usuário', 'Horário']}
-              data={commentsData.map(comment => ({
+            <Table
+              headers={["Tipo", "Comentário", "Usuário", "Horário"]}
+              data={commentsData.map((comment) => ({
                 tipo: comment.tipo,
                 comentario: comment.comentario,
                 usuario: comment.usuario,
-                horario: comment.horario
+                horario: comment.horario,
               }))}
             />
           ) : (
