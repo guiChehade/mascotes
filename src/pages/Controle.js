@@ -33,18 +33,35 @@ const Controle = ({
 }) => {
   const { petId } = useParams();
   const navigate = useNavigate();
+
+  // Estados para armazenar dados do pet e controle
   const [pet, setPet] = useState(null);
+  const [lastRecord, setLastRecord] = useState(null);
+  const [lastService, setLastService] = useState(null);
+
+  // Estados para controlar modais
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showComentarioModal, setShowComentarioModal] = useState(false);
   const [showEntradaModal, setShowEntradaModal] = useState(false);
   const [showSaidaModal, setShowSaidaModal] = useState(false);
-  const [lastService, setLastService] = useState(null);
-  const [selectedAction, setSelectedAction] = useState(null);
-  const [lastRecord, setLastRecord] = useState(null);
-  const [selectedComentarioType, setSelectedComentarioType] = useState(null);
   const [showCommentsModal, setShowCommentsModal] = useState(false);
+
+  // Estados para ações selecionadas
+  const [selectedAction, setSelectedAction] = useState(null);
+  const [selectedComentarioType, setSelectedComentarioType] = useState(null);
   const [commentsData, setCommentsData] = useState([]);
 
+  // Função para obter a data e hora atual no fuso horário de São Paulo
+  const getCurrentDateTime = () => {
+    const now = new Date();
+    const saoPauloOffset = -3 * 60; // Offset de São Paulo em minutos
+    const localTime = new Date(now.getTime() + saoPauloOffset * 60 * 1000);
+    const formattedDate = localTime.toISOString().split("T")[0];
+    const formattedTime = localTime.toTimeString().split(" ")[0];
+    return { formattedDate, formattedTime };
+  };
+
+  // Efeito para buscar dados do pet e último registro
   useEffect(() => {
     const fetchData = async () => {
       await fetchPetData();
@@ -53,6 +70,7 @@ const Controle = ({
     fetchData();
   }, [petId]);
 
+  // Função para buscar dados do pet no Firestore
   const fetchPetData = async () => {
     if (petId) {
       if (staticRoutes.includes(petId)) {
@@ -68,6 +86,7 @@ const Controle = ({
     }
   };
 
+  // Função para buscar o último registro de controle do pet
   const fetchLastRecord = async () => {
     if (petId) {
       try {
@@ -86,18 +105,13 @@ const Controle = ({
             id: latestRecordDoc.id,
             ...latestData,
           });
-          setLastService(latestData.localAtual); // Define o serviço mais recente
+          setLastService(latestData.servico); // Define o serviço mais recente
 
           // Atualiza 'mostRecent' para refletir o registro mais recente
           await setDoc(
             doc(controleRef, "mostRecent"),
             {
-              // Inclua apenas os campos principais sem alterar 'servico'
-              servico: latestData.servico,
-              dataEntrada: latestData.dataEntrada,
-              horarioEntrada: latestData.horarioEntrada,
-              usuarioEntrada: latestData.usuarioEntrada,
-              localAtual: latestData.localAtual,
+              ...latestData,
             },
             { merge: true }
           );
@@ -111,11 +125,13 @@ const Controle = ({
     }
   };
 
+  // Função para atualizar a página
   const refreshPage = () => {
     fetchPetData();
     fetchLastRecord();
   };
 
+  // Handlers para ações do usuário
   const handleEntrada = () => {
     setSelectedAction("entrada");
     setShowEntradaModal(true);
@@ -134,10 +150,11 @@ const Controle = ({
     }
   };
 
-  const handleVoltaCasa = () => {
-    showCommentInfo(); // Exibe os comentários existentes
+  const handleVoltaCasa = async () => {
+    await showCommentInfo(); // Exibe os comentários existentes
   };
 
+  // Função para registrar a seleção de serviço
   const handleServiceSelection = (service) => {
     setShowEntradaModal(false);
     setShowSaidaModal(false);
@@ -154,6 +171,7 @@ const Controle = ({
     }
   };
 
+  // Função para exibir comentários antes da saída
   const showCommentInfo = async () => {
     if (lastRecord) {
       const commentTypes = [
@@ -184,6 +202,8 @@ const Controle = ({
 
       if (comments.length > 0) {
         setCommentsData(comments);
+      } else {
+        setCommentsData([]);
       }
       // Exibe o modal de comentários para confirmação
       setShowCommentsModal(true);
@@ -194,18 +214,14 @@ const Controle = ({
     setShowComentarioModal(true);
   };
 
+  // Função para submeter um comentário
   const handleComentarioSubmit = async (comentario) => {
     if (!lastRecord || !lastRecord.id) {
       console.error("Erro: lastRecord ou lastRecord.id é nulo.");
       return; // Evita continuar se lastRecord estiver nulo
     }
 
-    const now = new Date();
-    const saoPauloOffset = -3 * 60;
-    const localTime = new Date(now.getTime() + saoPauloOffset * 60 * 1000);
-
-    const formattedDate = localTime.toISOString().split("T")[0];
-    const formattedTime = now.toTimeString().split(" ")[0];
+    const { formattedDate, formattedTime } = getCurrentDateTime();
     let subCollectionPath;
 
     switch (selectedComentarioType) {
@@ -238,12 +254,20 @@ const Controle = ({
         lastRecord.id,
         subCollectionPath
       );
-      await addDoc(comentariosRef, {
+      const comentarioData = {
         comentario,
         usuario: currentUser.name,
         horario: formattedTime,
         data: formattedDate,
-      });
+      };
+      await addDoc(comentariosRef, comentarioData);
+
+      // Atualiza 'mostRecent' com o comentário
+      const mostRecentRef = doc(firestore, "pets", petId, "controle", "mostRecent");
+      await setDoc(
+        doc(mostRecentRef, subCollectionPath, comentarioData.data + "_" + comentarioData.horario),
+        comentarioData
+      );
 
       alert(`${selectedComentarioType} registrado: ${comentario}`);
       setShowComentarioModal(false);
@@ -257,13 +281,9 @@ const Controle = ({
     }
   };
 
+  // Função para registrar entrada do pet
   const registerEntrada = async (service) => {
-    const now = new Date();
-    const saoPauloOffset = -3 * 60;
-    const localTime = new Date(now.getTime() + saoPauloOffset * 60 * 1000);
-
-    const formattedDate = localTime.toISOString().split("T")[0];
-    const formattedTime = now.toTimeString().split(" ")[0];
+    const { formattedDate, formattedTime } = getCurrentDateTime();
 
     const controleRef = collection(firestore, "pets", petId, "controle");
 
@@ -279,7 +299,7 @@ const Controle = ({
       // Registrar a entrada na subcoleção 'controle' com ID de data
       await setDoc(doc(controleRef, formattedDate), newRecord, { merge: true });
 
-      // Atualizar 'mostRecent' com os mesmos dados principais
+      // Atualizar 'mostRecent' com os mesmos dados
       await setDoc(doc(controleRef, "mostRecent"), newRecord, { merge: true });
 
       // Atualizar o estado local do pet e na base de dados
@@ -294,39 +314,48 @@ const Controle = ({
     }
   };
 
+  // Função para registrar saída para um serviço externo
   const registerSaidaServico = async (service) => {
     if (!lastRecord || !lastRecord.id) {
       console.error("Erro: lastRecord ou lastRecord.id é nulo.");
       return; // Evita continuar se lastRecord estiver nulo
     }
 
-    const now = new Date();
-    const saoPauloOffset = -3 * 60;
-    const localTime = new Date(now.getTime() + saoPauloOffset * 60 * 1000);
-
-    const formattedDate = localTime.toISOString().split("T")[0];
-    const formattedTime = now.toTimeString().split(" ")[0];
+    const { formattedDate, formattedTime } = getCurrentDateTime();
 
     try {
-      // Criar subcoleção para o serviço dentro do registro da data
-      const serviceData = {
-        dataEntrada: formattedDate,
-        horarioEntrada: formattedTime,
-        usuarioEntrada: currentUser.name,
-      };
-
-      const serviceRef = collection(
-        doc(firestore, "pets", petId, "controle", lastRecord.id),
-        service
+      // Atualiza o registro atual com os dados de saída para serviço
+      const controleRef = doc(
+        firestore,
+        "pets",
+        petId,
+        "controle",
+        lastRecord.id
       );
-      await addDoc(serviceRef, serviceData);
 
-      // Atualizar 'mostRecent' apenas com 'localAtual' atualizado
-      await updateDoc(doc(firestore, "pets", petId, "controle", "mostRecent"), {
+      await updateDoc(controleRef, {
+        dataSaidaServico: formattedDate,
+        horarioSaidaServico: formattedTime,
+        usuarioSaidaServico: currentUser.name,
         localAtual: service,
       });
 
-      // Atualizar o estado local do pet e na base de dados
+      // Atualiza 'mostRecent' com os mesmos dados
+      const mostRecentRef = doc(
+        firestore,
+        "pets",
+        petId,
+        "controle",
+        "mostRecent"
+      );
+      await updateDoc(mostRecentRef, {
+        dataSaidaServico: formattedDate,
+        horarioSaidaServico: formattedTime,
+        usuarioSaidaServico: currentUser.name,
+        localAtual: service,
+      });
+
+      // Atualiza o estado local do pet e na base de dados
       setPet((prev) => ({ ...prev, localAtual: service }));
       await updateDoc(doc(firestore, "pets", petId), { localAtual: service });
 
@@ -337,42 +366,52 @@ const Controle = ({
     }
   };
 
+  // Função para registrar retorno do serviço externo
   const registerVolta = async (service) => {
-    const now = new Date();
-    const saoPauloOffset = -3 * 60;
-    const localTime = new Date(now.getTime() + saoPauloOffset * 60 * 1000);
+    if (!lastRecord || !lastRecord.id) {
+      console.error("Erro: lastRecord ou lastRecord.id é nulo.");
+      return;
+    }
 
-    const formattedDate = localTime.toISOString().split("T")[0];
-    const formattedTime = now.toTimeString().split(" ")[0];
+    const { formattedDate, formattedTime } = getCurrentDateTime();
 
     try {
-      // Atualiza a volta no registro da data
-      const serviceRef = doc(
+      // Atualiza o registro atual com os dados de retorno
+      const controleRef = doc(
         firestore,
         "pets",
         petId,
         "controle",
         lastRecord.id
       );
-      await updateDoc(serviceRef, {
-        dataVolta: formattedDate,
-        horarioVolta: formattedTime,
-        usuarioVolta: currentUser.name,
-        localAtual: service,
+      await updateDoc(controleRef, {
+        dataVoltaServico: formattedDate,
+        horarioVoltaServico: formattedTime,
+        usuarioVoltaServico: currentUser.name,
+        localAtual: lastService, // Retorna ao serviço anterior
       });
 
-      // Atualiza 'mostRecent' com 'localAtual' atualizado
-      await updateDoc(doc(firestore, "pets", petId, "controle", "mostRecent"), {
-        dataVolta: formattedDate,
-        horarioVolta: formattedTime,
-        usuarioVolta: currentUser.name,
-        localAtual: service,
+      // Atualiza 'mostRecent' com os mesmos dados
+      const mostRecentRef = doc(
+        firestore,
+        "pets",
+        petId,
+        "controle",
+        "mostRecent"
+      );
+      await updateDoc(mostRecentRef, {
+        dataVoltaServico: formattedDate,
+        horarioVoltaServico: formattedTime,
+        usuarioVoltaServico: currentUser.name,
+        localAtual: lastService,
       });
 
-      // Atualiza o documento principal do pet
-      await updateDoc(doc(firestore, "pets", petId), { localAtual: service });
+      // Atualiza o estado local do pet e na base de dados
+      setPet((prev) => ({ ...prev, localAtual: lastService }));
+      await updateDoc(doc(firestore, "pets", petId), {
+        localAtual: lastService,
+      });
 
-      setPet((prev) => ({ ...prev, localAtual: service }));
       alert(`Retorno de ${service} registrado com sucesso.`);
       refreshPage(); // Atualiza a página
     } catch (error) {
@@ -380,13 +419,10 @@ const Controle = ({
     }
   };
 
+  // Função para registrar saída definitiva do pet
   const registerSaida = async () => {
-    const now = new Date();
-    const saoPauloOffset = -3 * 60;
-    const localTime = new Date(now.getTime() + saoPauloOffset * 60 * 1000);
+    const { formattedDate, formattedTime } = getCurrentDateTime();
 
-    const formattedDate = localTime.toISOString().split("T")[0];
-    const formattedTime = now.toTimeString().split(" ")[0];
     const pernoites = calculatePernoites(
       lastRecord?.dataEntrada,
       formattedDate
@@ -408,14 +444,17 @@ const Controle = ({
         localAtual: "Casa",
       });
 
-      // Atualizar 'mostRecent' com 'localAtual' atualizado
-      await updateDoc(doc(firestore, "pets", petId, "controle", "mostRecent"), {
-        dataSaida: formattedDate,
-        horarioSaida: formattedTime,
-        usuarioSaida: currentUser.name,
-        pernoites,
-        localAtual: "Casa",
-      });
+      // Atualizar 'mostRecent' com os mesmos dados
+      await updateDoc(
+        doc(firestore, "pets", petId, "controle", "mostRecent"),
+        {
+          dataSaida: formattedDate,
+          horarioSaida: formattedTime,
+          usuarioSaida: currentUser.name,
+          pernoites,
+          localAtual: "Casa",
+        }
+      );
 
       setPet((prev) => ({ ...prev, localAtual: "Casa" }));
       // Atualizar o documento principal do pet
@@ -430,6 +469,7 @@ const Controle = ({
     }
   };
 
+  // Função para calcular o número de pernoites
   const calculatePernoites = (entradaData, saidaData) => {
     if (!entradaData) return 0;
 
@@ -439,6 +479,7 @@ const Controle = ({
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
 
+  // Função de sucesso no login
   const handleLoginSuccess = async (user) => {
     try {
       setIsAuthenticated(true);
@@ -455,10 +496,12 @@ const Controle = ({
     }
   };
 
+  // Função para editar o pet
   const handleEditar = () => {
     navigate(`/editar/${petId}`);
   };
 
+  // Renderização do componente
   return (
     <Container className={styles.controleContainer}>
       {pet ? (
@@ -474,9 +517,12 @@ const Controle = ({
           <div className={styles.value}>{pet.tutor}</div>
           <div className={styles.label}>Contato</div>
           <div className={styles.value}>{pet.celularTutor}</div>
+
+          {/* Botões de ação baseados no papel do usuário e local atual do pet */}
           {currentUser &&
           (currentUser.role === "isEmployee" ||
             currentUser.role === "isAdmin" ||
+            currentUser.role === "isManager" ||
             currentUser.role === "isOwner") ? (
             <div className={styles.controleButtons}>
               {pet.localAtual === "Casa" ||
@@ -511,11 +557,12 @@ const Controle = ({
         </div>
       ) : (
         <p>
-          Esta página exige acesso, verifique se você fez login, aguarde seu
-          nome aparecer e recarregue a página.
+          Esta página exige acesso. Verifique se você fez login, aguarde seu nome
+          aparecer e recarregue a página.
         </p>
       )}
 
+      {/* Modais para seleção de ações e comentários */}
       {showEntradaModal && (
         <ActionOptions
           actionType="Qual o motivo da Entrada?"
@@ -556,6 +603,7 @@ const Controle = ({
         />
       )}
 
+      {/* Modal para exibir comentários antes da saída */}
       {showCommentsModal && (
         <Modal
           isOpen={showCommentsModal}

@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Container from '../components/Container';
 import Button from '../components/Button';
-import LoginModal from '../components/LoginModal';
 import styles from '../styles/NotFound.module.css';
 
 const NotFound = () => {
