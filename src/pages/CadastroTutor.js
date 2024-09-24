@@ -20,7 +20,7 @@ const CadastroTutor = ({ currentUser }) => {
     cpf: '',
     email: '',
     celular: '',
-    outroNumero: '',
+    telefoneSecundario: '',
     cep: '',
     endereco: '',
     numero: '',
@@ -80,7 +80,7 @@ const CadastroTutor = ({ currentUser }) => {
       cpf: '',
       email: '',
       celular: '',
-      outroNumero: '',
+      telefoneSecundario: '',
       cep: '',
       endereco: '',
       numero: '',
@@ -104,6 +104,7 @@ const CadastroTutor = ({ currentUser }) => {
         <Input label="Foto do Tutor" type="file" accept="image/*" onChange={handleFileChange} />
         <Input label="Nome Completo" type="text" name="nome" value={tutor.nome} onChange={handleChange} required placeholder="João Pereira" />
         <Input label="Data de Nascimento" type="date" name="dataNascimento" value={tutor.dataNascimento} onChange={handleChange} placeholder="01/01/2000" />
+
         <Input label="Idade" type="number" name="idade" value={tutor.idade} onChange={handleChange} disabled />
         <Input label="Nacionalidade" type="text" name="nacionalidade" value={tutor.nacionalidade} onChange={handleChange} placeholder="Brasileiro" />
         <div className={styles.selectContainer}>
@@ -129,7 +130,7 @@ const CadastroTutor = ({ currentUser }) => {
         <Input label="CPF" type="text" name="cpf" value={tutor.cpf} onChange={handleChange} placeholder="999.999.999-99" mask="999.999.999-99" />
         <Input label="E-mail" type="email" name="email" value={tutor.email} onChange={handleChange} placeholder="joaopereira@email.com" />
         <Input label="Celular" type="text" name="celular" value={tutor.celular} onChange={handleChange} placeholder="(11) 99999-9999" mask="(99) 99999-9999" />
-        <Input label="Outro Número" type="text" name="outroNumero" value={tutor.outroNumero} onChange={handleChange} placeholder="(11) 99999-9999" mask="(99) 99999-9999" />
+        <Input label="Telefone Secundário" type="text" name="telefoneSecundario" value={tutor.outroNumero} onChange={handleChange} placeholder="(11) 99999-9999" mask="(99) 99999-9999" />
         <Input label="CEP" type="text" name="cep" value={tutor.cep} onChange={handleChange} placeholder="99999-999" mask="99999-999" />
         <Input label="Endereço" type="text" name="endereco" value={tutor.endereco} onChange={handleChange} placeholder="Rua dos Tutores, 10" />
         <Input label="Número" type="text" name="numero" value={tutor.numero} onChange={handleChange} placeholder="10" />
@@ -137,12 +138,12 @@ const CadastroTutor = ({ currentUser }) => {
         <Input label="Bairro" type="text" name="bairro" value={tutor.bairro} onChange={handleChange} placeholder="Bairro dos Tutores" />
         <Input label="Cidade" type="text" name="cidade" value={tutor.cidade} onChange={handleChange} placeholder="São Paulo" />
         <Input label="UF" type="text" name="uf" value={tutor.uf} onChange={handleChange} placeholder="SP" />
-        <Input label="Nome do Veterinário" type="text" name="nomeVet" value={tutor.nomeVet} onChange={handleChange} placeholder="Dr. Vet" />
-        <Input label="CRMV do Veterinário" type="text" name="crmvVet" value={tutor.crmvVet} onChange={handleChange} placeholder="1234" />
-        <Input label="Telefone Principal do Veterinário" type="text" name="telefonePrincipalVet" value={tutor.telefonePrincipalVet} onChange={handleChange} placeholder="(11) 99999-9999" mask="(99) 99999-9999" />
-        <Input label="Telefone Secundário do Veterinário" type="text" name="telefoneSecundarioVet" value={tutor.telefoneSecundarioVet} onChange={handleChange} placeholder="(11) 99999-9999" mask="(99) 99999-9999" />
-        <Input label="Nome da Clínica/Hospital Veterinário" type="text" name="nomeClinicaVet" value={tutor.nomeClinicaVet} onChange={handleChange} placeholder="Clínica Melhor Vet" />
-        <Input label="Endereço do Veterinário" type="text" name="enderecoVet" value={tutor.enderecoVet} onChange={handleChange} placeholder="Rua Veterinária, 123" />
+        <Input label="Nome (Vet)" type="text" name="nomeVet" value={tutor.nomeVet} onChange={handleChange} placeholder="Dr. Vet" />
+        <Input label="CRMV (Vet)" type="text" name="crmvVet" value={tutor.crmvVet} onChange={handleChange} placeholder="1234" />
+        <Input label="Telefone Principal (Vet)" type="text" name="telefonePrincipalVet" value={tutor.telefonePrincipalVet} onChange={handleChange} placeholder="(11) 99999-9999" mask="(99) 99999-9999" />
+        <Input label="Telefone Secundário (Vet)" type="text" name="telefoneSecundarioVet" value={tutor.telefoneSecundarioVet} onChange={handleChange} placeholder="(11) 99999-9999" mask="(99) 99999-9999" />
+        <Input label="Clínica/Hospital (Vet)" type="text" name="nomeClinicaVet" value={tutor.nomeClinicaVet} onChange={handleChange} placeholder="Clínica Melhor Vet" />
+        <Input label="Endereço (Vet)" type="text" name="enderecoVet" value={tutor.enderecoVet} onChange={handleChange} placeholder="Rua Veterinária, 123" />
         <Button type="submit">Cadastrar</Button>
         
 

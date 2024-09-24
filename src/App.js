@@ -18,13 +18,13 @@ import Mascotes from "./pages/Mascotes";
 import Controle from "./pages/Controle";
 import DogBreedsCards from "./pages/DogBreedsCards";
 import UploadBreeds from "./pages/UploadBreeds";
-import ControleRedirect from "./pages/ControleRedirect";
 import EditarPet from "./pages/EditarPet";
 import Pagamentos from "./pages/Pagamentos";
 import Registros from "./pages/Registros";
 import Ponto from "./pages/Ponto";
 import NoLocal from "./pages/NoLocal";
 import Usuarios from "./pages/Usuarios";
+import NotFound from "./pages/NotFound";
 import styles from "./styles/App.module.css";
 import "./styles/global.css";
 
@@ -65,9 +65,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Home isAuthenticated={isAuthenticated} userRoles={userRoles} />} />
             <Route path="/racas" element={<DogBreedsCards />} />
-            <Route path="/controle" element={<ControleRedirect />} />
             <Route path="/quiz" element={<Quiz />} />
-            <Route path="/:petId" element={<Controle currentUser={currentUser} />} />
             <Route path="/agendar-visita" element={<AgendarVisita />} />
             <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} setUserRoles={setUserRoles} setCurrentUser={setCurrentUser} />} />
             {isAuthenticated && (
@@ -104,6 +102,9 @@ const App = () => {
                 )}
               </>
             )}
+            <Route path="/:petId" element={<Controle currentUser={currentUser} />} />
+            <Route path="/not-found" element={<NotFound />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Main>
         <Footer />

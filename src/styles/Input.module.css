@@ -15,3 +15,8 @@
   border-radius: 20px;
   font-size: 1rem;
 }
+
+.input:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}

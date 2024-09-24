@@ -22,6 +22,7 @@ import ComentarioOptions from "../components/ComentarioOptions";
 import Modal from "../components/Modal";
 import Table from "../components/Table";
 import logoLarge from '../assets/logo/logo-large.png';
+import { staticRoutes } from "./config/staticRoutes";
 import styles from '../styles/Controle.module.css';
 
 const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUser }) => {
@@ -40,17 +41,24 @@ const Controle = ({ currentUser, setIsAuthenticated, setUserRoles, setCurrentUse
   const [commentsData, setCommentsData] = useState([]);
 
   useEffect(() => {
-    fetchPetData();
-    fetchLastRecord();
+    const fetchData = async () => {
+      await fetchPetData();
+      await fetchLastRecord();
+    };
+    fetchData();
   }, [petId]);
 
   const fetchPetData = async () => {
     if (petId) {
+      if (staticRoutes.includes(petId)) {
+        navigate(`/${petId}`);
+        return;
+      }
       const petDoc = await getDoc(doc(firestore, "pets", petId));
       if (petDoc.exists()) {
         setPet(petDoc.data());
       } else {
-        console.error("Pet não encontrado");
+        navigate('/not-found');
       }
     }
   };

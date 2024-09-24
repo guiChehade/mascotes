@@ -31,7 +31,7 @@
     "react-scripts": "^3.0.1",
     "react-spring": "^9.7.4",
     "sharp": "^0.33.5",
-    "vercel": "^37.5.3",
+    "vercel": "^37.5.4",
     "web-vitals": "^2.1.4"
   },
   "homepage": "./",

@@ -22,7 +22,7 @@ const applyMask = (value, mask) => {
   return maskedValue;
 };
 
-const Input = ({ label, type, name, value, onChange, placeholder, required = false, mask, accept }) => {
+const Input = ({ label, type, name, value, onChange, placeholder, required = false, mask, accept, disabled }) => {
   const handleChange = (e) => {
     if (type === 'file') {
       onChange(e);
@@ -44,6 +44,7 @@ const Input = ({ label, type, name, value, onChange, placeholder, required = fal
         placeholder={placeholder}
         required={required}
         accept={accept}
+        disabled={disabled}
       />
     </div>
   );
