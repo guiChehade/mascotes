@@ -1,29 +1,59 @@
 .cadastroContainer {
-    max-width: 90vw;
-    padding: 40px;
-    background-color: var(--container-background);
-    border-radius: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
+  max-width: 90vw;
+  padding: 40px;
+  background-color: var(--container-background);
+  border-radius: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.cadastroForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.selectContainer {
+  display: flex;
+  flex-direction: column;
   
+}
+
+.selectContainer label {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.cadastroSelect {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 1rem;
+  border-radius: 20px;
+  padding: 0.5rem;
+  border: 1px solid var(--button-hover-background);
+  border-radius: 20px;
+  font-size: 1rem;
+}
+
+.buttonContainer {
+  margin: 2rem 0 0;
+  display: flex;
+  justify-content: center;
+
+}
+
+@media (min-width: 768px) {
+  .cadastroContainer {
+    max-width: 800px;
+    margin: 0 auto;
+  }
   .cadastroForm {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
   }
-  
-  @media (min-width: 768px) {
-    .cadastroContainer {
-      max-width: 800px;
-      margin: 0 auto;
-    }
-    .cadastroForm {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-  }
+}

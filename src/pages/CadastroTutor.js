@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { firestore, storage } from '../firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { addDoc, collection } from 'firebase/firestore';
@@ -28,16 +28,66 @@ const CadastroTutor = ({ currentUser }) => {
     bairro: '',
     cidade: '',
     uf: '',
-    nomeVet: '',
-    crmvVet: '',
-    telefonePrincipalVet: '',
-    telefoneSecundarioVet: '',
-    nomeClinicaVet: '',
-    enderecoVet: ''
   });
 
   const [image, setImage] = useState(null);
   const [editorOpen, setEditorOpen] = useState(false);
+
+  // Função para calcular a idade
+  function calculateAge(birthDate) {
+    const today = new Date();
+    const birth = new Date(birthDate);
+    let years = today.getFullYear() - birth.getFullYear();
+    let months = today.getMonth() - birth.getMonth();
+    let days = today.getDate() - birth.getDate();
+
+    if (days < 0) {
+      months--;
+      days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+    }
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    return `${years} anos, ${months} meses e ${days} dias`;
+  }
+
+  // Atualiza a idade sempre que a data de nascimento mudar
+  useEffect(() => {
+    if (tutor.dataNascimento) {
+      const age = calculateAge(tutor.dataNascimento);
+      setTutor(prevTutor => ({
+        ...prevTutor,
+        idade: age,
+      }));
+    }
+  }, [tutor.dataNascimento]);
+
+  // Busca o endereço pelo CEP
+  useEffect(() => {
+    const cep = tutor.cep.replace(/\D/g, ''); // Remove caracteres não numéricos
+    if (cep.length === 8) {
+      fetch(`https://viacep.com.br/ws/${cep}/json/`)
+        .then(response => response.json())
+        .then(data => {
+          if (!data.erro) {
+            setTutor(prevTutor => ({
+              ...prevTutor,
+              endereco: data.logradouro || '',
+              bairro: data.bairro || '',
+              cidade: data.localidade || '',
+              uf: data.uf || '',
+            }));
+          } else {
+            alert('CEP não encontrado.');
+          }
+        })
+        .catch(error => {
+          console.error('Erro ao buscar CEP:', error);
+        });
+    }
+  }, [tutor.cep]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -48,7 +98,8 @@ const CadastroTutor = ({ currentUser }) => {
   };
 
   const handleFileChange = (e) => {
-    setImage(e.target.files[0]);
+    const file = e.target.files[0];
+    setImage(file);
     setEditorOpen(true);
   };
 
@@ -56,10 +107,22 @@ const CadastroTutor = ({ currentUser }) => {
     e.preventDefault();
 
     let fotoURL = '';
-    if (image instanceof File) {
-      const fotoRef = ref(storage, `tutores/${Date.now()}_${image.name}`);
-      await uploadBytes(fotoRef, image);
-      fotoURL = await getDownloadURL(fotoRef);
+
+    if (image) {
+      if (typeof image === 'string' && image.startsWith('data:image')) {
+        // Caso em que a imagem é uma data URL (imagem recortada)
+        const response = await fetch(image);
+        const blob = await response.blob();
+        const fotoName = `tutor_${Date.now()}.jpg`;
+        const fotoRef = ref(storage, `tutores/${fotoName}`);
+        await uploadBytes(fotoRef, blob);
+        fotoURL = await getDownloadURL(fotoRef);
+      } else if (image instanceof File) {
+        // Caso em que a imagem é um arquivo (File)
+        const fotoRef = ref(storage, `tutores/${Date.now()}_${image.name}`);
+        await uploadBytes(fotoRef, image);
+        fotoURL = await getDownloadURL(fotoRef);
+      }
     }
 
     await addDoc(collection(firestore, 'tutores'), {
@@ -88,13 +151,8 @@ const CadastroTutor = ({ currentUser }) => {
       bairro: '',
       cidade: '',
       uf: '',
-      nomeVet: '',
-      crmvVet: '',
-      telefonePrincipalVet: '',
-      telefoneSecundarioVet: '',
-      nomeClinicaVet: '',
-      enderecoVet: ''
     });
+    setImage(null);
   };
 
   return (
@@ -104,8 +162,7 @@ const CadastroTutor = ({ currentUser }) => {
         <Input label="Foto do Tutor" type="file" accept="image/*" onChange={handleFileChange} />
         <Input label="Nome Completo" type="text" name="nome" value={tutor.nome} onChange={handleChange} required placeholder="João Pereira" />
         <Input label="Data de Nascimento" type="date" name="dataNascimento" value={tutor.dataNascimento} onChange={handleChange} placeholder="01/01/2000" />
-
-        <Input label="Idade" type="number" name="idade" value={tutor.idade} onChange={handleChange} disabled />
+        <Input label="Idade" type="text" name="idade" value={tutor.idade} disabled />
         <Input label="Nacionalidade" type="text" name="nacionalidade" value={tutor.nacionalidade} onChange={handleChange} placeholder="Brasileiro" />
         <div className={styles.selectContainer}>
           <label>Gênero</label>
@@ -130,25 +187,28 @@ const CadastroTutor = ({ currentUser }) => {
         <Input label="CPF" type="text" name="cpf" value={tutor.cpf} onChange={handleChange} placeholder="999.999.999-99" mask="999.999.999-99" />
         <Input label="E-mail" type="email" name="email" value={tutor.email} onChange={handleChange} placeholder="joaopereira@email.com" />
         <Input label="Celular" type="text" name="celular" value={tutor.celular} onChange={handleChange} placeholder="(11) 99999-9999" mask="(99) 99999-9999" />
-        <Input label="Telefone Secundário" type="text" name="telefoneSecundario" value={tutor.outroNumero} onChange={handleChange} placeholder="(11) 99999-9999" mask="(99) 99999-9999" />
+        <Input label="Telefone Secundário" type="text" name="telefoneSecundario" value={tutor.telefoneSecundario} onChange={handleChange} placeholder="(11) 99999-9999" mask="(99) 99999-9999" />
         <Input label="CEP" type="text" name="cep" value={tutor.cep} onChange={handleChange} placeholder="99999-999" mask="99999-999" />
-        <Input label="Endereço" type="text" name="endereco" value={tutor.endereco} onChange={handleChange} placeholder="Rua dos Tutores, 10" />
-        <Input label="Número" type="text" name="numero" value={tutor.numero} onChange={handleChange} placeholder="10" />
-        <Input label="Complemento" type="text" name="complemento" value={tutor.complemento} onChange={handleChange} placeholder="Apto 101" />
-        <Input label="Bairro" type="text" name="bairro" value={tutor.bairro} onChange={handleChange} placeholder="Bairro dos Tutores" />
-        <Input label="Cidade" type="text" name="cidade" value={tutor.cidade} onChange={handleChange} placeholder="São Paulo" />
-        <Input label="UF" type="text" name="uf" value={tutor.uf} onChange={handleChange} placeholder="SP" />
-        <Input label="Nome (Vet)" type="text" name="nomeVet" value={tutor.nomeVet} onChange={handleChange} placeholder="Dr. Vet" />
-        <Input label="CRMV (Vet)" type="text" name="crmvVet" value={tutor.crmvVet} onChange={handleChange} placeholder="1234" />
-        <Input label="Telefone Principal (Vet)" type="text" name="telefonePrincipalVet" value={tutor.telefonePrincipalVet} onChange={handleChange} placeholder="(11) 99999-9999" mask="(99) 99999-9999" />
-        <Input label="Telefone Secundário (Vet)" type="text" name="telefoneSecundarioVet" value={tutor.telefoneSecundarioVet} onChange={handleChange} placeholder="(11) 99999-9999" mask="(99) 99999-9999" />
-        <Input label="Clínica/Hospital (Vet)" type="text" name="nomeClinicaVet" value={tutor.nomeClinicaVet} onChange={handleChange} placeholder="Clínica Melhor Vet" />
-        <Input label="Endereço (Vet)" type="text" name="enderecoVet" value={tutor.enderecoVet} onChange={handleChange} placeholder="Rua Veterinária, 123" />
-        <Button type="submit">Cadastrar</Button>
-        
-
+        <Input label="Endereço" type="text" name="endereco" value={tutor.endereco} onChange={handleChange} placeholder="Rua dos Tutores" />
+        <Input label="Número" type="text" name="numero" value={tutor.numero} onChange={handleChange} />
+        <Input label="Complemento" type="text" name="complemento" value={tutor.complemento} onChange={handleChange} />
+        <Input label="Bairro" type="text" name="bairro" value={tutor.bairro} onChange={handleChange} />
+        <Input label="Cidade" type="text" name="cidade" value={tutor.cidade} onChange={handleChange} />
+        <Input label="UF" type="text" name="uf" value={tutor.uf} onChange={handleChange} />
+        <div className={styles.buttonContainer}>
+          <Button className={styles.button} type="submit">Cadastrar</Button>
+        </div>
       </form>
-      {editorOpen && <PhotoEditor image={image} setImage={(img) => setTutor((prevTutor) => ({ ...prevTutor, foto: img }))} setEditorOpen={setEditorOpen} />}
+      {editorOpen && (
+        <PhotoEditor
+          image={image}
+          setImage={(img) => {
+            setImage(img);
+            setTutor((prevTutor) => ({ ...prevTutor, foto: img }))
+          }}
+          setEditorOpen={setEditorOpen}
+        />
+      )}
     </Container>
   );
 };

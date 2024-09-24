@@ -38,7 +38,8 @@ const CadastroPet = ({ currentUser }) => {
   };
 
   const handleFileChange = (e) => {
-    setImage(e.target.files[0]);
+    const file = e.target.files[0];
+    setImage(file);
     setEditorOpen(true);
   };
 
@@ -46,10 +47,22 @@ const CadastroPet = ({ currentUser }) => {
     e.preventDefault();
 
     let fotoURL = '';
-    if (image instanceof File) {
-      const fotoRef = ref(storage, `pets/${Date.now()}_${image.name}`);
-      await uploadBytes(fotoRef, image);
-      fotoURL = await getDownloadURL(fotoRef);
+
+    if (image) {
+      if (typeof image === 'string' && image.startsWith('data:image')) {
+        // Caso em que a imagem é uma data URL (imagem recortada)
+        const response = await fetch(image);
+        const blob = await response.blob();
+        const fotoName = `pet_${Date.now()}.jpg`;
+        const fotoRef = ref(storage, `pets/${fotoName}`);
+        await uploadBytes(fotoRef, blob);
+        fotoURL = await getDownloadURL(fotoRef);
+      } else if (image instanceof File) {
+        // Caso em que a imagem é um arquivo (File)
+        const fotoRef = ref(storage, `pets/${Date.now()}_${image.name}`);
+        await uploadBytes(fotoRef, image);
+        fotoURL = await getDownloadURL(fotoRef);
+      }
     }
 
     await addDoc(collection(firestore, 'pets'), {
@@ -97,7 +110,16 @@ const CadastroPet = ({ currentUser }) => {
         <Input label="Foto do Pet" type="file" accept="image/*" onChange={handleFileChange} />
         <Button type="submit">Cadastrar</Button>
       </form>
-      {editorOpen && <PhotoEditor image={image} setImage={(img) => setPet((prevPet) => ({ ...prevPet, foto: img }))} setEditorOpen={setEditorOpen} />}
+      {editorOpen && (
+        <PhotoEditor
+          image={image}
+          setImage={(img) => {
+            setImage(img);
+            setPet((prevPet) => ({ ...prevPet, foto: img }))
+          }}
+          setEditorOpen={setEditorOpen}
+        />
+      )}
     </Container>
   );
 };

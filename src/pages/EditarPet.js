@@ -101,7 +101,6 @@ const EditarPet = ({ currentUser }) => {
       } else if (photo) { // This block handles the case where a resized image is set using data URL
         const photoBlob = await fetch(photo); // Fetch the image from data URL
         const photoData = await photoBlob.blob();
-        const photoName = photo.name || `photo_${Date.now()}.jpg`;
         const photoRef = ref(storage, `pets/${Date.now()}_${photo.name}`); // Assuming 'photo' contains the filename
         await uploadBytes(photoRef, photoData);
         foto = await getDownloadURL(photoRef);

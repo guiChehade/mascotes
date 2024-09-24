@@ -24,6 +24,7 @@ import Registros from "./pages/Registros";
 import Ponto from "./pages/Ponto";
 import NoLocal from "./pages/NoLocal";
 import Usuarios from "./pages/Usuarios";
+import DadosTutor from "./pages/DadosTutor";
 import NotFound from "./pages/NotFound";
 import styles from "./styles/App.module.css";
 import "./styles/global.css";
@@ -70,6 +71,7 @@ const App = () => {
             <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} setUserRoles={setUserRoles} setCurrentUser={setCurrentUser} />} />
             {isAuthenticated && (
               <>
+                <Route path="/tutor/:tutorId" element={<DadosTutor currentUser={currentUser} />} />
                 {(userRole === "isEmployee" || userRole === "isAdmin" || userRole === "isManager" || userRole === "isOwner") && (
                   <Route path="/ponto" element={<Ponto currentUser={currentUser} />} />
                 )}
