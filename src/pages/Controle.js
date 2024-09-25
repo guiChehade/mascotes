@@ -11,6 +11,7 @@ import {
   query,
   orderBy,
   updateDoc,
+  deleteDoc,
   limit,
 } from "firebase/firestore";
 import Container from "../components/Container";
@@ -91,6 +92,8 @@ const Controle = ({
     if (petId) {
       try {
         const controleRef = collection(firestore, "pets", petId, "controle");
+
+        // Consulta para obter o registro mais recente com base na data e hora de entrada
         const q = query(
           controleRef,
           orderBy("dataEntrada", "desc"),
@@ -107,20 +110,69 @@ const Controle = ({
           });
           setLastService(latestData.servico); // Define o serviço mais recente
 
-          // Atualiza 'mostRecent' para refletir o registro mais recente
-          await setDoc(
-            doc(controleRef, "mostRecent"),
-            {
-              ...latestData,
-            },
-            { merge: true }
-          );
+          // Atualiza o documento 'mostRecent' com os dados mais recentes
+          await updateMostRecent(latestRecordDoc.id);
         } else {
           setLastRecord(null);
           setLastService(null);
+
+          // Se não houver registros, limpa 'mostRecent'
+          await deleteDoc(
+            doc(firestore, "pets", petId, "controle", "mostRecent")
+          );
         }
       } catch (error) {
         console.error("Erro ao buscar o último registro:", error);
+      }
+    }
+  };
+
+  // Função para atualizar o documento 'mostRecent' com os dados do último registro
+  const updateMostRecent = async (recordId) => {
+    const mostRecentRef = doc(
+      firestore,
+      "pets",
+      petId,
+      "controle",
+      "mostRecent"
+    );
+
+    // Obter os dados do último registro
+    const lastRecordRef = doc(
+      firestore,
+      "pets",
+      petId,
+      "controle",
+      recordId
+    );
+    const lastRecordData = await getDoc(lastRecordRef);
+
+    if (lastRecordData.exists()) {
+      const data = lastRecordData.data();
+      await setDoc(mostRecentRef, data);
+
+      // Copiar subcoleções (comentários e serviçosExtras)
+      const subCollections = [
+        "comentarioPertences",
+        "comentarioVet",
+        "comentarioComportamento",
+        "comentarioObservacoes",
+        "comentarioAlimentacao",
+        "servicosExtras",
+      ];
+
+      for (let subCol of subCollections) {
+        const subCollectionRef = collection(lastRecordRef, subCol);
+        const subCollectionSnapshot = await getDocs(subCollectionRef);
+        if (!subCollectionSnapshot.empty) {
+          for (let docSnap of subCollectionSnapshot.docs) {
+            const docData = docSnap.data();
+            await setDoc(
+              doc(mostRecentRef, subCol, docSnap.id),
+              docData
+            );
+          }
+        }
       }
     }
   };
@@ -245,6 +297,14 @@ const Controle = ({
     }
 
     try {
+      // Dados do comentário
+      const comentarioData = {
+        comentario,
+        usuario: currentUser.name,
+        horario: formattedTime,
+        data: formattedDate,
+      };
+
       // Adiciona comentário na subcoleção da data mais recente
       const comentariosRef = collection(
         firestore,
@@ -254,20 +314,18 @@ const Controle = ({
         lastRecord.id,
         subCollectionPath
       );
-      const comentarioData = {
-        comentario,
-        usuario: currentUser.name,
-        horario: formattedTime,
-        data: formattedDate,
-      };
       await addDoc(comentariosRef, comentarioData);
 
-      // Atualiza 'mostRecent' com o comentário
-      const mostRecentRef = doc(firestore, "pets", petId, "controle", "mostRecent");
-      await setDoc(
-        doc(mostRecentRef, subCollectionPath, comentarioData.data + "_" + comentarioData.horario),
-        comentarioData
+      // Adiciona comentário na subcoleção de 'mostRecent'
+      const mostRecentComentariosRef = collection(
+        firestore,
+        "pets",
+        petId,
+        "controle",
+        "mostRecent",
+        subCollectionPath
       );
+      await addDoc(mostRecentComentariosRef, comentarioData);
 
       alert(`${selectedComentarioType} registrado: ${comentario}`);
       setShowComentarioModal(false);
@@ -297,10 +355,11 @@ const Controle = ({
 
     try {
       // Registrar a entrada na subcoleção 'controle' com ID de data
-      await setDoc(doc(controleRef, formattedDate), newRecord, { merge: true });
+      await setDoc(doc(controleRef, formattedDate), newRecord);
 
-      // Atualizar 'mostRecent' com os mesmos dados
-      await setDoc(doc(controleRef, "mostRecent"), newRecord, { merge: true });
+      // Sobrescrever o documento 'mostRecent' com os dados da nova entrada
+      const mostRecentRef = doc(controleRef, "mostRecent");
+      await setDoc(mostRecentRef, newRecord);
 
       // Atualizar o estado local do pet e na base de dados
       setPet((prev) => ({ ...prev, localAtual: service }));
@@ -324,6 +383,13 @@ const Controle = ({
     const { formattedDate, formattedTime } = getCurrentDateTime();
 
     try {
+      const updateData = {
+        dataSaidaServico: formattedDate,
+        horarioSaidaServico: formattedTime,
+        usuarioSaidaServico: currentUser.name,
+        localAtual: service,
+      };
+
       // Atualiza o registro atual com os dados de saída para serviço
       const controleRef = doc(
         firestore,
@@ -332,13 +398,7 @@ const Controle = ({
         "controle",
         lastRecord.id
       );
-
-      await updateDoc(controleRef, {
-        dataSaidaServico: formattedDate,
-        horarioSaidaServico: formattedTime,
-        usuarioSaidaServico: currentUser.name,
-        localAtual: service,
-      });
+      await updateDoc(controleRef, updateData);
 
       // Atualiza 'mostRecent' com os mesmos dados
       const mostRecentRef = doc(
@@ -348,12 +408,27 @@ const Controle = ({
         "controle",
         "mostRecent"
       );
-      await updateDoc(mostRecentRef, {
+      await updateDoc(mostRecentRef, updateData);
+
+      // Criar registro na subcoleção 'servicosExtras' na data mais recente
+      const servicosExtrasRef = collection(
+        controleRef,
+        "servicosExtras"
+      );
+      const servicoExtraData = {
+        service,
         dataSaidaServico: formattedDate,
         horarioSaidaServico: formattedTime,
         usuarioSaidaServico: currentUser.name,
-        localAtual: service,
-      });
+      };
+      await addDoc(servicosExtrasRef, servicoExtraData);
+
+      // Também adicionar em 'mostRecent'
+      const mostRecentServicosExtrasRef = collection(
+        mostRecentRef,
+        "servicosExtras"
+      );
+      await addDoc(mostRecentServicosExtrasRef, servicoExtraData);
 
       // Atualiza o estado local do pet e na base de dados
       setPet((prev) => ({ ...prev, localAtual: service }));
@@ -376,6 +451,13 @@ const Controle = ({
     const { formattedDate, formattedTime } = getCurrentDateTime();
 
     try {
+      const updateData = {
+        dataVoltaServico: formattedDate,
+        horarioVoltaServico: formattedTime,
+        usuarioVoltaServico: currentUser.name,
+        localAtual: lastService, // Retorna ao serviço anterior
+      };
+
       // Atualiza o registro atual com os dados de retorno
       const controleRef = doc(
         firestore,
@@ -384,12 +466,7 @@ const Controle = ({
         "controle",
         lastRecord.id
       );
-      await updateDoc(controleRef, {
-        dataVoltaServico: formattedDate,
-        horarioVoltaServico: formattedTime,
-        usuarioVoltaServico: currentUser.name,
-        localAtual: lastService, // Retorna ao serviço anterior
-      });
+      await updateDoc(controleRef, updateData);
 
       // Atualiza 'mostRecent' com os mesmos dados
       const mostRecentRef = doc(
@@ -399,12 +476,7 @@ const Controle = ({
         "controle",
         "mostRecent"
       );
-      await updateDoc(mostRecentRef, {
-        dataVoltaServico: formattedDate,
-        horarioVoltaServico: formattedTime,
-        usuarioVoltaServico: currentUser.name,
-        localAtual: lastService,
-      });
+      await updateDoc(mostRecentRef, updateData);
 
       // Atualiza o estado local do pet e na base de dados
       setPet((prev) => ({ ...prev, localAtual: lastService }));
@@ -429,6 +501,19 @@ const Controle = ({
     );
 
     if (lastRecord && lastRecord.id) {
+      const updateData = {
+        dataSaida: formattedDate,
+        horarioSaida: formattedTime,
+        usuarioSaida: currentUser.name,
+        pernoites,
+        localAtual: "Casa",
+        // Quando o pet sai do serviço direto para casa,
+        // o horário de retorno é o mesmo que o horário de saída
+        dataVoltaServico: formattedDate,
+        horarioVoltaServico: formattedTime,
+        usuarioVoltaServico: currentUser.name,
+      };
+
       const controleRef = doc(
         firestore,
         "pets",
@@ -436,25 +521,17 @@ const Controle = ({
         "controle",
         lastRecord.id
       );
-      await updateDoc(controleRef, {
-        dataSaida: formattedDate,
-        horarioSaida: formattedTime,
-        usuarioSaida: currentUser.name,
-        pernoites,
-        localAtual: "Casa",
-      });
+      await updateDoc(controleRef, updateData);
 
       // Atualizar 'mostRecent' com os mesmos dados
-      await updateDoc(
-        doc(firestore, "pets", petId, "controle", "mostRecent"),
-        {
-          dataSaida: formattedDate,
-          horarioSaida: formattedTime,
-          usuarioSaida: currentUser.name,
-          pernoites,
-          localAtual: "Casa",
-        }
+      const mostRecentRef = doc(
+        firestore,
+        "pets",
+        petId,
+        "controle",
+        "mostRecent"
       );
+      await updateDoc(mostRecentRef, updateData);
 
       setPet((prev) => ({ ...prev, localAtual: "Casa" }));
       // Atualizar o documento principal do pet
