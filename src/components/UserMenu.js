@@ -88,11 +88,11 @@ const UserMenu = ({ currentUser, setCurrentUser }) => {
             }`}
           >
             {/* Botão para instalar o App, visível apenas se o app não estiver instalado */}
-            {deferredPrompt && !isAppInstalled && (
+            {/* {deferredPrompt && !isAppInstalled && ( */}
               <Button className={styles.navUserButton} onClick={handleInstallClick}>
                 Instalar App
               </Button>
-            )}
+            {/* )} */}
             <Button className={styles.navUserButton} onClick={handleLogout}>Sair</Button>
           </div>
         </>
