@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, firestore } from "./firebase";
 import { doc, getDoc } from "firebase/firestore";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import Menu from "./components/Menu";
 import Header from "./components/Header";
 import Main from "./components/Main";
@@ -111,6 +112,7 @@ const App = () => {
         </Main>
         <Footer />
       </div>
+      <SpeedInsights />
     </Router>
   );
 };

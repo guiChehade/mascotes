@@ -4,15 +4,8 @@ import { firestore } from "../firebase";
 import {
   doc,
   getDoc,
-  setDoc,
-  addDoc,
   collection,
   getDocs,
-  query,
-  orderBy,
-  updateDoc,
-  deleteDoc,
-  limit,
 } from "firebase/firestore";
 import Container from "../components/Container";
 import Button from "../components/Button";
@@ -25,6 +18,18 @@ import Table from "../components/Table";
 import logoLarge from "../assets/logo/logo-large.png";
 import { staticRoutes } from "../config/staticRoutes";
 import styles from "../styles/Controle.module.css";
+
+// Importar funções utilitárias
+import { getCommentTypes } from "../utils/petUtils";
+
+// Importar as funções de ações
+import {
+  registerEntrada,
+  registerSaidaServico,
+  registerVoltaServico,
+  registerComentario,
+  registerSaida,
+} from "../utils/petActions";
 
 const Controle = ({
   currentUser,
@@ -51,14 +56,6 @@ const Controle = ({
   const [selectedComentarioType, setSelectedComentarioType] = useState(null);
   const [commentsData, setCommentsData] = useState([]);
 
-  // Função para obter a data e hora atual no fuso horário de São Paulo
-  const getCurrentDateTime = () => {
-    const now = new Date();
-    const formattedDate = now.toISOString().split("T")[0];
-    const formattedTime = now.toTimeString().split(" ")[0];
-    return { formattedDate, formattedTime };
-  };
-
   // Efeito para buscar dados do pet e último registro
   useEffect(() => {
     const fetchData = async () => {
@@ -84,72 +81,22 @@ const Controle = ({
     }
   };
 
-  // Função para buscar o último registro de controle do pet
+  // Função para buscar o registro mais recente (mostRecent)
   const fetchLastRecord = async () => {
     if (petId) {
-      try {
-        const controleRef = collection(firestore, "pets", petId, "controle");
-
-        // Consulta para obter o registro mais recente com base na data e hora de entrada
-        const q = query(
-          controleRef,
-          orderBy("dataEntrada", "desc"),
-          orderBy("horarioEntrada", "desc"),
-          limit(1)
-        );
-        const querySnapshot = await getDocs(q);
-        if (!querySnapshot.empty) {
-          const latestRecordDoc = querySnapshot.docs[0];
-          const latestData = latestRecordDoc.data();
-          setLastRecord({
-            id: latestRecordDoc.id,
-            ...latestData,
-          });
-        } else {
-          setLastRecord(null);
-
-        }
-      } catch (error) {
-        console.error("Erro ao buscar o último registro:", error);
+      const mostRecentRef = doc(
+        firestore,
+        "pets",
+        petId,
+        "controle",
+        "mostRecent"
+      );
+      const mostRecentDoc = await getDoc(mostRecentRef);
+      if (mostRecentDoc.exists()) {
+        setLastRecord({ id: mostRecentDoc.id, ...mostRecentDoc.data() });
+      } else {
+        setLastRecord(null);
       }
-    }
-  };
-
-  // Função para deletar 'mostRecent' e suas subcoleções
-  const deleteMostRecent = async () => {
-    const mostRecentRef = doc(firestore, "pets", petId, "controle", "mostRecent");
-
-    // Verifica se 'mostRecent' existe
-    const mostRecentDoc = await getDoc(mostRecentRef);
-    if (mostRecentDoc.exists()) {
-      // Deleta o documento 'mostRecent'
-      await deleteDoc(mostRecentRef);
-    }
-  };
-
-  // Função para atualizar o documento 'mostRecent' com os dados do último registro
-  const updateMostRecent = async (recordId) => {
-    const mostRecentRef = doc(
-      firestore,
-      "pets",
-      petId,
-      "controle",
-      "mostRecent"
-    );
-
-    // Obter os dados do último registro
-    const lastRecordRef = doc(
-      firestore,
-      "pets",
-      petId,
-      "controle",
-      recordId
-    );
-    const lastRecordData = await getDoc(lastRecordRef);
-
-    if (lastRecordData.exists()) {
-      const data = lastRecordData.data();
-      await setDoc(mostRecentRef, data);
     }
   };
 
@@ -170,14 +117,21 @@ const Controle = ({
     setShowSaidaModal(true);
   };
 
-  const handleVoltaParque = () => {
+  const handleVoltaParque = async () => {
     const currentService = pet.localAtual;
     if (
       currentService &&
       currentService !== "Creche" &&
       currentService !== "Hotel"
     ) {
-      registerVolta(currentService); // Usando o serviço atual
+      const result = await registerVoltaServico(petId, currentUser, currentService);
+      if (result.success) {
+        alert(result.message);
+        setPet((prev) => ({ ...prev, localAtual: lastRecord.servico }));
+        refreshPage();
+      } else {
+        alert("Erro ao registrar retorno.");
+      }
     } else {
       console.error("Serviço atual não é um serviço externo.");
     }
@@ -188,17 +142,31 @@ const Controle = ({
   };
 
   // Função para registrar a seleção de serviço
-  const handleServiceSelection = (service) => {
+  const handleServiceSelection = async (service) => {
     setShowEntradaModal(false);
     setShowSaidaModal(false);
 
     if (selectedAction === "entrada") {
-      registerEntrada(service);
+      const result = await registerEntrada(petId, currentUser, service);
+      if (result.success) {
+        alert(result.message);
+        setPet((prev) => ({ ...prev, localAtual: service }));
+        refreshPage();
+      } else {
+        alert("Erro ao registrar entrada.");
+      }
     } else if (selectedAction === "saida") {
       if (service === "Casa") {
         handleVoltaCasa();
       } else {
-        registerSaidaServico(service); // Registrar saída para outro serviço
+        const result = await registerSaidaServico(petId, currentUser, service);
+        if (result.success) {
+          alert(result.message);
+          setPet((prev) => ({ ...prev, localAtual: service }));
+          refreshPage();
+        } else {
+          alert("Erro ao registrar saída para serviço.");
+        }
       }
     }
   };
@@ -206,13 +174,7 @@ const Controle = ({
   // Função para exibir comentários antes da saída
   const showCommentInfo = async () => {
     if (lastRecord) {
-      const commentTypes = [
-        "comentarioPertences",
-        "comentarioVet",
-        "comentarioComportamento",
-        "comentarioObservacoes",
-        "comentarioAlimentacao",
-      ];
+      const commentTypes = getCommentTypes();
       let comments = [];
 
       for (let type of commentTypes) {
@@ -221,7 +183,7 @@ const Controle = ({
           "pets",
           petId,
           "controle",
-          lastRecord.id,
+          "mostRecent",
           type
         );
         const comentariosSnapshot = await getDocs(comentariosRef);
@@ -248,281 +210,20 @@ const Controle = ({
 
   // Função para submeter um comentário
   const handleComentarioSubmit = async (comentario) => {
-    if (!lastRecord || !lastRecord.id) {
-      console.error("Erro: lastRecord ou lastRecord.id é nulo.");
-      return; // Evita continuar se lastRecord estiver nulo
-    }
-
-    const { formattedDate, formattedTime } = getCurrentDateTime();
-    let subCollectionPath;
-
-    switch (selectedComentarioType) {
-      case "Pertences":
-        subCollectionPath = "comentarioPertences";
-        break;
-      case "Veterinário":
-        subCollectionPath = "comentarioVet";
-        break;
-      case "Comportamento":
-        subCollectionPath = "comentarioComportamento";
-        break;
-      case "Observações":
-        subCollectionPath = "comentarioObservacoes";
-        break;
-      case "Alimentação":
-        subCollectionPath = "comentarioAlimentacao";
-        break;
-      default:
-        return;
-    }
-
-    try {
-      // Dados do comentário
-      const comentarioData = {
-        comentario,
-        usuario: currentUser.name,
-        horario: formattedTime,
-        data: formattedDate,
-      };
-
-      // Adiciona comentário na subcoleção da data mais recente
-      const comentariosRef = collection(
-        firestore,
-        "pets",
-        petId,
-        "controle",
-        lastRecord.id,
-        subCollectionPath
-      );
-      await addDoc(comentariosRef, comentarioData);
-
-      alert(`${selectedComentarioType} registrado: ${comentario}`);
+    const result = await registerComentario(
+      petId,
+      currentUser,
+      selectedComentarioType,
+      comentario
+    );
+    if (result.success) {
+      alert(result.message);
       setShowComentarioModal(false);
       setSelectedComentarioType(null);
-      refreshPage(); // Atualiza a página após registrar o comentário
-    } catch (error) {
-      console.error(
-        `Erro ao adicionar ${selectedComentarioType.toLowerCase()}:`,
-        error
-      );
-    }
-  };
-
-  // Função para registrar entrada do pet
-  const registerEntrada = async (service) => {
-    const { formattedDate, formattedTime } = getCurrentDateTime();
-
-    const controleRef = collection(firestore, "pets", petId, "controle");
-
-    const newRecord = {
-      servico: service,
-      dataEntrada: formattedDate,
-      horarioEntrada: formattedTime,
-      usuarioEntrada: currentUser.name,
-      localAtual: service,
-      serviceNames: [], // Inicializa a lista de serviços extras
-    };
-
-    try {
-      // Registrar a entrada na subcoleção 'controle' com ID de data
-      await setDoc(doc(controleRef, formattedDate), newRecord);
-
-      // Deletar 'mostRecent' e suas subcoleções
-      await deleteMostRecent();
-
-      // Atualizar 'mostRecent' como cópia do registro mais recente
-      await updateMostRecent(formattedDate);
-
-      // Atualizar o estado local do pet e na base de dados (no documento do pet)
-      setPet((prev) => ({ ...prev, localAtual: service }));
-      await updateDoc(doc(firestore, "pets", petId), { localAtual: service });
-
-      alert(`Entrada para ${service} registrada com sucesso.`);
-
-      refreshPage(); // Atualiza a página
-    } catch (error) {
-      console.error("Erro ao registrar entrada:", error);
-    }
-  };
-
-  // Função para registrar saída para um serviço externo
-  const registerSaidaServico = async (service) => {
-    if (!lastRecord || !lastRecord.id) {
-      console.error("Erro: lastRecord ou lastRecord.id é nulo.");
-      return; // Evita continuar se lastRecord estiver nulo
-    }
-
-    const { formattedDate, formattedTime } = getCurrentDateTime();
-
-    try {
-      // Criar subcoleção com o nome do serviço extra
-      const servicoSubcollectionName = `servico${service}`;
-      const servicoSubcollectionRef = collection(
-        firestore,
-        "pets",
-        petId,
-        "controle",
-        lastRecord.id,
-        servicoSubcollectionName
-      );
-
-      // Criar um ID determinístico para o documento do serviço
-      const serviceDocId = formattedDate + formattedTime.replace(/:/g, "");
-
-      const servicoData = {
-        dataSaidaServico: formattedDate,
-        horarioSaidaServico: formattedTime,
-        usuarioSaidaServico: currentUser.name,
-      };
-
-      // Usar setDoc em vez de addDoc para definir o ID do documento
-      await setDoc(
-        doc(servicoSubcollectionRef, serviceDocId),
-        servicoData
-      );
-
-      // Atualizar o documento da data mais recente com 'localAtual' e adicionar o nome do serviço extra
-      const controleRef = doc(
-        firestore,
-        "pets",
-        petId,
-        "controle",
-        lastRecord.id
-      );
-
-      // Atualizar a lista de serviços extras
-      const updatedServiceNames = lastRecord.serviceNames || [];
-      if (!updatedServiceNames.includes(servicoSubcollectionName)) {
-        updatedServiceNames.push(servicoSubcollectionName);
-      }
-
-      // Armazenar o ID do documento do serviço no documento da data
-      await updateDoc(controleRef, {
-        localAtual: service,
-        serviceNames: updatedServiceNames, // Atualiza a lista de serviços extras
-        [`${servicoSubcollectionName}Id`]: serviceDocId, // Armazena o ID do documento do serviço
-      });
-
-      alert(`Saída para ${service} registrada com sucesso.`);
-      refreshPage(); // Atualiza a página após registrar a saída para o serviço
-    } catch (error) {
-      console.error("Erro ao registrar saída para serviço:", error);
-    }
-  };
-
-  // Função para registrar retorno do serviço externo
-  const registerVolta = async (service) => {
-    if (!lastRecord || !lastRecord.id) {
-      console.error("Erro: lastRecord ou lastRecord.id é nulo.");
-      return;
-    }
-
-    const { formattedDate, formattedTime } = getCurrentDateTime();
-
-    try {
-      // Obter o documento de controle atualizado
-      const controleRef = doc(
-        firestore,
-        "pets",
-        petId,
-        "controle",
-        lastRecord.id
-      );
-      const controleSnapshot = await getDoc(controleRef);
-      const controleData = controleSnapshot.data();
-
-      // Obter o serviço inicial
-      const initialService = controleData.servico || "Creche";
-
-      // Atualizar o 'localAtual' para o serviço inicial
-      await updateDoc(controleRef, {
-        localAtual: initialService,
-      });
-
-      // Obter o ID do documento do serviço armazenado anteriormente
-      const servicoSubcollectionName = `servico${service}`;
-      const serviceDocId = controleData[`${servicoSubcollectionName}Id`];
-
-      if (serviceDocId) {
-        // Referenciar o documento do serviço diretamente usando o ID
-        const servicoDocRef = doc(
-          firestore,
-          "pets",
-          petId,
-          "controle",
-          lastRecord.id,
-          servicoSubcollectionName,
-          serviceDocId
-        );
-
-        // Atualizar o documento do serviço com os dados de retorno
-        await updateDoc(servicoDocRef, {
-          dataVoltaServico: formattedDate,
-          horarioVoltaServico: formattedTime,
-          usuarioVoltaServico: currentUser.name,
-        });
-      } else {
-        console.error("ID do documento do serviço não encontrado.");
-      }
-
-      alert(`Retorno de ${service} registrado com sucesso.`);
-      refreshPage(); // Atualiza a página
-    } catch (error) {
-      console.error(`Erro ao registrar retorno de ${service}: ${error}`);
-    }
-  };
-
-  // Função para registrar saída definitiva do pet
-  const registerSaida = async () => {
-    const { formattedDate, formattedTime } = getCurrentDateTime();
-
-    const pernoites = calculatePernoites(
-      lastRecord?.dataEntrada,
-      formattedDate
-    );
-
-    if (lastRecord && lastRecord.id) {
-      const updateData = {
-        dataSaida: formattedDate,
-        horarioSaida: formattedTime,
-        usuarioSaida: currentUser.name,
-        pernoites,
-        localAtual: "Casa",
-      };
-
-      const controleRef = doc(
-        firestore,
-        "pets",
-        petId,
-        "controle",
-        lastRecord.id
-      );
-      await updateDoc(controleRef, updateData);
-
-      // Após registrar, atualiza 'mostRecent' para refletir as mudanças
-      await updateMostRecent(lastRecord.id);
-
-      // Atualizar o estado local do pet e na base de dados (no documento do pet)
-      setPet((prev) => ({ ...prev, localAtual: "Casa" }));
-      await updateDoc(doc(firestore, "pets", petId), { localAtual: "Casa" });
-
-      alert("Saída registrada com sucesso.");
-      navigate("/no-local");
+      refreshPage();
     } else {
-      console.error(
-        "Erro: Não foi possível encontrar o registro mais recente para atualizar."
-      );
+      alert("Erro ao registrar comentário.");
     }
-  };
-
-  // Função para calcular o número de pernoites
-  const calculatePernoites = (entradaData, saidaData) => {
-    if (!entradaData) return 0;
-
-    const entrada = new Date(entradaData);
-    const saida = new Date(saidaData);
-    const diffTime = Math.abs(saida - entrada);
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
 
   // Função de sucesso no login
@@ -589,11 +290,13 @@ const Controle = ({
                   </Button>
                   <Button onClick={handleVoltaCasa}>Saída pra Casa</Button>
                   <Button onClick={handleComentario}>Comentário</Button>
+                  <Button onClick={handleEditar}>Editar</Button>
                 </>
               ) : (
                 <>
                   <Button onClick={handleSaida}>Saída</Button>
                   <Button onClick={handleComentario}>Comentário</Button>
+                  <Button onClick={handleEditar}>Editar</Button>
                 </>
               )}
             </div>
@@ -656,7 +359,13 @@ const Controle = ({
           onClose={() => setShowCommentsModal(false)}
           title="Comentários Registrados"
           onConfirm={async () => {
-            await registerSaida(); // Registra a saída somente após a confirmação
+            const result = await registerSaida(petId, currentUser); // Usando a função de petActions
+            if (result.success) {
+              alert(result.message);
+              navigate("/no-local");
+            } else {
+              alert("Erro ao registrar saída.");
+            }
             setShowCommentsModal(false); // Fecha o modal após a confirmação
           }}
         >
