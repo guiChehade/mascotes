@@ -27,3 +27,5 @@ yarn-error.log*
 
 certificate.pem
 private-key.key
+# Sentry Config File
+.sentryclirc

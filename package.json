@@ -6,7 +6,6 @@
     "node": "18"
   },
   "dependencies": {
-    "@sentry/react": "^8.32.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -30,16 +29,16 @@
     "react-input-mask": "^2.0.4",
     "react-qr-scanner": "^1.0.0-alpha.11",
     "react-router-dom": "^6.25.1",
-    "react-scripts": "^3.0.1",
+    "react-scripts": "^5.0.1",
     "react-spring": "^9.7.4",
     "sharp": "^0.33.5",
-    "vercel": "^37.5.4",
+    "vercel": "^32.3.0",
     "web-vitals": "^2.1.4"
   },
   "homepage": "./",
   "scripts": {
     "start": "export NODE_OPTIONS=--openssl-legacy-provider && react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && npm run sentry:sourcemaps",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
