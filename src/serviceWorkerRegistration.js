@@ -34,6 +34,7 @@ export function register(config) {
   }
 }
 
+// Registra o Service Worker e força a atualização automática
 function registerValidSW(swUrl, config) {
   navigator.serviceWorker
     .register(swUrl)
@@ -46,16 +47,12 @@ function registerValidSW(swUrl, config) {
         installingWorker.onstatechange = () => {
           if (installingWorker.state === 'installed') {
             if (navigator.serviceWorker.controller) {
-              console.log('Novo conteúdo está disponível; por favor, recarregue.');
+              // Novo conteúdo está disponível; exiba o popup
+              alert('Nova atualização disponível! O aplicativo será atualizado.');
 
-              if (config && config.onUpdate) {
-                config.onUpdate(registration);
-              }
-            } else {
-              console.log('Conteúdo em cache para uso offline.');
-
-              if (config && config.onSuccess) {
-                config.onSuccess(registration);
+              // Força o Service Worker a ativar imediatamente
+              if (registration.waiting) {
+                registration.waiting.postMessage({ type: 'SKIP_WAITING' });
               }
             }
           }
@@ -66,6 +63,11 @@ function registerValidSW(swUrl, config) {
       console.error('Erro ao registrar o Service Worker:', error);
     });
 }
+
+// Adicione este listener para recarregar o app após ativar a nova versão
+navigator.serviceWorker.addEventListener('controllerchange', () => {
+  window.location.reload();
+});
 
 function checkValidServiceWorker(swUrl, config) {
   fetch(swUrl, {
