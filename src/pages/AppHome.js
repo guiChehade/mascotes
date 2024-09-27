@@ -33,7 +33,9 @@ const AppHome = ({ userRoles }) => {
                   className={styles.icon}
                 />
               )}
-              {page.label}
+              <div className={styles.label}>
+                {page.label}
+              </div>
             </div>
           </Button>
         ))}
