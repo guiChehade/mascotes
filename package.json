@@ -38,10 +38,9 @@
   "homepage": "./",
   "scripts": {
     "start": "export NODE_OPTIONS=--openssl-legacy-provider && react-scripts start",
-    "build": "react-scripts build && npm run build-sw",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "build-sw": "workbox generateSW",
     "predeploy": "npm run build",
     "deploy": "vercel --prod"
   },
@@ -67,14 +66,5 @@
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@babel/preset-env": "^7.25.3",
     "gh-pages": "^6.1.1"
-  },
-  "workbox": {
-    "globDirectory": "build/",
-    "globPatterns": [
-      "**/*.{html,js,css,png,jpg,jpeg,gif,svg,eot,ttf,woff,woff2}"
-    ],
-    "swSrc": "public/service-worker.js",
-    "swDest": "build/service-worker.js",
-    "maximumFileSizeToCacheInBytes": 5000000
   }
 }

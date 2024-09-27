@@ -6,7 +6,7 @@ import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);
 
-// Função para mostrar a notificação de atualização
+// Função para notificar o usuário sobre a atualização
 const onServiceWorkerUpdate = (registration) => {
   if (window.confirm('Uma nova versão está disponível. Deseja atualizar?')) {
     if (registration && registration.waiting) {
