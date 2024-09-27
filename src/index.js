@@ -1,21 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+root.render(<App />);
 
-// Registra o Service Worker usando o `serviceWorkerRegistration`
-serviceWorkerRegistration.register();
+// Função para mostrar a notificação de atualização
+const onServiceWorkerUpdate = (registration) => {
+  if (window.confirm('Uma nova versão está disponível. Deseja atualizar?')) {
+    if (registration && registration.waiting) {
+      registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+      window.location.reload();
+    }
+  }
+};
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+// Registra o Service Worker com a função de callback
+serviceWorkerRegistration.register({
+  onUpdate: onServiceWorkerUpdate,
+});
