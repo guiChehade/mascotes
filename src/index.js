@@ -11,7 +11,11 @@ const onServiceWorkerUpdate = (registration) => {
   if (window.confirm('Uma nova versão está disponível. Deseja atualizar?')) {
     if (registration && registration.waiting) {
       registration.waiting.postMessage({ type: 'SKIP_WAITING' });
-      window.location.reload();
+      registration.waiting.addEventListener('statechange', (e) => {
+        if (e.target.state === 'activated') {
+          window.location.reload();
+        }
+      });
     }
   }
 };
