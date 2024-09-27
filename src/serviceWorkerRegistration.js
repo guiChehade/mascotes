@@ -36,32 +36,29 @@ function registerValidSW(swUrl, config) {
     .register(swUrl)
     .then((registration) => {
       if (registration.waiting) {
-        // Há uma atualização esperando para ser ativada
-        if (config && config.onUpdate) {
-          config.onUpdate(registration);
-        }
+        // Envia a mensagem para o Service Worker
+        registration.waiting.postMessage({ type: 'SKIP_WAITING' });
       }
 
       registration.onupdatefound = () => {
         const installingWorker = registration.installing;
-        if (installingWorker == null) {
-          return;
-        }
-        installingWorker.onstatechange = () => {
-          if (installingWorker.state === 'installed') {
-            if (navigator.serviceWorker.controller) {
-              // Novo conteúdo está disponível; executa o callback
-              if (config && config.onUpdate) {
-                config.onUpdate(registration);
-              }
-            } else {
-              // Conteúdo pré-cacheado foi instalado pela primeira vez
-              if (config && config.onSuccess) {
-                config.onSuccess(registration);
+        if (installingWorker) {
+          installingWorker.onstatechange = () => {
+            if (installingWorker.state === 'installed') {
+              if (navigator.serviceWorker.controller) {
+                // Novo conteúdo está disponível; executa o callback
+                if (config && config.onUpdate) {
+                  config.onUpdate(registration);
+                }
+              } else {
+                // Conteúdo pré-cacheado foi instalado pela primeira vez
+                if (config && config.onSuccess) {
+                  config.onSuccess(registration);
+                }
               }
             }
-          }
-        };
+          };
+        }
       };
     })
     .catch((error) => {
