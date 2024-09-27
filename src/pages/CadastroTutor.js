@@ -4,11 +4,10 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import {
   addDoc,
   collection,
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
+  query,
+  where,
   getDocs,
+  updateDoc,
 } from 'firebase/firestore';
 import {
   createUserWithEmailAndPassword,
@@ -20,7 +19,6 @@ import Container from '../components/Container';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import styles from '../styles/CadastroTutor.module.css';
-import { calculateAge } from '../utils/petUtils';
 
 const CadastroTutor = ({ currentUser }) => {
   const [tutor, setTutor] = useState({
@@ -46,36 +44,33 @@ const CadastroTutor = ({ currentUser }) => {
 
   const [image, setImage] = useState(null);
   const [editorOpen, setEditorOpen] = useState(false);
-  const [pets, setPets] = useState([]);
-  const [petSearchTerm, setPetSearchTerm] = useState('');
+
+  // Novos estados para gerenciar os pets
+  const [availablePets, setAvailablePets] = useState([]);
   const [selectedPets, setSelectedPets] = useState([]);
+  const [petSearchTerm, setPetSearchTerm] = useState('');
 
-  // Busca os pets ao carregar o componente
-  useEffect(() => {
-    const fetchPets = async () => {
-      const querySnapshot = await getDocs(collection(firestore, 'pets'));
-      const petsList = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setPets(petsList);
-    };
-    fetchPets();
-  }, []);
+  // Função para calcular a idade
+  function calculateAge(birthDate) {
+    const today = new Date();
+    const birth = new Date(birthDate);
+    let years = today.getFullYear() - birth.getFullYear();
+    let months = today.getMonth() - birth.getMonth();
+    let days = today.getDate() - birth.getDate();
 
-  // Função para lidar com a seleção de pets
-  const handlePetSelect = (pet) => {
-    setSelectedPets((prevSelectedPets) => {
-      if (prevSelectedPets.find((p) => p.id === pet.id)) {
-        // Se o pet já está selecionado, remove-o
-        return prevSelectedPets.filter((p) => p.id !== pet.id);
-      } else {
-        // Se não está selecionado, adiciona-o
-        return [...prevSelectedPets, pet];
-      }
-    });
-  };
+    if (days < 0) {
+      months--;
+      days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+    }
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
 
+    return `${years} anos, ${months} meses e ${days} dias`;
+  }
+
+  // Atualiza a idade sempre que a data de nascimento mudar
   useEffect(() => {
     if (tutor.dataNascimento) {
       const age = calculateAge(tutor.dataNascimento);
@@ -110,6 +105,35 @@ const CadastroTutor = ({ currentUser }) => {
         });
     }
   }, [tutor.cep]);
+
+  // Busca os pets ao carregar o componente
+  useEffect(() => {
+    const fetchPets = async () => {
+      const querySnapshot = await getDocs(collection(firestore, 'pets'));
+      const petsList = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setAvailablePets(petsList);
+    };
+    fetchPets();
+  }, []);
+
+  // Função para lidar com a seleção de pets disponíveis
+  const handleSelectPet = (pet) => {
+    setAvailablePets((prevAvailablePets) =>
+      prevAvailablePets.filter((p) => p.id !== pet.id)
+    );
+    setSelectedPets((prevSelectedPets) => [...prevSelectedPets, pet]);
+  };
+
+  // Função para lidar com a remoção de pets selecionados
+  const handleDeselectPet = (pet) => {
+    setSelectedPets((prevSelectedPets) =>
+      prevSelectedPets.filter((p) => p.id !== pet.id)
+    );
+    setAvailablePets((prevAvailablePets) => [...prevAvailablePets, pet]);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -148,14 +172,25 @@ const CadastroTutor = ({ currentUser }) => {
         }
       }
 
+      // Extrai os IDs e nomes dos pets selecionados
+      const petIds = selectedPets.map((pet) => pet.id);
+      const petNames = selectedPets.map((pet) => pet.mascotinho);
+
       // Verifica se o usuário já existe na coleção 'users' do Firestore
       const usersCollection = collection(firestore, 'users');
-      const userDocRef = doc(usersCollection, tutor.email);
-      const userDocSnapshot = await getDoc(userDocRef);
+      const q = query(usersCollection, where('email', '==', tutor.email));
+      const querySnapshot = await getDocs(q);
 
-      if (userDocSnapshot.exists()) {
-        // Usuário existe, atualiza o campo 'isTutor' para true
-        await updateDoc(userDocRef, { isTutor: true });
+      if (!querySnapshot.empty) {
+        // Usuário existe, atualiza o campo 'isTutor' e os pets
+        const userDoc = querySnapshot.docs[0];
+        const userDocRef = userDoc.ref;
+
+        await updateDoc(userDocRef, {
+          isTutor: true,
+          petIds: petIds,
+          petNames: petNames,
+        });
       } else {
         // Usuário não existe, cria um novo documento na coleção 'users'
         const newUser = {
@@ -164,8 +199,10 @@ const CadastroTutor = ({ currentUser }) => {
           name: tutor.nome,
           role: 'isTutor',
           isTutor: true,
+          petIds: petIds,
+          petNames: petNames,
         };
-        await setDoc(userDocRef, newUser);
+        await addDoc(usersCollection, newUser);
 
         // Cria um novo usuário na Firebase Authentication
         const signInMethods = await fetchSignInMethodsForEmail(firebaseAuth, tutor.email);
@@ -183,10 +220,6 @@ const CadastroTutor = ({ currentUser }) => {
         }
       }
 
-      // Extrai os IDs e nomes dos pets selecionados
-      const petIds = selectedPets.map((pet) => pet.id);
-      const petNames = selectedPets.map((pet) => pet.mascotinho);
-
       // Adiciona o tutor à coleção 'tutores' com os pets vinculados
       await addDoc(collection(firestore, 'tutores'), {
         ...tutor,
@@ -197,6 +230,7 @@ const CadastroTutor = ({ currentUser }) => {
       });
 
       alert('Tutor cadastrado com sucesso!');
+      // Reset dos estados
       setTutor({
         foto: '',
         nome: '',
@@ -218,14 +252,16 @@ const CadastroTutor = ({ currentUser }) => {
         uf: '',
       });
       setImage(null);
+      setAvailablePets((prevAvailablePets) => [...prevAvailablePets, ...selectedPets]);
+      setSelectedPets([]);
     } catch (error) {
       console.error('Erro ao cadastrar o tutor:', error);
       alert('Ocorreu um erro ao cadastrar o tutor.');
     }
   };
 
-  // Filtro dos pets com base no termo de busca
-  const filteredPets = pets.filter((pet) =>
+  // Filtro dos pets disponíveis com base no termo de busca
+  const filteredAvailablePets = availablePets.filter((pet) =>
     pet.mascotinho.toLowerCase().includes(petSearchTerm.toLowerCase())
   );
 
@@ -233,7 +269,7 @@ const CadastroTutor = ({ currentUser }) => {
     <Container className={styles.cadastroContainer}>
       <h2>Cadastro de Tutor</h2>
       <form className={styles.form} onSubmit={handleSubmit}>
-        <Input label="Foto do Tutor" type="file" accept="image/*" onChange={handleFileChange} />
+      <Input label="Foto do Tutor" type="file" accept="image/*" onChange={handleFileChange} />
           <Input label="Nome Completo" type="text" name="nome" value={tutor.nome} onChange={handleChange} required placeholder="João Pereira" />
           <Input label="Data de Nascimento" type="date" name="dataNascimento" value={tutor.dataNascimento} onChange={handleChange} placeholder="01/01/2000" />
           <Input label="Idade" type="text" name="idade" value={tutor.idade} disabled />
@@ -269,39 +305,60 @@ const CadastroTutor = ({ currentUser }) => {
           <Input label="Bairro" type="text" name="bairro" value={tutor.bairro} onChange={handleChange} />
           <Input label="Cidade" type="text" name="cidade" value={tutor.cidade} onChange={handleChange} />
           <Input label="UF" type="text" name="uf" value={tutor.uf} onChange={handleChange} />
-          <Input
-            label="Buscar Mascotinho"
-            type="text"
-            value={petSearchTerm}
-            onChange={(e) => setPetSearchTerm(e.target.value)}
-            placeholder="Digite o nome do mascotinho"
-          />
-
-        {/* Lista de pets com checkboxes */}
-        <div className={styles.petListContainer}>
-          {filteredPets.map((pet) => (
-            <div key={pet.id} className={styles.petItem}>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={selectedPets.some((p) => p.id === pet.id)}
-                  onChange={() => handlePetSelect(pet)}
-                />
-                {pet.mascotinho}
-              </label>
+          
+        {/* Seção de seleção de pets */}
+        <Input
+              label="Buscar Mascotinho"
+              type="text"
+              value={petSearchTerm}
+              onChange={(e) => setPetSearchTerm(e.target.value)}
+              placeholder="Digite o nome do mascotinho"
+            />
+        <div className={styles.petsContainer}>
+          {/* Lista de pets disponíveis */}
+          <div className={styles.availablePets}>
+            <h3>Pets Disponíveis</h3>
+            <div className={styles.petList}>
+              {filteredAvailablePets.map((pet) => (
+                <div key={pet.id} className={styles.petItem}>
+                  <label>
+                    <input
+                      type="checkbox"
+                      onChange={() => handleSelectPet(pet)}
+                    />
+                    {pet.mascotinho}
+                  </label>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+
+          {/* Lista de pets selecionados */}
+          <div className={styles.selectedPets}>
+            <h3>Pets Selecionados</h3>
+            <div className={styles.petList}>
+              {selectedPets.map((pet) => (
+                <div key={pet.id} className={styles.petItem}>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked
+                      onChange={() => handleDeselectPet(pet)}
+                    />
+                    {pet.mascotinho}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
-        {/* Botão de submissão */}
         <div className={styles.buttonContainer}>
           <Button className={styles.button} type="submit">
             Cadastrar
           </Button>
         </div>
       </form>
-
-      {/* Editor de fotos */}
       {editorOpen && (
         <PhotoEditor
           image={image}

@@ -76,7 +76,7 @@ const App = () => {
                 {(userRole === "isEmployee" || userRole === "isAdmin" || userRole === "isManager" || userRole === "isOwner") && (
                   <Route path="/ponto" element={<Ponto currentUser={currentUser} />} />
                 )}
-                {(userRole === "isManager" || userRole === "isOwner") && (
+                {(userRole === "isAdmin" || userRole === "isManager" || userRole === "isOwner") && (
                   <Route path="/cadastro-tutor" element={<CadastroTutor currentUser={currentUser} />} />
                 )}
                 {(userRole === "isAdmin" || userRole === "isManager" || userRole === "isOwner") && (
