@@ -1,13 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { firestore, storage, auth as firebaseAuth } from '../firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { addDoc, collection, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
-import { createUserWithEmailAndPassword, sendPasswordResetEmail, fetchSignInMethodsForEmail } from 'firebase/auth';
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  getDocs,
+} from 'firebase/firestore';
+import {
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  fetchSignInMethodsForEmail,
+} from 'firebase/auth';
 import PhotoEditor from '../components/PhotoEditor';
 import Container from '../components/Container';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import styles from '../styles/CadastroTutor.module.css';
+import { calculateAge } from '../utils/petUtils';
 
 const CadastroTutor = ({ currentUser }) => {
   const [tutor, setTutor] = useState({
@@ -33,28 +46,36 @@ const CadastroTutor = ({ currentUser }) => {
 
   const [image, setImage] = useState(null);
   const [editorOpen, setEditorOpen] = useState(false);
+  const [pets, setPets] = useState([]);
+  const [petSearchTerm, setPetSearchTerm] = useState('');
+  const [selectedPets, setSelectedPets] = useState([]);
 
-  // Função para calcular a idade
-  function calculateAge(birthDate) {
-    const today = new Date();
-    const birth = new Date(birthDate);
-    let years = today.getFullYear() - birth.getFullYear();
-    let months = today.getMonth() - birth.getMonth();
-    let days = today.getDate() - birth.getDate();
+  // Busca os pets ao carregar o componente
+  useEffect(() => {
+    const fetchPets = async () => {
+      const querySnapshot = await getDocs(collection(firestore, 'pets'));
+      const petsList = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setPets(petsList);
+    };
+    fetchPets();
+  }, []);
 
-    if (days < 0) {
-      months--;
-      days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
-    }
-    if (months < 0) {
-      years--;
-      months += 12;
-    }
+  // Função para lidar com a seleção de pets
+  const handlePetSelect = (pet) => {
+    setSelectedPets((prevSelectedPets) => {
+      if (prevSelectedPets.find((p) => p.id === pet.id)) {
+        // Se o pet já está selecionado, remove-o
+        return prevSelectedPets.filter((p) => p.id !== pet.id);
+      } else {
+        // Se não está selecionado, adiciona-o
+        return [...prevSelectedPets, pet];
+      }
+    });
+  };
 
-    return `${years} anos, ${months} meses e ${days} dias`;
-  }
-
-  // Atualiza a idade sempre que a data de nascimento mudar
   useEffect(() => {
     if (tutor.dataNascimento) {
       const age = calculateAge(tutor.dataNascimento);
@@ -162,11 +183,17 @@ const CadastroTutor = ({ currentUser }) => {
         }
       }
 
-      // Adiciona o tutor à coleção 'tutores'
+      // Extrai os IDs e nomes dos pets selecionados
+      const petIds = selectedPets.map((pet) => pet.id);
+      const petNames = selectedPets.map((pet) => pet.mascotinho);
+
+      // Adiciona o tutor à coleção 'tutores' com os pets vinculados
       await addDoc(collection(firestore, 'tutores'), {
         ...tutor,
         foto: fotoURL,
         createdBy: currentUser.name,
+        petIds: petIds,
+        petNames: petNames,
       });
 
       alert('Tutor cadastrado com sucesso!');
@@ -197,52 +224,84 @@ const CadastroTutor = ({ currentUser }) => {
     }
   };
 
+  // Filtro dos pets com base no termo de busca
+  const filteredPets = pets.filter((pet) =>
+    pet.mascotinho.toLowerCase().includes(petSearchTerm.toLowerCase())
+  );
+
   return (
     <Container className={styles.cadastroContainer}>
       <h2>Cadastro de Tutor</h2>
       <form className={styles.form} onSubmit={handleSubmit}>
         <Input label="Foto do Tutor" type="file" accept="image/*" onChange={handleFileChange} />
-        <Input label="Nome Completo" type="text" name="nome" value={tutor.nome} onChange={handleChange} required placeholder="João Pereira" />
-        <Input label="Data de Nascimento" type="date" name="dataNascimento" value={tutor.dataNascimento} onChange={handleChange} placeholder="01/01/2000" />
-        <Input label="Idade" type="text" name="idade" value={tutor.idade} disabled />
-        <Input label="Nacionalidade" type="text" name="nacionalidade" value={tutor.nacionalidade} onChange={handleChange} placeholder="Brasileiro" />
-        <div className={styles.selectContainer}>
-          <label>Gênero</label>
-          <select className={styles.cadastroSelect} name="genero" value={tutor.genero} onChange={handleChange}>
-            <option value="">Selecione</option>
-            <option value="Masculino">Masculino</option>
-            <option value="Feminino">Feminino</option>
-            <option value="Outro">Outro</option>
-            <option value="Prefiro não informar">Prefiro não informar</option>
-          </select>
+          <Input label="Nome Completo" type="text" name="nome" value={tutor.nome} onChange={handleChange} required placeholder="João Pereira" />
+          <Input label="Data de Nascimento" type="date" name="dataNascimento" value={tutor.dataNascimento} onChange={handleChange} placeholder="01/01/2000" />
+          <Input label="Idade" type="text" name="idade" value={tutor.idade} disabled />
+          <Input label="Nacionalidade" type="text" name="nacionalidade" value={tutor.nacionalidade} onChange={handleChange} placeholder="Brasileiro" />
+          <div className={styles.selectContainer}>
+            <label>Gênero</label>
+            <select className={styles.cadastroSelect} name="genero" value={tutor.genero} onChange={handleChange}>
+              <option value="">Selecione</option>
+              <option value="Masculino">Masculino</option>
+              <option value="Feminino">Feminino</option>
+              <option value="Outro">Outro</option>
+              <option value="Prefiro não informar">Prefiro não informar</option>
+            </select>
+          </div>
+          <div className={styles.selectContainer}>
+            <label>Estado Civil</label>
+            <select className={styles.cadastroSelect} name="estadoCivil" value={tutor.estadoCivil} onChange={handleChange}>
+              <option value="">Selecione</option>
+              <option value="Solteiro(a)">Solteiro(a)</option>
+              <option value="Casado(a)">Casado(a)</option>
+              <option value="Divorciado(a)">Divorciado(a)</option>
+              <option value="Viúvo(a)">Viúvo(a)</option>
+            </select>
+          </div>
+          <Input label="CPF" type="text" name="cpf" value={tutor.cpf} onChange={handleChange} placeholder="999.999.999-99" mask="999.999.999-99" />
+          <Input label="E-mail" type="email" name="email" value={tutor.email} onChange={handleChange} placeholder="joaopereira@email.com" />
+          <Input label="Celular" type="text" name="celular" value={tutor.celular} onChange={handleChange} placeholder="(11) 99999-9999" mask="(99) 99999-9999" />
+          <Input label="Telefone Secundário" type="text" name="telefoneSecundario" value={tutor.telefoneSecundario} onChange={handleChange} placeholder="(11) 99999-9999" mask="(99) 99999-9999" />
+          <Input label="CEP" type="text" name="cep" value={tutor.cep} onChange={handleChange} placeholder="99999-999" mask="99999-999" />
+          <Input label="Endereço" type="text" name="endereco" value={tutor.endereco} onChange={handleChange} placeholder="Rua dos Tutores" />
+          <Input label="Número" type="text" name="numero" value={tutor.numero} onChange={handleChange} />
+          <Input label="Complemento" type="text" name="complemento" value={tutor.complemento} onChange={handleChange} />
+          <Input label="Bairro" type="text" name="bairro" value={tutor.bairro} onChange={handleChange} />
+          <Input label="Cidade" type="text" name="cidade" value={tutor.cidade} onChange={handleChange} />
+          <Input label="UF" type="text" name="uf" value={tutor.uf} onChange={handleChange} />
+          <Input
+            label="Buscar Mascotinho"
+            type="text"
+            value={petSearchTerm}
+            onChange={(e) => setPetSearchTerm(e.target.value)}
+            placeholder="Digite o nome do mascotinho"
+          />
+
+        {/* Lista de pets com checkboxes */}
+        <div className={styles.petListContainer}>
+          {filteredPets.map((pet) => (
+            <div key={pet.id} className={styles.petItem}>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={selectedPets.some((p) => p.id === pet.id)}
+                  onChange={() => handlePetSelect(pet)}
+                />
+                {pet.mascotinho}
+              </label>
+            </div>
+          ))}
         </div>
-        <div className={styles.selectContainer}>
-          <label>Estado Civil</label>
-          <select className={styles.cadastroSelect} name="estadoCivil" value={tutor.estadoCivil} onChange={handleChange}>
-            <option value="">Selecione</option>
-            <option value="Solteiro(a)">Solteiro(a)</option>
-            <option value="Casado(a)">Casado(a)</option>
-            <option value="Divorciado(a)">Divorciado(a)</option>
-            <option value="Viúvo(a)">Viúvo(a)</option>
-          </select>
-        </div>
-        <Input label="CPF" type="text" name="cpf" value={tutor.cpf} onChange={handleChange} placeholder="999.999.999-99" mask="999.999.999-99" />
-        <Input label="E-mail" type="email" name="email" value={tutor.email} onChange={handleChange} placeholder="joaopereira@email.com" />
-        <Input label="Celular" type="text" name="celular" value={tutor.celular} onChange={handleChange} placeholder="(11) 99999-9999" mask="(99) 99999-9999" />
-        <Input label="Telefone Secundário" type="text" name="telefoneSecundario" value={tutor.telefoneSecundario} onChange={handleChange} placeholder="(11) 99999-9999" mask="(99) 99999-9999" />
-        <Input label="CEP" type="text" name="cep" value={tutor.cep} onChange={handleChange} placeholder="99999-999" mask="99999-999" />
-        <Input label="Endereço" type="text" name="endereco" value={tutor.endereco} onChange={handleChange} placeholder="Rua dos Tutores" />
-        <Input label="Número" type="text" name="numero" value={tutor.numero} onChange={handleChange} />
-        <Input label="Complemento" type="text" name="complemento" value={tutor.complemento} onChange={handleChange} />
-        <Input label="Bairro" type="text" name="bairro" value={tutor.bairro} onChange={handleChange} />
-        <Input label="Cidade" type="text" name="cidade" value={tutor.cidade} onChange={handleChange} />
-        <Input label="UF" type="text" name="uf" value={tutor.uf} onChange={handleChange} />
+
+        {/* Botão de submissão */}
         <div className={styles.buttonContainer}>
           <Button className={styles.button} type="submit">
             Cadastrar
           </Button>
         </div>
       </form>
+
+      {/* Editor de fotos */}
       {editorOpen && (
         <PhotoEditor
           image={image}
