@@ -167,12 +167,13 @@ const NoLocal = ({ currentUser }) => {
           title={modalTitle}
         >
           <Table
-            headers={["Tipo", "Comentário", "Usuário", "Horário"]}
+            headers={["Tipo", "Comentário", "Usuário", "Horário", "Data"]}
             data={selectedComments.map((detail) => ({
               tipo: getCommentTypeName(detail.type),
               comentario: detail.comentario,
               usuario: detail.usuario,
               horario: detail.horario,
+              data: detail.data,
             }))}
           />
         </Modal>
