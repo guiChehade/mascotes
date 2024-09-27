@@ -26,7 +26,7 @@ const Login = ({ setIsAuthenticated, setUserRoles, setCurrentUser }) => {
         const userData = userDoc.data();
         setUserRoles(userData);
         setCurrentUser(userData);
-        navigate('/');
+        navigate('/app');
       } else {
         console.log('No such document!');
       }

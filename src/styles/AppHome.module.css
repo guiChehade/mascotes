@@ -1,0 +1,21 @@
+/* AppHome.module.css */
+
+.appHomeContainer {
+  text-align: center;
+  padding: 20px;
+}
+
+.buttonGrid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px; /* Espaçamento entre os botões */
+  margin-top: 20px;
+}
+
+.pageButton {
+  min-width: 120px;
+  padding: 10px 20px;
+  font-size: 16px;
+  /* Estilos adicionais para os botões */
+}

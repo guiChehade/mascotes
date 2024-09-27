@@ -14,6 +14,7 @@ import AgendarVisita from "./pages/AgendarVisita";
 import Login from "./pages/Login";
 import Quiz from "./pages/Quiz";
 import CadastroPet from "./pages/CadastroPet";
+import AppHome from "./pages/AppHome";
 import CadastroTutor from "./pages/CadastroTutor";
 import Mascotes from "./pages/Mascotes";
 import Controle from "./pages/Controle";
@@ -66,6 +67,7 @@ const App = () => {
         <Main className={styles.main}>
           <Routes>
             <Route path="/" element={<Home isAuthenticated={isAuthenticated} userRoles={userRoles} />} />
+            <Route path="/app" element={<AppHome userRoles={userRoles} />} />
             <Route path="/racas" element={<DogBreedsCards />} />
             <Route path="/quiz" element={<Quiz />} />
             <Route path="/agendar-visita" element={<AgendarVisita />} />
