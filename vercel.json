@@ -7,8 +7,12 @@
   },
   "rewrites": [
     {
-      "source": "/static/*",
-      "destination": "/static/:splat"
+      "source": "/static/:path*",
+      "destination": "/static/:path*"
+    },
+    {
+      "source": "/service-worker.js",
+      "destination": "/service-worker.js"
     },
     {
       "source": "/(.*)",
