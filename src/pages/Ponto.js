@@ -158,7 +158,13 @@ const Ponto = ({ currentUser }) => {
 
       <h2 className={styles.pontoTitle}>Pontos de {mesCapitalizado}</h2>
       
-      <Modal isOpen={confirmModal} onClose={() => setConfirmModal(false)} title="Confirmação de Ponto" onConfirm={registrarPonto}>
+      <Modal
+        isOpen={confirmModal}
+        onClose={() => setConfirmModal(false)}
+        title="Confirmação de Ponto"
+        onConfirm={registrarPonto}
+        showFooter={true}
+      >
         <p className={styles.modalContent}>Você tem certeza que deseja {currentAction}?</p>
       </Modal>
 

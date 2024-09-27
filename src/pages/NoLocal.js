@@ -134,7 +134,12 @@ const NoLocal = ({ currentUser }) => {
         }))}
       />
       {selectedComment && (
-        <Modal isOpen={!!selectedComment} onClose={handleCloseModal} title={`Comentários sobre ${selectedComment}`}>
+        <Modal
+          isOpen={!!selectedComment}
+          onClose={handleCloseModal}
+          showFooter={false}
+          title={`Comentários sobre ${selectedComment}`}
+        >
           <Table
             headers={['Comentário', 'Usuário', 'Horário']}
             data={commentDetails.map(detail => ({

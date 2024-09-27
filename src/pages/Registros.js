@@ -114,7 +114,12 @@ const Registros = () => {
 
       {/* Modal para exibir todos os campos preenchidos da subcoleção */}
       {selectedRecord && (
-        <Modal isOpen={!!selectedRecord} onClose={handleCloseModal} title="Detalhes do Registro">
+        <Modal
+          isOpen={!!selectedRecord}
+          onClose={handleCloseModal}
+          title="Detalhes do Registro"
+          showFooter={true}
+        >
           <Table
             headers={['Campo', 'Valor']}
             data={selectedRecord.map((record, index) => ({

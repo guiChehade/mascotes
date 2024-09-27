@@ -357,6 +357,7 @@ const Controle = ({
         <Modal
           isOpen={showCommentsModal}
           onClose={() => setShowCommentsModal(false)}
+          showFooter={true}
           title="Comentários Registrados"
           onConfirm={async () => {
             const result = await registerSaida(petId, currentUser); // Usando a função de petActions

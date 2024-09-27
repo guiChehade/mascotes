@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { firestore, storage } from '../firebase';
+import { firestore, storage, auth as firebaseAuth } from '../firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { createUserWithEmailAndPassword, sendPasswordResetEmail, fetchSignInMethodsForEmail } from 'firebase/auth';
 import PhotoEditor from '../components/PhotoEditor';
 import Container from '../components/Container';
 import Input from '../components/Input';
@@ -57,7 +58,7 @@ const CadastroTutor = ({ currentUser }) => {
   useEffect(() => {
     if (tutor.dataNascimento) {
       const age = calculateAge(tutor.dataNascimento);
-      setTutor(prevTutor => ({
+      setTutor((prevTutor) => ({
         ...prevTutor,
         idade: age,
       }));
@@ -69,10 +70,10 @@ const CadastroTutor = ({ currentUser }) => {
     const cep = tutor.cep.replace(/\D/g, ''); // Remove caracteres não numéricos
     if (cep.length === 8) {
       fetch(`https://viacep.com.br/ws/${cep}/json/`)
-        .then(response => response.json())
-        .then(data => {
+        .then((response) => response.json())
+        .then((data) => {
           if (!data.erro) {
-            setTutor(prevTutor => ({
+            setTutor((prevTutor) => ({
               ...prevTutor,
               endereco: data.logradouro || '',
               bairro: data.bairro || '',
@@ -83,7 +84,7 @@ const CadastroTutor = ({ currentUser }) => {
             alert('CEP não encontrado.');
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.error('Erro ao buscar CEP:', error);
         });
     }
@@ -93,7 +94,7 @@ const CadastroTutor = ({ currentUser }) => {
     const { name, value } = e.target;
     setTutor((prevTutor) => ({
       ...prevTutor,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -106,53 +107,94 @@ const CadastroTutor = ({ currentUser }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let fotoURL = '';
+    try {
+      let fotoURL = '';
 
-    if (image) {
-      if (typeof image === 'string' && image.startsWith('data:image')) {
-        // Caso em que a imagem é uma data URL (imagem recortada)
-        const response = await fetch(image);
-        const blob = await response.blob();
-        const fotoName = `tutor_${Date.now()}.jpg`;
-        const fotoRef = ref(storage, `tutores/${fotoName}`);
-        await uploadBytes(fotoRef, blob);
-        fotoURL = await getDownloadURL(fotoRef);
-      } else if (image instanceof File) {
-        // Caso em que a imagem é um arquivo (File)
-        const fotoRef = ref(storage, `tutores/${Date.now()}_${image.name}`);
-        await uploadBytes(fotoRef, image);
-        fotoURL = await getDownloadURL(fotoRef);
+      if (image) {
+        if (typeof image === 'string' && image.startsWith('data:image')) {
+          // Caso em que a imagem é uma data URL (imagem recortada)
+          const response = await fetch(image);
+          const blob = await response.blob();
+          const fotoName = `tutor_${Date.now()}.jpg`;
+          const fotoRef = ref(storage, `tutores/${fotoName}`);
+          await uploadBytes(fotoRef, blob);
+          fotoURL = await getDownloadURL(fotoRef);
+        } else if (image instanceof File) {
+          // Caso em que a imagem é um arquivo (File)
+          const fotoRef = ref(storage, `tutores/${Date.now()}_${image.name}`);
+          await uploadBytes(fotoRef, image);
+          fotoURL = await getDownloadURL(fotoRef);
+        }
       }
+
+      // Verifica se o usuário já existe na coleção 'users' do Firestore
+      const usersCollection = collection(firestore, 'users');
+      const userDocRef = doc(usersCollection, tutor.email);
+      const userDocSnapshot = await getDoc(userDocRef);
+
+      if (userDocSnapshot.exists()) {
+        // Usuário existe, atualiza o campo 'isTutor' para true
+        await updateDoc(userDocRef, { isTutor: true });
+      } else {
+        // Usuário não existe, cria um novo documento na coleção 'users'
+        const newUser = {
+          createdBy: currentUser.name,
+          email: tutor.email,
+          name: tutor.nome,
+          role: 'isTutor',
+          isTutor: true,
+        };
+        await setDoc(userDocRef, newUser);
+
+        // Cria um novo usuário na Firebase Authentication
+        const signInMethods = await fetchSignInMethodsForEmail(firebaseAuth, tutor.email);
+        if (signInMethods.length === 0) {
+          // Usuário não existe na Authentication, cria um novo
+          const tempPassword = Math.random().toString(36).slice(-8); // Gera uma senha temporária
+          await createUserWithEmailAndPassword(firebaseAuth, tutor.email, tempPassword);
+
+          // Envia e-mail para redefinição de senha
+          await sendPasswordResetEmail(firebaseAuth, tutor.email);
+
+          alert('E-mail enviado para o tutor definir a senha.');
+        } else {
+          alert('O usuário já possui e-mail e senha de acesso.');
+        }
+      }
+
+      // Adiciona o tutor à coleção 'tutores'
+      await addDoc(collection(firestore, 'tutores'), {
+        ...tutor,
+        foto: fotoURL,
+        createdBy: currentUser.name,
+      });
+
+      alert('Tutor cadastrado com sucesso!');
+      setTutor({
+        foto: '',
+        nome: '',
+        dataNascimento: '',
+        idade: '',
+        nacionalidade: '',
+        genero: '',
+        estadoCivil: '',
+        cpf: '',
+        email: '',
+        celular: '',
+        telefoneSecundario: '',
+        cep: '',
+        endereco: '',
+        numero: '',
+        complemento: '',
+        bairro: '',
+        cidade: '',
+        uf: '',
+      });
+      setImage(null);
+    } catch (error) {
+      console.error('Erro ao cadastrar o tutor:', error);
+      alert('Ocorreu um erro ao cadastrar o tutor.');
     }
-
-    await addDoc(collection(firestore, 'tutores'), {
-      ...tutor,
-      foto: fotoURL,
-      createdBy: currentUser.name,
-    });
-
-    alert('Tutor cadastrado com sucesso!');
-    setTutor({
-      foto: '',
-      nome: '',
-      dataNascimento: '',
-      idade: '',
-      nacionalidade: '',
-      genero: '',
-      estadoCivil: '',
-      cpf: '',
-      email: '',
-      celular: '',
-      telefoneSecundario: '',
-      cep: '',
-      endereco: '',
-      numero: '',
-      complemento: '',
-      bairro: '',
-      cidade: '',
-      uf: '',
-    });
-    setImage(null);
   };
 
   return (
@@ -196,7 +238,9 @@ const CadastroTutor = ({ currentUser }) => {
         <Input label="Cidade" type="text" name="cidade" value={tutor.cidade} onChange={handleChange} />
         <Input label="UF" type="text" name="uf" value={tutor.uf} onChange={handleChange} />
         <div className={styles.buttonContainer}>
-          <Button className={styles.button} type="submit">Cadastrar</Button>
+          <Button className={styles.button} type="submit">
+            Cadastrar
+          </Button>
         </div>
       </form>
       {editorOpen && (
@@ -204,7 +248,7 @@ const CadastroTutor = ({ currentUser }) => {
           image={image}
           setImage={(img) => {
             setImage(img);
-            setTutor((prevTutor) => ({ ...prevTutor, foto: img }))
+            setTutor((prevTutor) => ({ ...prevTutor, foto: img }));
           }}
           setEditorOpen={setEditorOpen}
         />

@@ -6,6 +6,7 @@ import LoginModal from './LoginModal';
 import Quiz from '../pages/Quiz';
 import Button from './Button';
 import styles from '../styles/UserMenu.module.css';
+import InstallPromptIOS from './InstallPromptIOS';
 
 const UserMenu = ({ currentUser, setCurrentUser }) => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -13,6 +14,7 @@ const UserMenu = ({ currentUser, setCurrentUser }) => {
   const [showQuiz, setShowQuiz] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState(null); // Armazena o evento de instalação
   const [isAppInstalled, setIsAppInstalled] = useState(false); // Gerencia a visibilidade do botão
+  const [showInstallPromptIOS, setShowInstallPromptIOS] = useState(false); // Controla o modal para iOS
   const navigate = useNavigate();
 
   // Handle do evento de instalação PWA
@@ -60,10 +62,17 @@ const UserMenu = ({ currentUser, setCurrentUser }) => {
     setMenuOpen(false); // Fecha a navegação após o login bem-sucedido
   };
 
-  // Função para instalar a PWA
+  // Função para instalar a PWA ou abrir o modal do iOS
   const handleInstallClick = () => {
-    if (deferredPrompt) {
-      deferredPrompt.prompt(); // Mostra o prompt de instalação
+    // Detecta se o dispositivo é iOS
+    const isIos = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+    
+    if (isIos) {
+      // Mostra o modal para instruções no iOS
+      setShowInstallPromptIOS(true);
+    } else if (deferredPrompt) {
+      // Mostra o prompt de instalação para Android
+      deferredPrompt.prompt();
       deferredPrompt.userChoice.then((choiceResult) => {
         if (choiceResult.outcome === 'accepted') {
           console.log('Usuário aceitou a instalação');
@@ -77,6 +86,12 @@ const UserMenu = ({ currentUser, setCurrentUser }) => {
 
   return (
     <div className={styles.userMenuContainer}>
+      {/* Mostra o modal para iOS quando necessário */}
+      <InstallPromptIOS
+        isOpen={showInstallPromptIOS}
+        onClose={() => setShowInstallPromptIOS(false)}
+      />
+
       {currentUser ? (
         <>
           <Button className={styles.userButton} onClick={handleMenuClick}>
@@ -88,11 +103,11 @@ const UserMenu = ({ currentUser, setCurrentUser }) => {
             }`}
           >
             {/* Botão para instalar o App, visível apenas se o app não estiver instalado */}
-            {/* {deferredPrompt && !isAppInstalled && ( */}
+            {!isAppInstalled && (
               <Button className={styles.navUserButton} onClick={handleInstallClick}>
                 Instalar App
               </Button>
-            {/* )} */}
+            )}
             <Button className={styles.navUserButton} onClick={handleLogout}>Sair</Button>
           </div>
         </>

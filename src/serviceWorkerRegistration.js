@@ -65,9 +65,11 @@ function registerValidSW(swUrl, config) {
 }
 
 // Adicione este listener para recarregar o app após ativar a nova versão
-navigator.serviceWorker.addEventListener('controllerchange', () => {
-  window.location.reload();
-});
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    window.location.reload();
+  });
+}
 
 function checkValidServiceWorker(swUrl, config) {
   fetch(swUrl, {
