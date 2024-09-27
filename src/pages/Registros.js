@@ -4,7 +4,7 @@ import { collection, query, orderBy, getDocs, limit, doc } from "firebase/firest
 import styles from '../styles/Registros.module.css';
 import Modal from "../components/Modal";
 import Table from "../components/Table";
-import iconLapis from "../assets/icon/lapis.png";
+import iconLapis from "../assets/icons/lapis.png";
 
 const Registros = () => {
   const [registros, setRegistros] = useState([]);

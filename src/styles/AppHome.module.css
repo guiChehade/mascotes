@@ -1,4 +1,3 @@
-/* AppHome.module.css */
 
 .appHomeContainer {
   text-align: center;
@@ -13,4 +12,15 @@
 
 .pageButton {
   min-width: 0.75rem;
+}
+
+.buttonContainer{
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.icon {
+  height: 1.75rem;
 }

@@ -12,8 +12,7 @@ import { useNavigate } from "react-router-dom";
 import Container from "../components/Container";
 import Table from "../components/Table";
 import Modal from "../components/Modal";
-import iconLapis from "../assets/icon/lapis.png";
-import iconInfo from "../assets/icon/informacao.png";
+import iconInfo from "../assets/icons/informacao.png";
 import styles from "../styles/NoLocal.module.css";
 
 const NoLocal = ({ currentUser }) => {

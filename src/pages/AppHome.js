@@ -25,7 +25,16 @@ const AppHome = ({ userRoles }) => {
             className={styles.pageButton}
             onClick={() => handleButtonClick(page.to)}
           >
-            {page.label}
+            <div className={styles.buttonContainer}>
+              {page.icon && (
+                <img
+                  src={page.icon}
+                  alt={`${page.label} icon`}
+                  className={styles.icon}
+                />
+              )}
+              {page.label}
+            </div>
           </Button>
         ))}
       </div>

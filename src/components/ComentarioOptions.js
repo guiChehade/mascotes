@@ -20,4 +20,5 @@ const ComentarioOptions = ({ onSelectOption, onBack }) => {
   );
 };
 
+
 export default ComentarioOptions;

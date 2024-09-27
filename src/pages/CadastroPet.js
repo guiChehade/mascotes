@@ -100,6 +100,7 @@ const CadastroPet = ({ currentUser }) => {
         <Input label="Tutor" type="text" name="tutor" value={pet.tutor} onChange={handleChange} required placeholder="João Pereira" />
         <Input label="RG" type="text" name="rg" value={pet.rg} onChange={handleChange} placeholder="99.999.999-9" mask="99.999.999-9" />
         <Input label="CPF" type="text" name="cpf" value={pet.cpf} onChange={handleChange} placeholder="999.999.999-99" mask="999.999.999-99" />
+        <Input label="Convênio" type="text" name="convenio" value={pet.convenio} onChange={handleChange} placeholder="Petlove, Porto Seguro, Pet Health..." />
         <Input label="Endereço" type="text" name="endereco" value={pet.endereco} onChange={handleChange} placeholder="Rua dos Mascotes, 10" />
         <Input label="Email" type="email" name="email" value={pet.email} onChange={handleChange} placeholder="tutor@exemplo.com" />
         <Input label="Celular do Tutor" type="text" name="celularTutor" value={pet.celularTutor} onChange={handleChange} placeholder="(11) 99999-9999" mask="(99) 99999-9999" />

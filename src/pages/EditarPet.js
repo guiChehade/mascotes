@@ -7,7 +7,7 @@ import Container from "../components/Container";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import PhotoEditor from "../components/PhotoEditor";
-import ampulheta from "../assets/icon/ampulheta.png";
+import ampulheta from "../assets/icons/ampulheta.png";
 import styles from '../styles/EditarPet.module.css';
 
 const EditarPet = ({ currentUser }) => {
