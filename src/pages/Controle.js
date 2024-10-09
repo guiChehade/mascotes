@@ -59,15 +59,6 @@ const Controle = ({
   const [selectedComentarioType, setSelectedComentarioType] = useState(null);
   const [commentsData, setCommentsData] = useState([]);
 
-  // Efeito para buscar dados do pet e último registro
-  useEffect(() => {
-    const fetchData = async () => {
-      await fetchPetData();
-      await fetchLastRecord();
-    };
-    fetchData();
-  }, [petId]);
-
   // Função para buscar dados do pet no Firestore
   const fetchPetData = useCallback(async () => {
     if (petId) {
@@ -186,7 +177,7 @@ const Controle = ({
   // Função para exibir comentários antes da saída
   const showCommentInfo = async () => {
     if (lastRecord) {
-      const commentTypes = getCommentTypes();
+      const commentTypes = getCommentTypes().filter(type => type !== "comentarioAlimentacao");
       let comments = [];
 
       for (let type of commentTypes) {

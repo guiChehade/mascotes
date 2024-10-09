@@ -73,10 +73,14 @@ const NoLocal = ({ currentUser }) => {
               const commentsArrays = await Promise.all(commentsPromises);
               const allComments = commentsArrays.flat();
 
-              // Separar comentários de Alimentação do dia atual
-              const alimentacaoComments = allComments.filter(
-                (comment) =>
-                  comment.type === "comentarioAlimentacao" && comment.data === today
+              // Separar todos os comentários de Alimentação (para o modal)
+              const allAlimentacaoComments = allComments.filter(
+                (comment) => comment.type === "comentarioAlimentacao"
+              );
+
+              // Separar comentários de Alimentação do dia atual (para exibir os ícones)
+              const alimentacaoCommentsToday = allAlimentacaoComments.filter(
+                (comment) => comment.data === today
               );
 
               const otherComments = allComments.filter(
@@ -88,7 +92,8 @@ const NoLocal = ({ currentUser }) => {
                 ...latestEntry,
                 petId: petId,
                 comments: otherComments,
-                alimentacaoComments,
+                alimentacaoCommentsToday,
+                allAlimentacaoComments, // Inclui todos os comentários de alimentação
               };
             }
           }
@@ -144,7 +149,7 @@ const NoLocal = ({ currentUser }) => {
   };
 
   const handleAlimentacaoClick = (pet) => {
-    setSelectedAlimentacaoComments(pet.alimentacaoComments);
+    setSelectedAlimentacaoComments(pet.allAlimentacaoComments); // Agora inclui todos os comentários
     setModalTitle(`Alimentação de ${pet.mascotinho}`);
   };
 
@@ -194,11 +199,11 @@ const NoLocal = ({ currentUser }) => {
           local: pet.localAtual,
           dataEntrada: pet.dataEntrada,
           alimentacao:
-            pet.alimentacaoComments.length > 0 ? (
+            pet.alimentacaoCommentsToday.length > 0 ? (
               <div className={styles.alimentacaoIcons}>
-                {pet.alimentacaoComments
-                  .slice() // Faz uma cópia do array
-                  .reverse() // Inverte a ordem para ter os mais recentes à direita
+                {pet.alimentacaoCommentsToday
+                  .slice()
+                  .reverse()
                   .map((comment, index) => (
                     <img
                       key={index}
