@@ -59,14 +59,34 @@ th {
   display: block;
 }
 
+.alimentacaoData {
+  font-size: 0.9rem;
+  line-height: 1.2;
+}
+
+.alimentacaoIcons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.feedingIcon {
+  width: 1.5rem;
+  height: 1.5rem;
+  cursor: pointer;
+  margin-right: 4px;
+  transition: all 0.2s ease; /* Transição suave ao passar o mouse */
+}
+
 .commentIcon {
-  width: 24px; /* Tamanho do ícone */
-  height: 24px;
+  width: 1.5rem; /* Tamanho do ícone */
+  height: 1.5rem;
   cursor: pointer; /* Cursor de clique */
   transition: all 0.2s ease; /* Transição suave ao passar o mouse */
 }
 
-.commentIcon:hover {
+.commentIcon:hover,
+.feedingIcon:hover {
   transform: scale(1.1); /* Efeito de zoom ao passar o mouse */
 }
 

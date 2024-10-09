@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { firestore } from "../firebase";
 import {
@@ -10,6 +10,7 @@ import {
 import Container from "../components/Container";
 import Button from "../components/Button";
 import LoginModal from "../components/LoginModal";
+import AlimentacaoModal from "../components/AlimentacaoModal";
 import TextInputModal from "../components/TextInputModal";
 import ActionOptions from "../components/ActionOptions";
 import ComentarioOptions from "../components/ComentarioOptions";
@@ -32,11 +33,11 @@ import {
 } from "../utils/petActions";
 
 const Controle = ({
-  currentUser,
-  setIsAuthenticated,
-  setUserRoles,
-  setCurrentUser,
-}) => {
+    currentUser,
+    setIsAuthenticated,
+    setUserRoles,
+    setCurrentUser,
+  }) => {
   const { petId } = useParams();
   const navigate = useNavigate();
 
@@ -50,6 +51,8 @@ const Controle = ({
   const [showEntradaModal, setShowEntradaModal] = useState(false);
   const [showSaidaModal, setShowSaidaModal] = useState(false);
   const [showCommentsModal, setShowCommentsModal] = useState(false);
+  const [showTextInputModal, setShowTextInputModal] = useState(false);
+  const [showAlimentacaoModal, setShowAlimentacaoModal] = useState(false);
 
   // Estados para ações selecionadas
   const [selectedAction, setSelectedAction] = useState(null);
@@ -66,7 +69,7 @@ const Controle = ({
   }, [petId]);
 
   // Função para buscar dados do pet no Firestore
-  const fetchPetData = async () => {
+  const fetchPetData = useCallback(async () => {
     if (petId) {
       if (staticRoutes.includes(petId)) {
         navigate(`/${petId}`);
@@ -79,10 +82,10 @@ const Controle = ({
         navigate("/not-found");
       }
     }
-  };
+  }, [petId, navigate]);
 
   // Função para buscar o registro mais recente (mostRecent)
-  const fetchLastRecord = async () => {
+  const fetchLastRecord = useCallback(async () => {
     if (petId) {
       const mostRecentRef = doc(
         firestore,
@@ -98,7 +101,16 @@ const Controle = ({
         setLastRecord(null);
       }
     }
-  };
+  }, [petId]);
+
+  // Efeito para buscar dados do pet e último registro
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchPetData();
+      await fetchLastRecord();
+    };
+    fetchData();
+  }, [fetchPetData, fetchLastRecord]);
 
   // Função para atualizar a página
   const refreshPage = () => {
@@ -205,7 +217,25 @@ const Controle = ({
   };
 
   const handleComentario = () => {
-    setShowComentarioModal(true);
+    setShowComentarioModal(true); // Abre o modal para selecionar o tipo de comentário
+  };
+
+  // Função para submeter o comentário de Alimentação
+  const handleAlimentacaoSubmit = async (data) => {
+    const result = await registerComentario(
+      petId,
+      currentUser,
+      selectedComentarioType,
+      data
+    );
+    if (result.success) {
+      alert(result.message);
+      setSelectedComentarioType(null);
+      setShowAlimentacaoModal(false);
+      refreshPage();
+    } else {
+      alert('Erro ao registrar comentário.');
+    }
   };
 
   // Função para submeter um comentário
@@ -332,16 +362,37 @@ const Controle = ({
 
       {showComentarioModal && (
         <ComentarioOptions
-          onSelectOption={(type) => setSelectedComentarioType(type)}
+          onSelectOption={(type) => {
+            setSelectedComentarioType(type);
+            setShowComentarioModal(false);
+            if (type === 'Alimentação') {
+              setShowAlimentacaoModal(true);
+            } else {
+              setShowTextInputModal(true);
+            }
+          }}
           onBack={() => setShowComentarioModal(false)}
         />
       )}
 
-      {selectedComentarioType && (
+      {selectedComentarioType === 'Alimentação' && showAlimentacaoModal && (
+        <AlimentacaoModal
+          onSubmit={handleAlimentacaoSubmit}
+          onClose={() => {
+            setSelectedComentarioType(null);
+            setShowAlimentacaoModal(false);
+          }}
+        />
+      )}
+
+      {selectedComentarioType && showTextInputModal && (
         <TextInputModal
           placeholder={`Adicione um comentário para ${selectedComentarioType}...`}
           onSubmit={(text) => handleComentarioSubmit(text)}
-          onClose={() => setSelectedComentarioType(null)}
+          onClose={() => {
+            setSelectedComentarioType(null);
+            setShowTextInputModal(false);
+          }}
         />
       )}
 

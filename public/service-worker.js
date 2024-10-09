@@ -7,7 +7,7 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
   // Faz com que o Service Worker controle imediatamente as páginas abertas
-  event.waitUntil(clients.claim());
+  event.waitUntil(self.clients.claim());
 });
 
 // Escuta por mensagens para atualizar o Service Worker

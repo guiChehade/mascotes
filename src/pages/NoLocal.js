@@ -2,23 +2,28 @@ import React, { useState, useEffect } from "react";
 import { firestore } from "../firebase";
 import {
   collection,
-  query,
   getDocs,
-  orderBy,
-  limit,
+  getDoc,
+  doc,
 } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import Container from "../components/Container";
 import Table from "../components/Table";
 import Modal from "../components/Modal";
 import iconInfo from "../assets/icons/informacao.png";
+import naoIcon from "../assets/icons/nao.png";
+import parcialIcon from "../assets/icons/parcial.png";
+import simIcon from "../assets/icons/sim.png";
 import styles from "../styles/NoLocal.module.css";
 
 const NoLocal = ({ currentUser }) => {
   const [pets, setPets] = useState([]);
   const [selectedComments, setSelectedComments] = useState([]);
+  const [selectedAlimentacaoComments, setSelectedAlimentacaoComments] = useState([]);
   const [modalTitle, setModalTitle] = useState("");
   const navigate = useNavigate();
+
+  const today = new Date().toISOString().split('T')[0];
 
   useEffect(() => {
     const fetchPets = async () => {
@@ -40,19 +45,17 @@ const NoLocal = ({ currentUser }) => {
               "Veterinário",
             ].includes(pet.localAtual)
           ) {
-            // Busca a entrada mais recente na subcoleção 'controle'
-            const controleRef = collection(firestore, "pets", petId, "controle");
-            const controleQuery = query(
-              controleRef,
-              orderBy("dataEntrada", "desc"),
-              orderBy("horarioEntrada", "desc"),
-              limit(1)
+            // Busca o documento 'mostRecent' na subcoleção 'controle'
+            const mostRecentRef = doc(
+              firestore,
+              "pets",
+              petId,
+              "controle",
+              "mostRecent"
             );
-            const controleSnapshot = await getDocs(controleQuery);
-
-            if (!controleSnapshot.empty) {
-              const latestEntryDoc = controleSnapshot.docs[0];
-              const latestEntry = latestEntryDoc.data();
+            const mostRecentDoc = await getDoc(mostRecentRef);
+            if (mostRecentDoc.exists()) {
+              const latestEntry = mostRecentDoc.data();
 
               // Busca todos os comentários das subcoleções
               const commentTypes = [
@@ -64,17 +67,28 @@ const NoLocal = ({ currentUser }) => {
               ];
 
               const commentsPromises = commentTypes.map((type) =>
-                fetchComments(latestEntryDoc.ref, type)
+                fetchComments(mostRecentRef, type)
               );
 
               const commentsArrays = await Promise.all(commentsPromises);
               const allComments = commentsArrays.flat();
 
+              // Separar comentários de Alimentação do dia atual
+              const alimentacaoComments = allComments.filter(
+                (comment) =>
+                  comment.type === "comentarioAlimentacao" && comment.data === today
+              );
+
+              const otherComments = allComments.filter(
+                (comment) => comment.type !== "comentarioAlimentacao"
+              );
+
               return {
                 ...pet,
                 ...latestEntry,
                 petId: petId,
-                comments: allComments,
+                comments: otherComments,
+                alimentacaoComments,
               };
             }
           }
@@ -91,26 +105,52 @@ const NoLocal = ({ currentUser }) => {
       }
     };
 
-    const fetchComments = async (controleRef, subCollection) => {
-      const commentsRef = collection(controleRef, subCollection);
+    const fetchComments = async (docRef, subCollection) => {
+      const commentsRef = collection(docRef, subCollection);
       const snapshot = await getDocs(commentsRef);
-      return snapshot.docs.map((doc) => ({
+      const comments = snapshot.docs.map((doc) => ({
         id: doc.id,
         type: subCollection,
         ...doc.data(),
       }));
+      // Ordenar os comentários por data e horário (mais recentes primeiro)
+      comments.sort((a, b) => {
+        const dateA = new Date(`${a.data} ${a.horario}`);
+        const dateB = new Date(`${b.data} ${b.horario}`);
+        return dateB - dateA;
+      });
+      return comments;
     };
 
     fetchPets();
-  }, []);
+  }, [today]);
+
+  const getFeedingStatusIcon = (feedingStatus) => {
+    switch (feedingStatus) {
+      case "Não Comeu":
+        return naoIcon;
+      case "Comeu Parcial":
+        return parcialIcon;
+      case "Comeu Tudo":
+        return simIcon;
+      default:
+        return null;
+    }
+  };
 
   const handleCommentClick = (pet) => {
     setSelectedComments(pet.comments);
     setModalTitle(`Comentários de ${pet.mascotinho}`);
   };
 
+  const handleAlimentacaoClick = (pet) => {
+    setSelectedAlimentacaoComments(pet.alimentacaoComments);
+    setModalTitle(`Alimentação de ${pet.mascotinho}`);
+  };
+
   const handleCloseModal = () => {
     setSelectedComments([]);
+    setSelectedAlimentacaoComments([]);
     setModalTitle("");
   };
 
@@ -122,7 +162,14 @@ const NoLocal = ({ currentUser }) => {
     <Container className={styles.registrosContainer}>
       <h1>Pets No Local</h1>
       <Table
-        headers={["Foto", "Nome", "Local", "Data Entrada", "Comentários"]}
+        headers={[
+          "Foto",
+          "Nome",
+          "Local",
+          "Data Entrada",
+          "Alimentação",
+          "Comentários",
+        ]}
         data={pets.map((pet) => ({
           foto: pet.foto ? (
             <img
@@ -146,6 +193,23 @@ const NoLocal = ({ currentUser }) => {
           ),
           local: pet.localAtual,
           dataEntrada: pet.dataEntrada,
+          alimentacao:
+            pet.alimentacaoComments.length > 0 ? (
+              <div className={styles.alimentacaoIcons}>
+                {pet.alimentacaoComments
+                  .slice() // Faz uma cópia do array
+                  .reverse() // Inverte a ordem para ter os mais recentes à direita
+                  .map((comment, index) => (
+                    <img
+                      key={index}
+                      src={getFeedingStatusIcon(comment.feedingStatus)}
+                      alt={comment.feedingStatus}
+                      className={styles.feedingIcon}
+                      onClick={() => handleAlimentacaoClick(pet)}
+                    />
+                  ))}
+              </div>
+            ) : null,
           comentarios:
             pet.comments && pet.comments.length > 0 ? (
               <img
@@ -157,6 +221,7 @@ const NoLocal = ({ currentUser }) => {
             ) : null,
         }))}
       />
+      {/* Modal para comentários gerais */}
       {selectedComments.length > 0 && (
         <Modal
           isOpen={selectedComments.length > 0}
@@ -172,6 +237,33 @@ const NoLocal = ({ currentUser }) => {
               usuario: detail.usuario,
               horario: detail.horario,
               data: detail.data,
+            }))}
+          />
+        </Modal>
+      )}
+      {/* Modal para comentários de alimentação */}
+      {selectedAlimentacaoComments.length > 0 && (
+        <Modal
+          isOpen={selectedAlimentacaoComments.length > 0}
+          onClose={handleCloseModal}
+          showFooter={false}
+          title={modalTitle}
+        >
+          <Table
+            headers={["Data", "Horário", "Usuário", "Refeição", "Status", "Observações"]}
+            data={selectedAlimentacaoComments.map((comment) => ({
+              data: comment.data,
+              horario: comment.horario,
+              usuario: comment.usuario,
+              refeicao: comment.mealTime,
+              status: (
+                <img
+                  src={getFeedingStatusIcon(comment.feedingStatus)}
+                  alt={comment.feedingStatus}
+                  className={styles.feedingIcon}
+                />
+              ),
+              observacoes: comment.observations,
             }))}
           />
         </Modal>
