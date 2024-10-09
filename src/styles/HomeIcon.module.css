@@ -1,0 +1,23 @@
+.homeIconContainer {
+    position: relative;
+    z-index: 9999;
+    width: 0;
+}
+  
+.homeIconImg {
+    background-color: var(--button-background);
+    color: var(--button-color);
+    border: none;
+    border-radius: 50%;
+    font-size: 6vh;
+    width: 8vh;
+    height: 8vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.5s ease-in-out;
+    position: fixed;
+    left: 4vh;
+    top: 4vh;
+}

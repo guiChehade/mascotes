@@ -15,6 +15,7 @@ import Login from "./pages/Login";
 import Quiz from "./pages/Quiz";
 import CadastroPet from "./pages/CadastroPet";
 import AppHome from "./pages/AppHome";
+import HomeIcon from "./components/HomeIcon";
 import CadastroTutor from "./pages/CadastroTutor";
 import Mascotes from "./pages/Mascotes";
 import Controle from "./pages/Controle";
@@ -36,7 +37,21 @@ const App = () => {
   const [userRoles, setUserRoles] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
 
+  // State to detect if the app is running as a PWA
+  const [isPWA, setIsPWA] = useState(false);
+
   useEffect(() => {
+    // Function to check if the app is running as a PWA
+    const checkIsPWA = () => {
+      return (
+        window.matchMedia('(display-mode: standalone)').matches ||
+        window.navigator.standalone === true
+      );
+    };
+
+    // Set the isPWA state
+    setIsPWA(checkIsPWA());
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setIsAuthenticated(true);
@@ -61,11 +76,16 @@ const App = () => {
   return (
     <Router>
       <div className={styles.pageContainer}>
-        <Menu isAuthenticated={isAuthenticated} userRoles={userRoles} />
+        {/* Conditionally render Menu or Home icon based on isPWA */}
+        {isPWA ? (
+          <HomeIcon />
+        ) : (
+          <Menu isAuthenticated={isAuthenticated} userRoles={userRoles} />
+        )}
         <Header isAuthenticated={isAuthenticated} userRoles={userRoles} />
         <UserMenu currentUser={currentUser} setCurrentUser={setCurrentUser} />
         <Main className={styles.main}>
-          <Routes>
+        <Routes>
             <Route path="/" element={<Home isAuthenticated={isAuthenticated} userRoles={userRoles} />} />
             <Route path="/app" element={<AppHome userRoles={userRoles} />} />
             <Route path="/racas" element={<DogBreedsCards />} />
