@@ -46,15 +46,17 @@ th {
 .registrosTable th {
   background-color: var(--button-background);
   color: white;
+  font-size: 0.75rem
 }
 
 .registrosTable td {
   background-color: var(--input-background);
+  font-size: 0.625rem;
 }
 
 .petThumbnail {
-  width: 100px;
-  height: 100px;
+  width: 40px;
+  height: 40px;
   object-fit: cover;
   display: block;
 }
@@ -88,35 +90,4 @@ th {
 .commentIcon:hover,
 .feedingIcon:hover {
   transform: scale(1.1); /* Efeito de zoom ao passar o mouse */
-}
-
-@media (max-width: 1280px) {
-  td {
-    font-size: 0.625rem;
-  }
-
-  .registrosContainer {
-    width: fit-content;
-    max-width: 95%;
-    margin: 0 auto;
-  }
-
-  .petThumbnail {
-    width: 40px;
-    height: 40px;
-  }
-
-  th {
-    font-size: 0.75rem;
-  }
-
-}
-
-@media (max-width: 768px) {
-
-  .tableCell {
-    padding: 5px;
-    font-size: 0.75rem;
-  }
-  
 }

@@ -103,7 +103,39 @@ const NoLocal = ({ currentUser }) => {
         const petData = (await Promise.all(petDataPromises)).filter(
           (pet) => pet !== null
         );
-        petData.sort((a, b) => a.localAtual.localeCompare(b.localAtual));
+
+        // Definir a ordem desejada para 'localAtual'
+        const desiredOrder = [
+          "Adestramento",
+          "Banho",
+          "Passeio",
+          "Veterinário",
+          "Creche",
+          "Hotel",
+        ];
+
+        // Função para obter o índice da ordem desejada
+        const getLocalAtualOrder = (localAtual) => {
+          const index = desiredOrder.indexOf(localAtual);
+          return index !== -1 ? index : desiredOrder.length;
+        };
+
+        // Ordenar os pets
+        petData.sort((a, b) => {
+          const localOrderA = getLocalAtualOrder(a.localAtual);
+          const localOrderB = getLocalAtualOrder(b.localAtual);
+
+          if (localOrderA !== localOrderB) {
+            return localOrderA - localOrderB;
+          } else {
+            // Se o localAtual for o mesmo, ordenar por dataEntrada e horarioEntrada (decrescente)
+            const dateComparison = b.dataEntrada.localeCompare(a.dataEntrada);
+            if (dateComparison !== 0) return dateComparison;
+
+            return b.horarioEntrada.localeCompare(a.horarioEntrada);
+          }
+        });
+
         setPets(petData);
       } catch (error) {
         console.error("Erro ao buscar os pets:", error);
