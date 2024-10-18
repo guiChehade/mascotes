@@ -284,7 +284,8 @@ const Controle = ({
           <div className={styles.label}>Tutor</div>
           <div className={styles.value}>{pet.tutor}</div>
           <div className={styles.label}>Contato</div>
-          <div className={styles.value}>{pet.celularTutor}</div>
+          {/* procurar celularTutor, se não encontrar, procurar celular_tutor */}
+          <div className={styles.value}>{pet.celularTutor || pet.celular_tutor}</div>
 
           {/* Botões de ação baseados no papel do usuário e local atual do pet */}
           {currentUser &&
@@ -323,7 +324,9 @@ const Controle = ({
               )}
             </div>
           ) : (
-            <Button onClick={() => setShowLoginModal(true)}>Login</Button>
+            <p>
+              Se você for tutor ou funcionário, faça login para acessar mais opções.
+            </p>
           )}
         </div>
       ) : (
