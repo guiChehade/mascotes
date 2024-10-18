@@ -1,0 +1,13 @@
+/* Estilos do componente de carregamento */
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+/* Estilo para ajustar o tamanho do GIF */
+.loading img {
+    width: 5rem; /* Defina a largura desejada para o GIF */
+    height: auto; /* Mantém a proporção do GIF */
+}

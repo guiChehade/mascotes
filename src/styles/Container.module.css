@@ -5,8 +5,15 @@
   /* max-width: 95%; */
   padding: 20px;
   border-radius: 20px;
+  animation: fadeIn 1s ease-in;
   /* background-image: url('../assets/texture/white-grungy-wall-textured-background_53876-103916.avif');
   background-size:contain;
   background-blend-mode:multiply;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
+  box-shadow: 0 4px 6px rg
+  ba(0, 0, 0, 0.1); */
+}
+
+@keyframes fadeIn {
+  0% {opacity: 0;}
+  100% {opacity: 1;}
 }

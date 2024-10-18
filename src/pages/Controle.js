@@ -16,6 +16,7 @@ import ActionOptions from "../components/ActionOptions";
 import ComentarioOptions from "../components/ComentarioOptions";
 import Modal from "../components/Modal";
 import Table from "../components/Table";
+import Loading from "../components/Loading";
 import logoLarge from "../assets/logo/logo-large.png";
 import { staticRoutes } from "../config/staticRoutes";
 import styles from "../styles/Controle.module.css";
@@ -40,6 +41,8 @@ const Controle = ({
   }) => {
   const { petId } = useParams();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+  const [showMessage, setShowMessage] = useState(false);
 
   // Estados para armazenar dados do pet e controle
   const [pet, setPet] = useState(null);
@@ -108,6 +111,23 @@ const Controle = ({
     fetchPetData();
     fetchLastRecord();
   };
+
+  useEffect(() => {
+    if (currentUser) {
+      setIsLoading(false); // Define isLoading como false imediatamente se currentUser for encontrado
+    } else {
+      const timer = setTimeout(() => {
+        setIsLoading(false); // Define isLoading como false após 3 segundos se currentUser não for encontrado
+        setShowMessage(true); // Define showMessage como true após 3 segundos
+      }, 3000);
+  
+      return () => clearTimeout(timer); // Limpa o timer se o efeito for desmontado
+    }
+  }, [currentUser]);
+  
+  if (isLoading) {
+    return <Loading />;
+  }
 
   // Handlers para ações do usuário
   const handleEntrada = () => {
@@ -329,12 +349,20 @@ const Controle = ({
             </p>
           )}
         </div>
-      ) : (
+      ) : showMessage ? (
+        <>
         <p>
-          Esta página exige acesso. Verifique se você fez login, aguarde seu nome
-          aparecer e recarregue a página.
+          😢
+          <br />
+          <br />
+          Parece que você não tem permissão para acessar esta página.
         </p>
-      )}
+        <p>
+          <br />
+          Por favor, verifique se você fez login com uma conta autorizada ou se sua conexão com a internet está estável.
+        </p>
+        </>
+      ) : null}
 
       {/* Modais para seleção de ações e comentários */}
       {showEntradaModal && (

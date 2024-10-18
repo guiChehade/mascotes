@@ -27,7 +27,7 @@ const Pagamentos = () => {
   const [error, setError] = useState('');
 
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
-  
+
   useEffect(() => {
     const fetchToken = async () => {
       try {
@@ -39,7 +39,7 @@ const Pagamentos = () => {
     };
 
     fetchToken();
-  }, []);
+  }, [backendUrl]); // Incluído 'backendUrl' nas dependências
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import Container from "../components/Container";
 import Table from "../components/Table";
 import Modal from "../components/Modal";
+import Loading from "../components/Loading";
 import iconInfo from "../assets/icons/informacao.png";
 import naoIcon from "../assets/icons/nao.png";
 import parcialIcon from "../assets/icons/parcial.png";
@@ -21,6 +22,7 @@ const NoLocal = ({ currentUser }) => {
   const [selectedComments, setSelectedComments] = useState([]);
   const [selectedAlimentacaoComments, setSelectedAlimentacaoComments] = useState([]);
   const [modalTitle, setModalTitle] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   const today = new Date().toISOString().split('T')[0];
@@ -28,36 +30,34 @@ const NoLocal = ({ currentUser }) => {
   useEffect(() => {
     const fetchPets = async () => {
       try {
-        const petsRef = collection(firestore, "pets");
-        const petsSnapshot = await getDocs(petsRef);
+        // Passo 1: Buscar os IDs dos pets em locais específicos na coleção "locations", exceto "Casa"
+        const locationsRef = collection(firestore, "locations");
+        const locationsSnapshot = await getDocs(locationsRef);
 
-        const petDataPromises = petsSnapshot.docs.map(async (petDoc) => {
-          const pet = petDoc.data();
-          const petId = petDoc.id;
+        const petIds = [];
+        locationsSnapshot.forEach((locationDoc) => {
+          const locationData = locationDoc.data();
+          if (locationDoc.id !== "Casa") { // Ignora o documento "Casa"
+            petIds.push(...locationData.petIds);
+          }
+        });
 
-          if (
-            [
-              "Creche",
-              "Hotel",
-              "Adestramento",
-              "Passeio",
-              "Banho",
-              "Veterinário",
-            ].includes(pet.localAtual)
-          ) {
+        // Passo 2: Buscar os dados de cada pet com base nos IDs
+        const petDataPromises = petIds.map(async (petId) => {
+          const petRef = doc(firestore, "pets", petId);
+          const petDoc = await getDoc(petRef);
+
+          if (petDoc.exists()) {
+            const pet = petDoc.data();
+
             // Busca o documento 'mostRecent' na subcoleção 'controle'
-            const mostRecentRef = doc(
-              firestore,
-              "pets",
-              petId,
-              "controle",
-              "mostRecent"
-            );
+            const mostRecentRef = doc(firestore, "pets", petId, "controle", "mostRecent");
             const mostRecentDoc = await getDoc(mostRecentRef);
+
             if (mostRecentDoc.exists()) {
               const latestEntry = mostRecentDoc.data();
 
-              // Busca todos os comentários das subcoleções
+              // Buscar todos os comentários das subcoleções
               const commentTypes = [
                 "comentarioAlimentacao",
                 "comentarioVet",
@@ -97,28 +97,12 @@ const NoLocal = ({ currentUser }) => {
               };
             }
           }
-          return null; // Exclui pets que não estão em um estado válido
+          return null; // Exclui pets que não têm as condições corretas
         });
 
         const petData = (await Promise.all(petDataPromises)).filter(
           (pet) => pet !== null
         );
-
-        // Definir a ordem desejada para 'localAtual'
-        const desiredOrder = [
-          "Adestramento",
-          "Banho",
-          "Passeio",
-          "Veterinário",
-          "Creche",
-          "Hotel",
-        ];
-
-        // Função para obter o índice da ordem desejada
-        const getLocalAtualOrder = (localAtual) => {
-          const index = desiredOrder.indexOf(localAtual);
-          return index !== -1 ? index : desiredOrder.length;
-        };
 
         // Ordenar os pets
         petData.sort((a, b) => {
@@ -128,7 +112,6 @@ const NoLocal = ({ currentUser }) => {
           if (localOrderA !== localOrderB) {
             return localOrderA - localOrderB;
           } else {
-            // Se o localAtual for o mesmo, ordenar por dataEntrada e horarioEntrada (decrescente)
             const dateComparison = b.dataEntrada.localeCompare(a.dataEntrada);
             if (dateComparison !== 0) return dateComparison;
 
@@ -137,8 +120,10 @@ const NoLocal = ({ currentUser }) => {
         });
 
         setPets(petData);
+        setIsLoading(false); // Finaliza o estado de carregamento
       } catch (error) {
         console.error("Erro ao buscar os pets:", error);
+        setIsLoading(false); // Finaliza o estado de carregamento mesmo em caso de erro
       }
     };
 
@@ -150,7 +135,6 @@ const NoLocal = ({ currentUser }) => {
         type: subCollection,
         ...doc.data(),
       }));
-      // Ordenar os comentários por data e horário (mais recentes primeiro)
       comments.sort((a, b) => {
         const dateA = new Date(`${a.data} ${a.horario}`);
         const dateB = new Date(`${b.data} ${b.horario}`);
@@ -161,6 +145,19 @@ const NoLocal = ({ currentUser }) => {
 
     fetchPets();
   }, [today]);
+
+  const getLocalAtualOrder = (localAtual) => {
+    // Define the order of locations as needed
+    const order = {
+      "Adestramento": 1,
+      "Banho": 2,
+      "Passeio": 3,
+      "Veterinário": 4,
+      "Creche": 5,
+      "Hotel": 6,
+    };
+    return order[localAtual] || 999; // Default to 999 if location is not found
+  };
 
   const getFeedingStatusIcon = (feedingStatus) => {
     switch (feedingStatus) {
@@ -181,7 +178,7 @@ const NoLocal = ({ currentUser }) => {
   };
 
   const handleAlimentacaoClick = (pet) => {
-    setSelectedAlimentacaoComments(pet.allAlimentacaoComments); // Agora inclui todos os comentários
+    setSelectedAlimentacaoComments(pet.allAlimentacaoComments);
     setModalTitle(`Alimentação de ${pet.mascotinho}`);
   };
 
@@ -195,6 +192,12 @@ const NoLocal = ({ currentUser }) => {
     navigate(`/${petId}`);
   };
 
+  // Exibe o componente de carregamento enquanto os dados estão sendo carregados
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  // Renderiza o Container e a Tabela somente após o carregamento dos pets
   return (
     <Container className={styles.registrosContainer}>
       <h1>Pets No Local</h1>
