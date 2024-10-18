@@ -299,6 +299,7 @@ const Controle = ({
               pet.localAtual === null ? (
                 <>
                   <Button onClick={handleEntrada}>Entrada</Button>
+                  <Button onClick={handleComentario}>Comentário</Button>
                   <Button onClick={handleEditar}>Editar</Button>
                 </>
               ) : pet.localAtual === "Adestramento" ||
