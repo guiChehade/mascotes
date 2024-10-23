@@ -35,9 +35,6 @@ const NoLocal = ({ currentUser }) => {
   const [selectedMealTime, setSelectedMealTime] = useState("");
   const [feedingData, setFeedingData] = useState({});
 
-  // Novos estados para controlar o loading durante o refresh
-  const [isRefreshing, setIsRefreshing] = useState(false);
-
   const navigate = useNavigate();
 
   const today = new Date().toISOString().split('T')[0];
@@ -45,10 +42,6 @@ const NoLocal = ({ currentUser }) => {
   useEffect(() => {
     const fetchPets = async () => {
       try {
-        if (isRefreshing) {
-          // Opcional: mostrar um indicador de refresh
-        }
-
         // Passo 1: Buscar os IDs dos pets em locais específicos na coleção "locations", exceto "Casa"
         const locationsRef = collection(firestore, "locations");
         const locationsSnapshot = await getDocs(locationsRef);
@@ -171,7 +164,7 @@ const NoLocal = ({ currentUser }) => {
     };
 
     fetchPets();
-  }, [today, isRefreshing]);
+  }, [today]);
 
   const getLocalAtualOrder = (localAtual) => {
     // Define a ordem dos locais conforme necessário
@@ -226,7 +219,7 @@ const NoLocal = ({ currentUser }) => {
     // Atraso de 0.3s antes de mostrar o modal
     setTimeout(() => {
       setShowAlimentacaoRegistrarModal(true);
-    }, 100);
+    }, 150);
   };
 
   const handleFeedingStatusChange = (petId, value) => {
@@ -408,13 +401,6 @@ const NoLocal = ({ currentUser }) => {
           </div>
         </button>
       </div>
-      {/* Indicador de atualização */}
-      {isRefreshing && (
-        <div className={styles.refreshIndicator}>
-          <Loading />
-          <span>Atualizando dados...</span>
-        </div>
-      )}
       <Table
         headers={[
           "Foto",

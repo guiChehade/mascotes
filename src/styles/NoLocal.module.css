@@ -1,5 +1,3 @@
-/* NoLocal.module.css */
-
 /* Estilos gerais */
 .registrosContainer {
   width: fit-content;
@@ -31,6 +29,7 @@
   padding: 0.4rem;
   border: none;
   outline: none; /* Remove outline */
+  overflow: hidden; /* Evita que sombras excedam o botão */
 
   /* Sombra externa para simular efeito convexo */
   box-shadow:
@@ -362,8 +361,9 @@ th {
 }
 
 .petFeedingItem button:disabled {
-  background-color: grey;
+  background-color: #aaa;
   cursor: not-allowed;
+  transition: none;
 }
 
 .petFeedingItem button:not(:disabled):hover {
