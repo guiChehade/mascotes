@@ -9,11 +9,11 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Nova classe para o cabeçalho */
+/* Classe para o cabeçalho */
 .header {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Alinha título e botão nos extremos */
+  justify-content: space-between;
   margin-bottom: 20px;
 }
 
@@ -30,30 +30,16 @@
 }
 
 .alimentacaoButton:hover {
-  transform: scale(1.1); /* Efeito de zoom ao passar o mouse */
+  transform: scale(1.1);
 }
 
-/* Nova classe para o título de localização */
+/* Classe para o título de localização */
 .locationTitle {
   font-size: 1rem;
-  margin-top: 20px;
-  margin-bottom: 10px;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
   color: var(--primary-color);
-}
-
-/* Restante do CSS permanece o mesmo */
-
-.filters {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.filters input {
-  padding: 10px;
-  border: 1px solid var(--border-color);
-  border-radius: 20px;
-  width: 100%;
 }
 
 .registrosTable {
@@ -61,18 +47,20 @@
   border-collapse: collapse;
 }
 
-.registrosTable th, .registrosTable td {
+.registrosTable th,
+.registrosTable td {
   border: 1px solid var(--border-color);
   text-align: center;
-  cursor: pointer; /* Indica que é clicável */
-  vertical-align: middle; /* Alinhamento vertical */
+  cursor: pointer;
+  vertical-align: middle;
 }
 
 th {
   padding: 0.5rem 0.25rem;
 }
 
-.registrosTable th:nth-child(1), .registrosTable td:nth-child(1){
+.registrosTable th:nth-child(1),
+.registrosTable td:nth-child(1) {
   padding: 0px;
 }
 
@@ -94,11 +82,6 @@ th {
   display: block;
 }
 
-.alimentacaoData {
-  font-size: 0.9rem;
-  line-height: 1.2;
-}
-
 .alimentacaoIcons {
   display: flex;
   align-items: center;
@@ -110,37 +93,28 @@ th {
   height: 1.5rem;
   cursor: pointer;
   margin-right: 4px;
-  transition: all 0.2s ease; /* Transição suave ao passar o mouse */
+  transition: all 0.2s ease;
 }
 
 .commentIcon {
-  width: 1.5rem; /* Tamanho do ícone */
+  width: 1.5rem;
   height: 1.5rem;
-  cursor: pointer; /* Cursor de clique */
-  transition: all 0.2s ease; /* Transição suave ao passar o mouse */
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .commentIcon:hover,
 .feedingIcon:hover {
-  transform: scale(1.1); /* Efeito de zoom ao passar o mouse */
-}
-
-.locationTitle {
-  font-size: 1rem;
-  margin-top: 1rem;
-  margin-bottom: 0.5rem;
-  text-align: center;
-}
-
-/* Ajuste na classe petFeedingItem se necessário */
-.petFeedingItem {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-  justify-content: center;
+  transform: scale(1.1);
 }
 
 /* Estilos para o modal de alimentação */
+.modalContent {
+  max-height: 50vh;
+  overflow-y: auto;
+  width: fit-content;
+}
+
 .mealTimeSelection {
   display: flex;
   justify-content: center;
@@ -149,28 +123,23 @@ th {
 
 .mealTimeSelection label {
   cursor: pointer;
+  margin-right: 10px;
 }
 
-.mealTimeSelection input[type="radio"] {
-  margin-right: 5px;
+.mealTimeRadio {
+  font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
 }
 
-.modalContent {
-  max-height: 50vh;
-  overflow-y: auto;
-  width: fit-content;
-}
-
-.petsFeedingList {
-  max-height: 400px;
-  overflow-y: auto;
-}
-
+/* Ajuste na classe petFeedingItem */
 .petFeedingItem {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   margin-bottom: 10px;
+  justify-content: space-between;
 }
 
 .petFeedingItem span {
@@ -209,61 +178,38 @@ th {
   opacity: 1;
 }
 
-.mealTimeRadio {
-  font-size: 1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  width: 20%;
-}
-
+/* Estilos para o input de observação */
 .observationInputContainer {
-  width: 33%;       /* Define a largura desejada */
+  width: 33%;
   margin-right: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.observationInputContainer input {
-  width: 100%;      /* O input preenche o contêiner */
-  padding: 5px;
-  margin-right: 10px;
-  border: 1px solid var(--border-color);
-  border-radius: 20px;
-}
-
-.observationInput:disabled {
-  width: 40%; /* Mesma largura do input normal */
 }
 
 .observationInput {
+  width: 100%;
   border-radius: 20px;
 }
 
 .observationInput input {
-  width: 100%;        /* O input ocupa 100% da largura do contêiner */
+  width: 100%;
   border-radius: 20px;
 }
 
 .observationInput input:disabled {
-  width: 100%;        /* Garante que o input desabilitado mantenha a mesma largura */
+  width: 100%;
   border-radius: 20px;
 }
 
 /* Estilos para o botão */
 .petFeedingItem button {
-  width: 4.75rem; /* Largura fixa para ambos os estados */
-  padding: 5px 0; /* Ajuste o padding vertical conforme necessário */
+  width: 4.75rem;
+  padding: 5px 0;
   cursor: pointer;
   background-color: var(--button-background);
   color: white;
   border: none;
   border-radius: 5px;
   transition: background-color 0.2s;
-  text-align: center; /* Centraliza o texto */
+  text-align: center;
 }
 
 .petFeedingItem button:disabled {
@@ -275,29 +221,4 @@ th {
   background-color: var(--button-hover-background);
 }
 
-.petFeedingItem input[type="text"] {
-  flex: 2;
-  padding: 5px;
-  margin-right: 10px;
-  border: 1px solid var(--border-color);
-  border-radius: 5px;
-}
-
-.petFeedingItem button {
-  padding: 5px 10px;
-  cursor: pointer;
-  background-color: var(--button-background);
-  color: white;
-  border: none;
-  border-radius: 5px;
-  transition: background-color 0.2s;
-}
-
-.petFeedingItem button:disabled {
-  background-color: grey;
-  cursor: not-allowed;
-}
-
-.petFeedingItem button:not(:disabled):hover {
-  background-color: var(--button-hover-background);
-}
+/* Removendo redundâncias e unificando estilos */

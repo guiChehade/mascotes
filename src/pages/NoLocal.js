@@ -17,7 +17,7 @@ import iconInfo from "../assets/icons/informacao.png";
 import naoIcon from "../assets/icons/nao.png";
 import parcialIcon from "../assets/icons/parcial.png";
 import simIcon from "../assets/icons/sim.png";
-import alimentacaoIcon from "../assets/icons/alimentacao.png"; // Importando o ícone de alimentação
+import alimentacaoIcon from "../assets/icons/alimentacao.png";
 import styles from "../styles/NoLocal.module.css";
 
 // Importando a função registerComentario
@@ -288,7 +288,7 @@ const NoLocal = ({ currentUser }) => {
         const feedingRecord = pet.feedingRecordsByMealTime
           ? pet.feedingRecordsByMealTime[normalizedMealTime]
           : null;
-  
+
         if (feedingRecord) {
           updatedFeedingData[pet.petId] = {
             feedingStatus: feedingRecord.feedingStatus,
@@ -306,7 +306,6 @@ const NoLocal = ({ currentUser }) => {
       setFeedingData(updatedFeedingData);
     }
   }, [selectedMealTime, pets]);
-  
 
   // Exibe o componente de carregamento enquanto os dados estão sendo carregados
   if (isLoading) {
@@ -454,7 +453,7 @@ const NoLocal = ({ currentUser }) => {
             {/* Seleção de horário da refeição */}
             <div className={styles.mealTimeSelection}>
               <label className={styles.mealTimeRadio}>
-                <Input
+                <input
                   type="radio"
                   name="mealTime"
                   value="Café da manhã"
@@ -464,7 +463,7 @@ const NoLocal = ({ currentUser }) => {
                 Café da manhã
               </label>
               <label className={styles.mealTimeRadio}>
-                <Input
+                <input
                   type="radio"
                   name="mealTime"
                   value="Almoço"
@@ -474,7 +473,7 @@ const NoLocal = ({ currentUser }) => {
                 Almoço
               </label>
               <label className={styles.mealTimeRadio}>
-                <Input
+                <input
                   type="radio"
                   name="mealTime"
                   value="Janta"
@@ -506,7 +505,7 @@ const NoLocal = ({ currentUser }) => {
                           className={styles.observationInput}
                           disabled
                         />
-                        {/* Botão desabilitado com texto "Registrado" */}
+                        {/* Botão desabilitado com texto "Salvo" */}
                         <Button disabled>{'Salvo'}</Button>
                       </>
                     ) : (
@@ -514,32 +513,35 @@ const NoLocal = ({ currentUser }) => {
                         {/* Seleção de status de alimentação */}
                         <div className={styles.feedingStatusSelection}>
                           <label>
-                            <Input
+                            <input
                               type="radio"
                               name={`feedingStatus-${pet.petId}`}
                               value="Comeu Tudo"
                               checked={feedingData[pet.petId]?.feedingStatus === "Comeu Tudo"}
                               onChange={(e) => handleFeedingStatusChange(pet.petId, e.target.value)}
+                              style={{ display: 'none' }}
                             />
                             <img src={simIcon} alt="Sim" />
                           </label>
                           <label>
-                            <Input
+                            <input
                               type="radio"
                               name={`feedingStatus-${pet.petId}`}
                               value="Comeu Parcial"
                               checked={feedingData[pet.petId]?.feedingStatus === "Comeu Parcial"}
                               onChange={(e) => handleFeedingStatusChange(pet.petId, e.target.value)}
+                              style={{ display: 'none' }}
                             />
                             <img src={parcialIcon} alt="Parcial" />
                           </label>
                           <label>
-                            <Input
+                            <input
                               type="radio"
                               name={`feedingStatus-${pet.petId}`}
                               value="Não Comeu"
                               checked={feedingData[pet.petId]?.feedingStatus === "Não Comeu"}
                               onChange={(e) => handleFeedingStatusChange(pet.petId, e.target.value)}
+                              style={{ display: 'none' }}
                             />
                             <img src={naoIcon} alt="Não" />
                           </label>
@@ -552,7 +554,6 @@ const NoLocal = ({ currentUser }) => {
                           onChange={(e) => handleObservationChange(pet.petId, e.target.value)}
                           className={styles.observationInput}
                           containerClassName={styles.observationInputContainer}
-                          disabled={feedingData[pet.petId]?.isSaved}
                         />
                         {/* Botão Salvar */}
                         <Button
