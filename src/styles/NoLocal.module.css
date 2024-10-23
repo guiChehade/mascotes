@@ -1,3 +1,4 @@
+/* Estilos gerais */
 .registrosContainer {
   width: fit-content;
   max-width: 90%;
@@ -9,7 +10,7 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Classe para o cabeçalho */
+/* Cabeçalho */
 .header {
   display: flex;
   align-items: center;
@@ -17,14 +18,14 @@
   margin-bottom: 20px;
 }
 
-/* Estilo para o botão de alimentação */
 .alimentacaoButton {
   width: 2rem;
   height: 2rem;
   padding: 0.75rem;
   cursor: pointer;
   border-radius: 50%;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--button-hover-background);
   background-color: var(--button-background);
   transition: transform 0.2s ease;
 }
@@ -33,7 +34,7 @@
   transform: scale(1.1);
 }
 
-/* Classe para o título de localização */
+/* Título de localização */
 .locationTitle {
   font-size: 1rem;
   margin-top: 1rem;
@@ -42,6 +43,7 @@
   color: var(--primary-color);
 }
 
+/* Tabela de registros */
 .registrosTable {
   width: 100%;
   border-collapse: collapse;
@@ -108,7 +110,7 @@ th {
   transform: scale(1.1);
 }
 
-/* Estilos para o modal de alimentação */
+/* Modal de alimentação */
 .modalContent {
   max-height: 50vh;
   overflow-y: auto;
@@ -132,30 +134,31 @@ th {
   flex-direction: column;
   align-items: center;
   gap: 5px;
+  width: 20%;
 }
 
-/* Ajuste na classe petFeedingItem */
+/* Itens de alimentação do pet */
 .petFeedingItem {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1.25fr 1fr 2fr 1fr; /* Ajuste nas proporções das colunas */
   align-items: center;
   margin-bottom: 10px;
-  justify-content: space-between;
+  gap: 0.25rem;
 }
 
 .petFeedingItem span {
-  flex: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-right: 10px;
   font-size: 0.9rem;
 }
 
-/* Ajuste a seleção de status de alimentação */
-.feedingStatusSelection {
+/* Seleção de status de alimentação */
+.feedingStatusSelection,
+.feedingStatusDisplay {
   display: flex;
   align-items: center;
-  margin-right: 10px;
+  justify-content: center;
 }
 
 .feedingStatusSelection label {
@@ -178,10 +181,11 @@ th {
   opacity: 1;
 }
 
-/* Estilos para o input de observação */
+/* Input de observação */
 .observationInputContainer {
-  width: 33%;
-  margin-right: 10px;
+  /* O grid controla a largura */
+  align-self: center;
+  margin: 0;
 }
 
 .observationInput {
@@ -199,15 +203,16 @@ th {
   border-radius: 20px;
 }
 
-/* Estilos para o botão */
+/* Botão */
 .petFeedingItem button {
-  width: 4.75rem;
-  padding: 5px 0;
+  width: 100%;
+  padding: 0.40rem 0.75rem;
   cursor: pointer;
   background-color: var(--button-background);
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 20px;
+  width: 100%;
   transition: background-color 0.2s;
   text-align: center;
 }
@@ -220,5 +225,3 @@ th {
 .petFeedingItem button:not(:disabled):hover {
   background-color: var(--button-hover-background);
 }
-
-/* Removendo redundâncias e unificando estilos */

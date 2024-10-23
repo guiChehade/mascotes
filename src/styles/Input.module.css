@@ -1,6 +1,8 @@
 .inputContainer {
   display: flex;
   flex-direction: column;
+  width: 100%; /* Garante que o container não exceda a largura do pai */
+  margin: 0;
 }
 
 .label {
@@ -9,7 +11,9 @@
 }
 
 .input {
+  box-sizing:border-box; /* Inclui padding e border na largura total */
   padding: 0.5rem;
+  margin: 0;
   border: 1px solid var(--button-hover-background);
   border-radius: 20px;
   font-size: 1rem;
@@ -17,6 +21,7 @@
 }
 
 .input:disabled {
+  box-sizing: border-box;
   padding: 0.5rem;
   border: 1px solid var(--button-hover-background);
   border-radius: 20px;

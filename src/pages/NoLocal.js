@@ -34,6 +34,7 @@ const NoLocal = ({ currentUser }) => {
   const [showAlimentacaoRegistrarModal, setShowAlimentacaoRegistrarModal] = useState(false);
   const [selectedMealTime, setSelectedMealTime] = useState("");
   const [feedingData, setFeedingData] = useState({});
+  const [refresh, setRefresh] = useState(false);
 
   const navigate = useNavigate();
 
@@ -164,7 +165,7 @@ const NoLocal = ({ currentUser }) => {
     };
 
     fetchPets();
-  }, [today]);
+  }, [today, refresh]);
 
   const getLocalAtualOrder = (localAtual) => {
     // Define a ordem dos locais conforme necessário
@@ -206,6 +207,7 @@ const NoLocal = ({ currentUser }) => {
     setSelectedComments([]);
     setSelectedAlimentacaoComments([]);
     setModalTitle("");
+    setRefresh(prev => !prev); // Altera o estado para disparar o useEffect
   };
 
   const handlePetClick = (petId) => {
@@ -445,7 +447,10 @@ const NoLocal = ({ currentUser }) => {
       {showAlimentacaoRegistrarModal && (
         <Modal
           isOpen={showAlimentacaoRegistrarModal}
-          onClose={() => setShowAlimentacaoRegistrarModal(false)}
+          onClose={() => {
+            setShowAlimentacaoRegistrarModal(false);
+            setRefresh(prev => !prev); // Atualiza ao fechar o modal
+          }}
           showFooter={false}
           title="Alimentação"
         >
@@ -493,16 +498,19 @@ const NoLocal = ({ currentUser }) => {
                     {feedingData[pet.petId]?.isSaved ? (
                       <>
                         {/* Exibe o ícone correspondente ao status de alimentação */}
-                        <img
-                          src={getFeedingStatusIcon(feedingData[pet.petId].feedingStatus)}
-                          alt={feedingData[pet.petId].feedingStatus}
-                          className={styles.feedingIcon}
-                        />
+                        <div className={styles.feedingStatusDisplay}>
+                          <img
+                            src={getFeedingStatusIcon(feedingData[pet.petId].feedingStatus)}
+                            alt={feedingData[pet.petId].feedingStatus}
+                            className={styles.feedingIcon}
+                          />
+                        </div>
                         {/* Exibe observações em um input desabilitado */}
                         <Input
                           type="text"
                           value={feedingData[pet.petId].observations}
                           className={styles.observationInput}
+                          containerClassName={styles.observationInputContainer}
                           disabled
                         />
                         {/* Botão desabilitado com texto "Salvo" */}
