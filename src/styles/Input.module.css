@@ -1,7 +1,6 @@
 .inputContainer {
   display: flex;
   flex-direction: column;
-  margin-bottom: 1rem;
 }
 
 .label {
@@ -14,10 +13,16 @@
   border: 1px solid var(--button-hover-background);
   border-radius: 20px;
   font-size: 1rem;
+  width: 100%;
 }
 
 .input:disabled {
+  padding: 0.5rem;
+  border: 1px solid var(--button-hover-background);
+  border-radius: 20px;
+  font-size: 1rem;
   background-color: #cccccc;
+  width: 100%;
   color: black;
   cursor: not-allowed;
 }

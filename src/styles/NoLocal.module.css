@@ -21,13 +21,27 @@
 .alimentacaoButton {
   width: 2rem;
   height: 2rem;
+  padding: 0.75rem;
   cursor: pointer;
+  border-radius: 50%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: var(--button-background);
   transition: transform 0.2s ease;
 }
 
 .alimentacaoButton:hover {
   transform: scale(1.1); /* Efeito de zoom ao passar o mouse */
 }
+
+/* Nova classe para o título de localização */
+.locationTitle {
+  font-size: 1rem;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  color: var(--primary-color);
+}
+
+/* Restante do CSS permanece o mesmo */
 
 .filters {
   display: flex;
@@ -111,20 +125,40 @@ th {
   transform: scale(1.1); /* Efeito de zoom ao passar o mouse */
 }
 
+.locationTitle {
+  font-size: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+/* Ajuste na classe petFeedingItem se necessário */
+.petFeedingItem {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  justify-content: center;
+}
+
 /* Estilos para o modal de alimentação */
 .mealTimeSelection {
   display: flex;
   justify-content: center;
-  /* margin-bottom: 20px; */
+  margin-bottom: 20px;
 }
 
 .mealTimeSelection label {
-  margin-right: 15px;
   cursor: pointer;
 }
 
 .mealTimeSelection input[type="radio"] {
   margin-right: 5px;
+}
+
+.modalContent {
+  max-height: 50vh;
+  overflow-y: auto;
+  width: fit-content;
 }
 
 .petsFeedingList {
@@ -134,15 +168,21 @@ th {
 
 .petFeedingItem {
   display: flex;
-  align-items: end;
-  justify-content: end;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 10px;
 }
 
 .petFeedingItem span {
   flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 10px;
+  font-size: 0.9rem;
 }
 
+/* Ajuste a seleção de status de alimentação */
 .feedingStatusSelection {
   display: flex;
   align-items: center;
@@ -171,14 +211,68 @@ th {
 
 .mealTimeRadio {
   font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  width: 20%;
 }
 
-.observationInput {
-  width: 15%;
+.observationInputContainer {
+  width: 33%;       /* Define a largura desejada */
+  margin-right: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.observationInputContainer input {
+  width: 100%;      /* O input preenche o contêiner */
   padding: 5px;
   margin-right: 10px;
   border: 1px solid var(--border-color);
+  border-radius: 20px;
+}
+
+.observationInput:disabled {
+  width: 40%; /* Mesma largura do input normal */
+}
+
+.observationInput {
+  border-radius: 20px;
+}
+
+.observationInput input {
+  width: 100%;        /* O input ocupa 100% da largura do contêiner */
+  border-radius: 20px;
+}
+
+.observationInput input:disabled {
+  width: 100%;        /* Garante que o input desabilitado mantenha a mesma largura */
+  border-radius: 20px;
+}
+
+/* Estilos para o botão */
+.petFeedingItem button {
+  width: 4.75rem; /* Largura fixa para ambos os estados */
+  padding: 5px 0; /* Ajuste o padding vertical conforme necessário */
+  cursor: pointer;
+  background-color: var(--button-background);
+  color: white;
+  border: none;
   border-radius: 5px;
+  transition: background-color 0.2s;
+  text-align: center; /* Centraliza o texto */
+}
+
+.petFeedingItem button:disabled {
+  background-color: grey;
+  cursor: not-allowed;
+}
+
+.petFeedingItem button:not(:disabled):hover {
+  background-color: var(--button-hover-background);
 }
 
 .petFeedingItem input[type="text"] {
