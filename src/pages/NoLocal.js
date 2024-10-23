@@ -15,7 +15,11 @@ import iconInfo from "../assets/icons/informacao.png";
 import naoIcon from "../assets/icons/nao.png";
 import parcialIcon from "../assets/icons/parcial.png";
 import simIcon from "../assets/icons/sim.png";
+import alimentacaoIcon from "../assets/icons/alimentacao.png"; // Importando o ícone de alimentação
 import styles from "../styles/NoLocal.module.css";
+
+// Importando a função registerComentario
+import { registerComentario } from "../utils/petActions";
 
 const NoLocal = ({ currentUser }) => {
   const [pets, setPets] = useState([]);
@@ -23,6 +27,12 @@ const NoLocal = ({ currentUser }) => {
   const [selectedAlimentacaoComments, setSelectedAlimentacaoComments] = useState([]);
   const [modalTitle, setModalTitle] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+
+  // Estado para o modal de registro de alimentação
+  const [showAlimentacaoRegistrarModal, setShowAlimentacaoRegistrarModal] = useState(false);
+  const [selectedMealTime, setSelectedMealTime] = useState("");
+  const [feedingData, setFeedingData] = useState({});
+
   const navigate = useNavigate();
 
   const today = new Date().toISOString().split('T')[0];
@@ -38,7 +48,7 @@ const NoLocal = ({ currentUser }) => {
         locationsSnapshot.forEach((locationDoc) => {
           const locationData = locationDoc.data();
           if (locationDoc.id !== "Casa") { // Ignora o documento "Casa"
-            petIds.push(...locationData.petIds);
+            petIds.push(...(locationData.petIds || []));
           }
         });
 
@@ -147,7 +157,7 @@ const NoLocal = ({ currentUser }) => {
   }, [today]);
 
   const getLocalAtualOrder = (localAtual) => {
-    // Define the order of locations as needed
+    // Define a ordem dos locais conforme necessário
     const order = {
       "Adestramento": 1,
       "Banho": 2,
@@ -156,7 +166,7 @@ const NoLocal = ({ currentUser }) => {
       "Creche": 5,
       "Hotel": 6,
     };
-    return order[localAtual] || 999; // Default to 999 if location is not found
+    return order[localAtual] || 999; // Valor padrão se o local não for encontrado
   };
 
   const getFeedingStatusIcon = (feedingStatus) => {
@@ -192,6 +202,82 @@ const NoLocal = ({ currentUser }) => {
     navigate(`/${petId}`);
   };
 
+  const handleAlimentacaoRegistrarClick = () => {
+    // Inicializa feedingData para cada pet
+    const initialFeedingData = {};
+    pets.forEach((pet) => {
+      initialFeedingData[pet.petId] = {
+        feedingStatus: "",
+        observations: "",
+        isSaved: false,
+      };
+    });
+    setFeedingData(initialFeedingData);
+    setSelectedMealTime("");
+    setShowAlimentacaoRegistrarModal(true);
+  };
+
+  const handleFeedingStatusChange = (petId, value) => {
+    setFeedingData((prevData) => ({
+      ...prevData,
+      [petId]: {
+        ...prevData[petId],
+        feedingStatus: value,
+      },
+    }));
+  };
+
+  const handleObservationChange = (petId, value) => {
+    setFeedingData((prevData) => ({
+      ...prevData,
+      [petId]: {
+        ...prevData[petId],
+        observations: value,
+      },
+    }));
+  };
+
+  const handleSaveFeeding = async (petId) => {
+    // Verifica se o horário da refeição foi selecionado
+    if (!selectedMealTime) {
+      alert("Por favor, selecione o horário da refeição.");
+      return;
+    }
+
+    const petFeedingData = feedingData[petId];
+    if (!petFeedingData || !petFeedingData.feedingStatus) {
+      alert("Por favor, selecione o status de alimentação.");
+      return;
+    }
+
+    // Prepara os dados para salvar
+    const dataToSave = {
+      mealTime: selectedMealTime,
+      feedingStatus: petFeedingData.feedingStatus,
+      observations: petFeedingData.observations || "",
+    };
+
+    // Usa a função registerComentario existente
+    const result = await registerComentario(
+      petId,
+      currentUser,
+      "Alimentação",
+      dataToSave
+    );
+
+    if (result.success) {
+      setFeedingData((prevData) => ({
+        ...prevData,
+        [petId]: {
+          ...prevData[petId],
+          isSaved: true,
+        },
+      }));
+    } else {
+      alert("Erro ao registrar alimentação.");
+    }
+  };
+
   // Exibe o componente de carregamento enquanto os dados estão sendo carregados
   if (isLoading) {
     return <Loading />;
@@ -200,7 +286,15 @@ const NoLocal = ({ currentUser }) => {
   // Renderiza o Container e a Tabela somente após o carregamento dos pets
   return (
     <Container className={styles.registrosContainer}>
-      <h1>Pets No Local</h1>
+      <div className={styles.header}>
+        <h1>Pets No Local</h1>
+        <img
+          src={alimentacaoIcon}
+          alt="Registrar Alimentação"
+          className={styles.alimentacaoButton}
+          onClick={handleAlimentacaoRegistrarClick}
+        />
+      </div>
       <Table
         headers={[
           "Foto",
@@ -306,6 +400,105 @@ const NoLocal = ({ currentUser }) => {
               observacoes: comment.observations,
             }))}
           />
+        </Modal>
+      )}
+      {/* Modal para registrar alimentação */}
+      {showAlimentacaoRegistrarModal && (
+        <Modal
+          isOpen={showAlimentacaoRegistrarModal}
+          onClose={() => setShowAlimentacaoRegistrarModal(false)}
+          showFooter={false}
+          title="Alimentação"
+        >
+          {/* Seleção de horário da refeição */}
+          <div className={styles.mealTimeSelection}>
+            <label className={styles.mealTimeRadio}>
+              <input
+                type="radio"
+                name="mealTime"
+                value="Café da manhã"
+                checked={selectedMealTime === "Café da manhã"}
+                onChange={(e) => setSelectedMealTime(e.target.value)}
+              />
+              Café da manhã
+            </label>
+            <label className={styles.mealTimeRadio}>
+              <input
+                type="radio"
+                name="mealTime"
+                value="Almoço"
+                checked={selectedMealTime === "Almoço"}
+                onChange={(e) => setSelectedMealTime(e.target.value)}
+              />
+              Almoço
+            </label>
+            <label className={styles.mealTimeRadio}>
+              <input
+                type="radio"
+                name="mealTime"
+                value="Janta"
+                checked={selectedMealTime === "Janta"}
+                onChange={(e) => setSelectedMealTime(e.target.value)}
+              />
+              Janta
+            </label>
+          </div>
+          {/* Lista de pets */}
+          <div className={styles.petsFeedingList}>
+            {pets.map((pet) => (
+              <div key={pet.petId} className={styles.petFeedingItem}>
+                <span>{pet.mascotinho}</span>
+                {/* Seleção de status de alimentação */}
+                <div className={styles.feedingStatusSelection}>
+                  <label>
+                    <input
+                      type="radio"
+                      name={`feedingStatus-${pet.petId}`}
+                      value="Comeu Tudo"
+                      checked={feedingData[pet.petId]?.feedingStatus === "Comeu Tudo"}
+                      onChange={(e) => handleFeedingStatusChange(pet.petId, e.target.value)}
+                    />
+                    <img src={simIcon} alt="Sim" />
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name={`feedingStatus-${pet.petId}`}
+                      value="Comeu Parcial"
+                      checked={feedingData[pet.petId]?.feedingStatus === "Comeu Parcial"}
+                      onChange={(e) => handleFeedingStatusChange(pet.petId, e.target.value)}
+                    />
+                    <img src={parcialIcon} alt="Parcial" />
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name={`feedingStatus-${pet.petId}`}
+                      value="Não Comeu"
+                      checked={feedingData[pet.petId]?.feedingStatus === "Não Comeu"}
+                      onChange={(e) => handleFeedingStatusChange(pet.petId, e.target.value)}
+                    />
+                    <img src={naoIcon} alt="Não" />
+                  </label>
+                </div>
+                {/* Campo de observação */}
+                <input
+                  type="text"
+                  placeholder="Observação"
+                  value={feedingData[pet.petId]?.observations || ""}
+                  className={styles.observationInput}
+                  onChange={(e) => handleObservationChange(pet.petId, e.target.value)}
+                />
+                {/* Botão Salvar */}
+                <button
+                  disabled={feedingData[pet.petId]?.isSaved}
+                  onClick={() => handleSaveFeeding(pet.petId)}
+                >
+                  {feedingData[pet.petId]?.isSaved ? "Registrado" : "Salvar"}
+                </button>
+              </div>
+            ))}
+          </div>
         </Modal>
       )}
     </Container>

@@ -9,6 +9,26 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* Nova classe para o cabeçalho */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Alinha título e botão nos extremos */
+  margin-bottom: 20px;
+}
+
+/* Estilo para o botão de alimentação */
+.alimentacaoButton {
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.alimentacaoButton:hover {
+  transform: scale(1.1); /* Efeito de zoom ao passar o mouse */
+}
+
 .filters {
   display: flex;
   gap: 10px;
@@ -30,14 +50,13 @@
 .registrosTable th, .registrosTable td {
   border: 1px solid var(--border-color);
   text-align: center;
-  cursor: pointer; /* para indicar que é clicável */
+  cursor: pointer; /* Indica que é clicável */
   vertical-align: middle; /* Alinhamento vertical */
 }
 
 th {
   padding: 0.5rem 0.25rem;
 }
-
 
 .registrosTable th:nth-child(1), .registrosTable td:nth-child(1){
   padding: 0px;
@@ -46,7 +65,7 @@ th {
 .registrosTable th {
   background-color: var(--button-background);
   color: white;
-  font-size: 0.75rem
+  font-size: 0.75rem;
 }
 
 .registrosTable td {
@@ -90,4 +109,101 @@ th {
 .commentIcon:hover,
 .feedingIcon:hover {
   transform: scale(1.1); /* Efeito de zoom ao passar o mouse */
+}
+
+/* Estilos para o modal de alimentação */
+.mealTimeSelection {
+  display: flex;
+  justify-content: center;
+  /* margin-bottom: 20px; */
+}
+
+.mealTimeSelection label {
+  margin-right: 15px;
+  cursor: pointer;
+}
+
+.mealTimeSelection input[type="radio"] {
+  margin-right: 5px;
+}
+
+.petsFeedingList {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.petFeedingItem {
+  display: flex;
+  align-items: end;
+  justify-content: end;
+  margin-bottom: 10px;
+}
+
+.petFeedingItem span {
+  flex: 1;
+}
+
+.feedingStatusSelection {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.feedingStatusSelection label {
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.feedingStatusSelection input[type="radio"] {
+  display: none;
+}
+
+.feedingStatusSelection img {
+  width: 1.5rem;
+  height: 1.5rem;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.feedingStatusSelection input[type="radio"]:checked + img {
+  opacity: 1;
+}
+
+.mealTimeRadio {
+  font-size: 1rem;
+}
+
+.observationInput {
+  width: 15%;
+  padding: 5px;
+  margin-right: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+}
+
+.petFeedingItem input[type="text"] {
+  flex: 2;
+  padding: 5px;
+  margin-right: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+}
+
+.petFeedingItem button {
+  padding: 5px 10px;
+  cursor: pointer;
+  background-color: var(--button-background);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.2s;
+}
+
+.petFeedingItem button:disabled {
+  background-color: grey;
+  cursor: not-allowed;
+}
+
+.petFeedingItem button:not(:disabled):hover {
+  background-color: var(--button-hover-background);
 }
