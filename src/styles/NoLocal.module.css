@@ -1,3 +1,5 @@
+/* NoLocal.module.css */
+
 /* Estilos gerais */
 .registrosContainer {
   width: fit-content;
@@ -18,20 +20,163 @@
   margin-bottom: 20px;
 }
 
+/* Botão de Alimentação */
 .alimentacaoButton {
-  width: 2rem;
-  height: 2rem;
-  padding: 0.75rem;
-  cursor: pointer;
+  width: 4rem;
+  height: 4rem;
   border-radius: 50%;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-  border: 1px solid var(--button-hover-background);
-  background-color: var(--button-background);
-  transition: transform 0.2s ease;
+  background: linear-gradient(var(--yellow-logo), var(--yellow-logo-dark));
+  position: relative;
+  cursor: pointer;
+  padding: 0.4rem;
+  border: none;
+  outline: none; /* Remove outline */
+
+  /* Sombra externa para simular efeito convexo */
+  box-shadow:
+    inset 0 2px 3px rgba(255, 255, 255, 0.13),
+    0 5px 8px rgba(0, 0, 0, 0.5),
+    0 10px 10px 4px rgba(0, 0, 0, 0.3);
+  
+  /* Transições para interatividade */
+  transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
 }
 
+/* Remover qualquer transformação no hover */
 .alimentacaoButton:hover {
-  transform: scale(1.1);
+  /* Apenas garantir que o cursor continue como pointer */
+  cursor: pointer;
+  transform: none;
+  box-shadow:
+    inset 0 2px 3px rgba(255, 255, 255, 0.13),
+    0 5px 8px rgba(0, 0, 0, 0.5),
+    0 10px 10px 4px rgba(0, 0, 0, 0.3); /* Mantém a sombra original */
+}
+
+/* Remover borda no foco e active */
+.alimentacaoButton:focus,
+.alimentacaoButton:active {
+  outline: none;
+  border: none;
+}
+
+/* Pseudo-elemento ::after para sombras internas */
+.alimentacaoButton::after {
+  content: "";
+  position: absolute;
+  left: -1rem;
+  right: -1rem;
+  top: -1rem;
+  bottom: -1rem;
+  z-index: -2;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.3),
+    0 0 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Pseudo-elemento ::before para sombras adicionais */
+.alimentacaoButton::before {
+  content: "";
+  position: absolute;
+  left: -0.5rem;
+  right: -0.5rem;
+  top: -0.5rem;
+  bottom: -0.5rem;
+  z-index: -1;
+  border-radius: inherit;
+  box-shadow: inset 0 10px 10px rgba(0, 0, 0, 0.13);
+  filter: blur(1px);
+}
+
+/* Inner container */
+.inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(
+    var(--yellow-logo-dark),
+    var(--yellow-logo)
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 -2px 5px rgba(255, 255, 255, 0.05),
+    0 2px 5px rgba(255, 255, 255, 0.1);
+}
+
+/* Inner after for subtle overlay */
+.inner::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(#ffffff, #e0e0e0);
+  border-radius: inherit;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+/* Estilização do SVG */
+.alimentacaoButton .alimentacaoIcon {
+  width: 2rem;
+  height: 2rem;
+  fill: white; /* Define a cor do SVG */
+  mix-blend-mode: multiply;
+  opacity: 0.75;
+  transition: opacity 0.2s ease;
+}
+
+/* Efeito ao clicar (active) */
+.alimentacaoButton:active {
+  /* Diminui levemente de tamanho e move 2px para baixo */
+  transform: scale(0.98) translateY(2px);
+  
+  /* Ajusta a sombra para simular o botão sendo pressionado */
+  box-shadow:
+    inset 0 2px 3px rgba(255, 255, 255, 0.13),
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    0 4px 8px rgba(0, 0, 0, 0.2);
+  
+  /* Transições suaves */
+  transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+}
+
+/* Modal Animation */
+@keyframes modalAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes modalDisappear {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+
+/* Classe para animação de aparecer com atraso */
+.modalAppear {
+  animation: modalAppear 0.3s ease-out forwards;
+  animation-delay: 0.3s; /* 0.3s de atraso */
+}
+
+/* Classe para animação de desaparecer */
+.modalDisappear {
+  animation: modalDisappear 0.3s ease-in forwards;
 }
 
 /* Título de localização */
@@ -212,7 +357,6 @@ th {
   color: white;
   border: none;
   border-radius: 20px;
-  width: 100%;
   transition: background-color 0.2s;
   text-align: center;
 }

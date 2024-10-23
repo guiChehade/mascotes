@@ -17,7 +17,7 @@ import iconInfo from "../assets/icons/informacao.png";
 import naoIcon from "../assets/icons/nao.png";
 import parcialIcon from "../assets/icons/parcial.png";
 import simIcon from "../assets/icons/sim.png";
-import alimentacaoIcon from "../assets/icons/alimentacao.png";
+import alimentacaoIcon from "../assets/icons/alimentacao.svg";
 import styles from "../styles/NoLocal.module.css";
 
 // Importando a função registerComentario
@@ -34,7 +34,9 @@ const NoLocal = ({ currentUser }) => {
   const [showAlimentacaoRegistrarModal, setShowAlimentacaoRegistrarModal] = useState(false);
   const [selectedMealTime, setSelectedMealTime] = useState("");
   const [feedingData, setFeedingData] = useState({});
-  const [refresh, setRefresh] = useState(false);
+
+  // Novos estados para controlar o loading durante o refresh
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const navigate = useNavigate();
 
@@ -43,6 +45,10 @@ const NoLocal = ({ currentUser }) => {
   useEffect(() => {
     const fetchPets = async () => {
       try {
+        if (isRefreshing) {
+          // Opcional: mostrar um indicador de refresh
+        }
+
         // Passo 1: Buscar os IDs dos pets em locais específicos na coleção "locations", exceto "Casa"
         const locationsRef = collection(firestore, "locations");
         const locationsSnapshot = await getDocs(locationsRef);
@@ -165,7 +171,7 @@ const NoLocal = ({ currentUser }) => {
     };
 
     fetchPets();
-  }, [today, refresh]);
+  }, [today, isRefreshing]);
 
   const getLocalAtualOrder = (localAtual) => {
     // Define a ordem dos locais conforme necessário
@@ -204,10 +210,10 @@ const NoLocal = ({ currentUser }) => {
   };
 
   const handleCloseModal = () => {
+    setShowAlimentacaoRegistrarModal(false);
     setSelectedComments([]);
     setSelectedAlimentacaoComments([]);
     setModalTitle("");
-    setRefresh(prev => !prev); // Altera o estado para disparar o useEffect
   };
 
   const handlePetClick = (petId) => {
@@ -217,7 +223,10 @@ const NoLocal = ({ currentUser }) => {
   const handleAlimentacaoRegistrarClick = () => {
     setSelectedMealTime("");
     setFeedingData({});
-    setShowAlimentacaoRegistrarModal(true);
+    // Atraso de 0.3s antes de mostrar o modal
+    setTimeout(() => {
+      setShowAlimentacaoRegistrarModal(true);
+    }, 100);
   };
 
   const handleFeedingStatusChange = (petId, value) => {
@@ -270,13 +279,70 @@ const NoLocal = ({ currentUser }) => {
     );
 
     if (result.success) {
+      // Atualiza feedingData para refletir a nova alimentação
       setFeedingData((prevData) => ({
         ...prevData,
         [petId]: {
           ...prevData[petId],
           isSaved: true,
+          feedingStatus: dataToSave.feedingStatus,
+          observations: dataToSave.observations,
         },
       }));
+
+      // Atualiza a lista de pets localmente sem recarregar a página
+      setPets((prevPets) =>
+        prevPets.map((pet) => {
+          if (pet.petId === petId) {
+            // Atualiza os comentários de alimentação de hoje
+            const updatedAlimentacaoCommentsToday = pet.alimentacaoCommentsToday.map((comment) => {
+              if (comment.mealTime.trim().toLowerCase() === selectedMealTime.trim().toLowerCase()) {
+                return {
+                  ...comment,
+                  feedingStatus: dataToSave.feedingStatus,
+                  observations: dataToSave.observations,
+                };
+              }
+              return comment;
+            });
+
+            // Se não existir um comentário para o horário selecionado, adiciona um novo
+            if (!updatedAlimentacaoCommentsToday.some(
+              (comment) => comment.mealTime.trim().toLowerCase() === selectedMealTime.trim().toLowerCase()
+            )) {
+              updatedAlimentacaoCommentsToday.push({
+                mealTime: dataToSave.mealTime,
+                feedingStatus: dataToSave.feedingStatus,
+                observations: dataToSave.observations,
+                data: today,
+                horario: new Date().toLocaleTimeString(),
+              });
+            }
+
+            // Atualiza feedingRecordsByMealTime
+            const updatedFeedingRecordsByMealTime = {
+              ...pet.feedingRecordsByMealTime,
+              [selectedMealTime.trim().toLowerCase()]: {
+                mealTime: dataToSave.mealTime,
+                feedingStatus: dataToSave.feedingStatus,
+                observations: dataToSave.observations,
+                data: today,
+                horario: new Date().toLocaleTimeString(),
+              },
+            };
+
+            return {
+              ...pet,
+              alimentacaoCommentsToday: updatedAlimentacaoCommentsToday,
+              feedingRecordsByMealTime: updatedFeedingRecordsByMealTime,
+            };
+          }
+          return pet;
+        })
+      );
+
+      // Opcional: mostrar uma mensagem de sucesso
+      alert("Alimentação registrada com sucesso.");
     } else {
       alert("Erro ao registrar alimentação.");
     }
@@ -324,18 +390,31 @@ const NoLocal = ({ currentUser }) => {
     return acc;
   }, {});
 
-  // Renderiza o Container e a Tabela somente após o carregamento dos pets
   return (
     <Container className={styles.registrosContainer}>
       <div className={styles.header}>
         <h1>Pets No Local</h1>
-        <img
-          src={alimentacaoIcon}
-          alt="Registrar Alimentação"
+        <button
           className={styles.alimentacaoButton}
           onClick={handleAlimentacaoRegistrarClick}
-        />
+          aria-label="Registrar Alimentação"
+        >
+          <div className={styles.inner}>
+            <img
+              src={alimentacaoIcon}
+              alt="Registrar Alimentação"
+              className={styles.alimentacaoIcon}
+            />
+          </div>
+        </button>
       </div>
+      {/* Indicador de atualização */}
+      {isRefreshing && (
+        <div className={styles.refreshIndicator}>
+          <Loading />
+          <span>Atualizando dados...</span>
+        </div>
+      )}
       <Table
         headers={[
           "Foto",
@@ -403,6 +482,7 @@ const NoLocal = ({ currentUser }) => {
           onClose={handleCloseModal}
           showFooter={false}
           title={modalTitle}
+          className={`${styles.modalAppear}`} /* Aplica a classe de animação */
         >
           <Table
             headers={["Tipo", "Comentário", "Usuário", "Horário", "Data"]}
@@ -423,6 +503,7 @@ const NoLocal = ({ currentUser }) => {
           onClose={handleCloseModal}
           showFooter={false}
           title={modalTitle}
+          className={`${styles.modalAppear}`} /* Aplica a classe de animação */
         >
           <Table
             headers={["Data", "Horário", "Usuário", "Refeição", "Status", "Observações"]}
@@ -447,12 +528,10 @@ const NoLocal = ({ currentUser }) => {
       {showAlimentacaoRegistrarModal && (
         <Modal
           isOpen={showAlimentacaoRegistrarModal}
-          onClose={() => {
-            setShowAlimentacaoRegistrarModal(false);
-            setRefresh(prev => !prev); // Atualiza ao fechar o modal
-          }}
+          onClose={handleCloseModal}
           showFooter={false}
           title="Alimentação"
+          className={`${styles.modalAppear}`} /* Aplica a classe de animação */
         >
           <div className={styles.modalContent}>
             {/* Seleção de horário da refeição */}
