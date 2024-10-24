@@ -37,7 +37,7 @@ const NoLocal = ({ currentUser }) => {
 
   const navigate = useNavigate();
 
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toLocaleDateString('en-CA');
 
   useEffect(() => {
     const fetchPets = async () => {
