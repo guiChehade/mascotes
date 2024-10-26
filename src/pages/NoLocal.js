@@ -5,6 +5,7 @@ import {
   getDocs,
   getDoc,
   doc,
+  updateDoc,
 } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import Container from "../components/Container";
@@ -25,14 +26,17 @@ import { registerComentario } from "../utils/petActions";
 
 const NoLocal = ({ currentUser }) => {
   const [pets, setPets] = useState([]);
+  const [locations, setLocations] = useState([]);
   const [selectedComments, setSelectedComments] = useState([]);
   const [selectedAlimentacaoComments, setSelectedAlimentacaoComments] = useState([]);
   const [modalTitle, setModalTitle] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
-  // Estado para o modal de registro de alimentação
+  // Estados para o modal de registro de alimentação
   const [showAlimentacaoRegistrarModal, setShowAlimentacaoRegistrarModal] = useState(false);
+  const [mealTimeSelected, setMealTimeSelected] = useState(false);
   const [selectedMealTime, setSelectedMealTime] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState("");
   const [feedingData, setFeedingData] = useState({});
 
   const navigate = useNavigate();
@@ -42,83 +46,95 @@ const NoLocal = ({ currentUser }) => {
   useEffect(() => {
     const fetchPets = async () => {
       try {
-        // Passo 1: Buscar os IDs dos pets em locais específicos na coleção "locations", exceto "Casa"
+        // Passo 1: Buscar as localizações com pets (exceto "Casa")
         const locationsRef = collection(firestore, "locations");
         const locationsSnapshot = await getDocs(locationsRef);
 
-        const petIds = [];
+        const locationsData = [];
+        const petIdsByLocation = {};
+
         locationsSnapshot.forEach((locationDoc) => {
           const locationData = locationDoc.data();
-          if (locationDoc.id !== "Casa") { // Ignora o documento "Casa"
-            petIds.push(...(locationData.petIds || []));
+          if (locationDoc.id !== "Casa" && locationData.petIds && locationData.petIds.length > 0) {
+            locationsData.push(locationDoc.id);
+            petIdsByLocation[locationDoc.id] = locationData.petIds;
           }
         });
+
+        setLocations(locationsData);
 
         // Passo 2: Buscar os dados de cada pet com base nos IDs
-        const petDataPromises = petIds.map(async (petId) => {
-          const petRef = doc(firestore, "pets", petId);
-          const petDoc = await getDoc(petRef);
+        const petDataPromises = [];
+        for (const location of locationsData) {
+          const petIds = petIdsByLocation[location];
+          petDataPromises.push(
+            ...petIds.map(async (petId) => {
+              const petRef = doc(firestore, "pets", petId);
+              const petDoc = await getDoc(petRef);
 
-          if (petDoc.exists()) {
-            const pet = petDoc.data();
+              if (petDoc.exists()) {
+                const pet = petDoc.data();
 
-            // Busca o documento 'mostRecent' na subcoleção 'controle'
-            const mostRecentRef = doc(firestore, "pets", petId, "controle", "mostRecent");
-            const mostRecentDoc = await getDoc(mostRecentRef);
+                // Busca o documento 'mostRecent' na subcoleção 'controle'
+                const mostRecentRef = doc(firestore, "pets", petId, "controle", "mostRecent");
+                const mostRecentDoc = await getDoc(mostRecentRef);
 
-            if (mostRecentDoc.exists()) {
-              const latestEntry = mostRecentDoc.data();
+                if (mostRecentDoc.exists()) {
+                  const latestEntry = mostRecentDoc.data();
 
-              // Buscar todos os comentários das subcoleções
-              const commentTypes = [
-                "comentarioAlimentacao",
-                "comentarioVet",
-                "comentarioComportamento",
-                "comentarioPertences",
-                "comentarioObservacoes",
-              ];
+                  // Buscar todos os comentários das subcoleções
+                  const commentTypes = [
+                    "comentarioAlimentacao",
+                    "comentarioVet",
+                    "comentarioComportamento",
+                    "comentarioPertences",
+                    "comentarioObservacoes",
+                  ];
 
-              const commentsPromises = commentTypes.map((type) =>
-                fetchComments(mostRecentRef, type)
-              );
+                  const commentsPromises = commentTypes.map((type) =>
+                    fetchComments(mostRecentRef, type)
+                  );
 
-              const commentsArrays = await Promise.all(commentsPromises);
-              const allComments = commentsArrays.flat();
+                  const commentsArrays = await Promise.all(commentsPromises);
+                  const allComments = commentsArrays.flat();
 
-              // Separar todos os comentários de Alimentação (para o modal)
-              const allAlimentacaoComments = allComments.filter(
-                (comment) => comment.type === "comentarioAlimentacao"
-              );
+                  // Separar todos os comentários de Alimentação (para o modal)
+                  const allAlimentacaoComments = allComments.filter(
+                    (comment) => comment.type === "comentarioAlimentacao"
+                  );
 
-              // Separar comentários de Alimentação do dia atual (para exibir os ícones)
-              const alimentacaoCommentsToday = allAlimentacaoComments.filter(
-                (comment) => comment.data === today
-              );
+                  // Separar comentários de Alimentação do dia atual (para exibir os ícones)
+                  const alimentacaoCommentsToday = allAlimentacaoComments.filter(
+                    (comment) => comment.data === today && !comment.apagado
+                  );
 
-              // Organizar os comentários de alimentação de hoje por mealTime
-              const feedingRecordsByMealTime = {};
-              alimentacaoCommentsToday.forEach((comment) => {
-                const mealTime = comment.mealTime.trim().toLowerCase();
-                feedingRecordsByMealTime[mealTime] = comment;
-              });
+                  // Organizar os comentários de alimentação de hoje por mealTime
+                  const feedingRecordsByMealTime = {};
+                  alimentacaoCommentsToday.forEach((comment) => {
+                    const mealTime = comment.mealTime.trim().toLowerCase();
+                    feedingRecordsByMealTime[mealTime] = comment;
+                  });
 
-              const otherComments = allComments.filter(
-                (comment) => comment.type !== "comentarioAlimentacao"
-              );
+                  const otherComments = allComments.filter(
+                    (comment) => comment.type !== "comentarioAlimentacao"
+                  );
 
-              return {
-                ...pet,
-                ...latestEntry,
-                petId: petId,
-                comments: otherComments,
-                alimentacaoCommentsToday,
-                allAlimentacaoComments, // Inclui todos os comentários de alimentação
-                feedingRecordsByMealTime, // Alimentação de hoje organizada por mealTime
-              };
-            }
-          }
-          return null; // Exclui pets que não têm as condições corretas
-        });
+                  return {
+                    ...pet,
+                    ...latestEntry,
+                    petId: petId,
+                    location: location,
+                    comments: otherComments,
+                    alimentacaoCommentsToday,
+                    allAlimentacaoComments, // Inclui todos os comentários de alimentação
+                    feedingRecordsByMealTime, // Alimentação de hoje organizada por mealTime
+                  };
+                }
+              }
+              return null; // Exclui pets que não têm as condições corretas
+            })
+          );
+        }
 
         const petData = (await Promise.all(petDataPromises)).filter(
           (pet) => pet !== null
@@ -154,7 +170,7 @@ const NoLocal = ({ currentUser }) => {
         id: doc.id,
         type: subCollection,
         ...doc.data(),
-      }));
+      })).filter(comment => !comment.apagado); // Exclui comentários apagados
       comments.sort((a, b) => {
         const dateA = new Date(`${a.data} ${a.horario}`);
         const dateB = new Date(`${b.data} ${b.horario}`);
@@ -204,6 +220,8 @@ const NoLocal = ({ currentUser }) => {
 
   const handleCloseModal = () => {
     setShowAlimentacaoRegistrarModal(false);
+    setMealTimeSelected(false);
+    setSelectedLocation("");
     setSelectedComments([]);
     setSelectedAlimentacaoComments([]);
     setModalTitle("");
@@ -215,24 +233,39 @@ const NoLocal = ({ currentUser }) => {
 
   const handleAlimentacaoRegistrarClick = () => {
     setSelectedMealTime("");
+    setMealTimeSelected(false);
     setFeedingData({});
-    // Atraso de 0.3s antes de mostrar o modal
-    setTimeout(() => {
-      setShowAlimentacaoRegistrarModal(true);
-    }, 150);
+    setSelectedLocation("");
+
+    setShowAlimentacaoRegistrarModal(true);
   };
 
-  const handleFeedingStatusChange = (petId, value) => {
+  const handleMealTimeSelect = (value) => {
+    setSelectedMealTime(value);
+    setMealTimeSelected(true);
+  };
+
+  const handleLocationSelect = (location) => {
+    setSelectedLocation(location);
+  };
+
+  const handleFeedingStatusChange = async (petId, value) => {
+    const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
     setFeedingData((prevData) => ({
       ...prevData,
       [petId]: {
         ...prevData[petId],
         feedingStatus: value,
+        horario: prevData[petId]?.horario || currentTime,
       },
     }));
+
+    // Salva imediatamente no Firestore
+    await saveFeedingData(petId, value, feedingData[petId]?.observations || "", feedingData[petId]?.horario || currentTime);
   };
 
-  const handleObservationChange = (petId, value) => {
+  const handleObservationChange = async (petId, value) => {
     setFeedingData((prevData) => ({
       ...prevData,
       [petId]: {
@@ -240,27 +273,41 @@ const NoLocal = ({ currentUser }) => {
         observations: value,
       },
     }));
+
+    // Se já houver um status de alimentação selecionado, salva imediatamente
+    if (feedingData[petId]?.feedingStatus) {
+      await saveFeedingData(petId, feedingData[petId].feedingStatus, value, feedingData[petId]?.horario || "");
+    }
   };
 
-  const handleSaveFeeding = async (petId) => {
-    const petFeedingData = feedingData[petId];
+  const handleTimeChange = async (petId, value) => {
+    setFeedingData((prevData) => ({
+      ...prevData,
+      [petId]: {
+        ...prevData[petId],
+        horario: value,
+      },
+    }));
+
+    // Se já houver um status de alimentação selecionado, salva imediatamente
+    if (feedingData[petId]?.feedingStatus) {
+      await saveFeedingData(petId, feedingData[petId].feedingStatus, feedingData[petId]?.observations || "", value);
+    }
+  };
+
+  const saveFeedingData = async (petId, feedingStatus, observations, horario) => {
     // Verifica se o horário da refeição foi selecionado
     if (!selectedMealTime) {
       alert("Por favor, selecione o horário da refeição.");
       return;
     }
 
-    // Verifica se o status de alimentação foi selecionado
-    if (!petFeedingData || !petFeedingData.feedingStatus) {
-      alert("Por favor, selecione o status de alimentação.");
-      return;
-    }
-
     // Prepara os dados para salvar
     const dataToSave = {
       mealTime: selectedMealTime.trim(),
-      feedingStatus: petFeedingData.feedingStatus,
-      observations: petFeedingData.observations || "",
+      feedingStatus: feedingStatus,
+      observations: observations || "",
+      horario: horario || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     };
 
     // Usa a função registerComentario existente
@@ -280,6 +327,7 @@ const NoLocal = ({ currentUser }) => {
           isSaved: true,
           feedingStatus: dataToSave.feedingStatus,
           observations: dataToSave.observations,
+          horario: dataToSave.horario,
         },
       }));
 
@@ -294,6 +342,8 @@ const NoLocal = ({ currentUser }) => {
                   ...comment,
                   feedingStatus: dataToSave.feedingStatus,
                   observations: dataToSave.observations,
+                  horario: dataToSave.horario,
+                  usuario: currentUser.email,
                 };
               }
               return comment;
@@ -308,7 +358,8 @@ const NoLocal = ({ currentUser }) => {
                 feedingStatus: dataToSave.feedingStatus,
                 observations: dataToSave.observations,
                 data: today,
-                horario: new Date().toLocaleTimeString(),
+                horario: dataToSave.horario,
+                usuario: currentUser.email,
               });
             }
 
@@ -320,7 +371,8 @@ const NoLocal = ({ currentUser }) => {
                 feedingStatus: dataToSave.feedingStatus,
                 observations: dataToSave.observations,
                 data: today,
-                horario: new Date().toLocaleTimeString(),
+                horario: dataToSave.horario,
+                usuario: currentUser.email,
               },
             };
 
@@ -333,11 +385,61 @@ const NoLocal = ({ currentUser }) => {
           return pet;
         })
       );
-
-      // Opcional: mostrar uma mensagem de sucesso
-      alert("Alimentação registrada com sucesso.");
     } else {
       alert("Erro ao registrar alimentação.");
+    }
+  };
+
+  const handleIconClick = async (petId) => {
+    // Atualiza o documento no Firestore para "apagar" o registro
+    const mostRecentRef = doc(firestore, "pets", petId, "controle", "mostRecent");
+    const alimentacaoRef = collection(mostRecentRef, "comentarioAlimentacao");
+
+    // Encontra o documento correspondente ao horário da refeição
+    const snapshot = await getDocs(alimentacaoRef);
+    const docToUpdate = snapshot.docs.find(
+      (doc) =>
+        doc.data().mealTime.trim().toLowerCase() === selectedMealTime.trim().toLowerCase() &&
+        doc.data().data === today &&
+        !doc.data().apagado
+    );
+
+    if (docToUpdate) {
+      await updateDoc(docToUpdate.ref, {
+        apagado: true,
+      });
+
+      // Atualiza o estado localmente
+      setFeedingData((prevData) => ({
+        ...prevData,
+        [petId]: {
+          feedingStatus: "",
+          observations: "",
+          horario: "",
+          isSaved: false,
+        },
+      }));
+
+      setPets((prevPets) =>
+        prevPets.map((pet) => {
+          if (pet.petId === petId) {
+            // Remove o registro do estado
+            const updatedAlimentacaoCommentsToday = pet.alimentacaoCommentsToday.filter(
+              (comment) => !(comment.mealTime.trim().toLowerCase() === selectedMealTime.trim().toLowerCase())
+            );
+
+            const updatedFeedingRecordsByMealTime = { ...pet.feedingRecordsByMealTime };
+            delete updatedFeedingRecordsByMealTime[selectedMealTime.trim().toLowerCase()];
+
+            return {
+              ...pet,
+              alimentacaoCommentsToday: updatedAlimentacaoCommentsToday,
+              feedingRecordsByMealTime: updatedFeedingRecordsByMealTime,
+            };
+          }
+          return pet;
+        })
+      );
     }
   };
 
@@ -354,12 +456,14 @@ const NoLocal = ({ currentUser }) => {
           updatedFeedingData[pet.petId] = {
             feedingStatus: feedingRecord.feedingStatus,
             observations: feedingRecord.observations || '',
+            horario: feedingRecord.horario || '',
             isSaved: true,
           };
         } else {
           updatedFeedingData[pet.petId] = {
             feedingStatus: '',
             observations: '',
+            horario: '',
             isSaved: false,
           };
         }
@@ -373,21 +477,16 @@ const NoLocal = ({ currentUser }) => {
     return <Loading />;
   }
 
-  // Agrupa os pets por localAtual
-  const groupedPets = pets.reduce((acc, pet) => {
-    const location = pet.localAtual || 'Sem Local';
-    if (!acc[location]) {
-      acc[location] = [];
-    }
-    acc[location].push(pet);
-    return acc;
-  }, {});
+  // Filtra os pets pela localização selecionada
+  const petsInSelectedLocation = pets.filter(
+    (pet) => pet.location === selectedLocation
+  );
 
   return (
     <Container className={styles.registrosContainer}>
       <div className={styles.header}>
         <h1>Pets No Local</h1>
-        <button
+        <Button
           className={styles.alimentacaoButton}
           onClick={handleAlimentacaoRegistrarClick}
           aria-label="Registrar Alimentação"
@@ -399,7 +498,7 @@ const NoLocal = ({ currentUser }) => {
               className={styles.alimentacaoIcon}
             />
           </div>
-        </button>
+        </Button>
       </div>
       <Table
         headers={[
@@ -517,69 +616,100 @@ const NoLocal = ({ currentUser }) => {
           onClose={handleCloseModal}
           showFooter={false}
           title="Alimentação"
-          className={`${styles.modalAppear}`} /* Aplica a classe de animação */
+          className={`${styles.modalAppear}`}
         >
           <div className={styles.modalContent}>
             {/* Seleção de horário da refeição */}
             <div className={styles.mealTimeSelection}>
-              <label className={styles.mealTimeRadio}>
+              <div className={styles.mealTimeRadio}>
                 <input
                   type="radio"
+                  id="manha"
                   name="mealTime"
                   value="Café da manhã"
                   checked={selectedMealTime === "Café da manhã"}
-                  onChange={(e) => setSelectedMealTime(e.target.value)}
+                  onChange={(e) => handleMealTimeSelect(e.target.value)}
                 />
-                Café da manhã
-              </label>
-              <label className={styles.mealTimeRadio}>
+                <label htmlFor="manha">Manhã</label>
+              </div>
+              <div className={styles.mealTimeRadio}>
                 <input
                   type="radio"
+                  id="tarde"
                   name="mealTime"
                   value="Almoço"
                   checked={selectedMealTime === "Almoço"}
-                  onChange={(e) => setSelectedMealTime(e.target.value)}
+                  onChange={(e) => handleMealTimeSelect(e.target.value)}
                 />
-                Almoço
-              </label>
-              <label className={styles.mealTimeRadio}>
+                <label htmlFor="tarde">Tarde</label>
+              </div>
+              <div className={styles.mealTimeRadio}>
                 <input
                   type="radio"
+                  id="noite"
                   name="mealTime"
                   value="Janta"
                   checked={selectedMealTime === "Janta"}
-                  onChange={(e) => setSelectedMealTime(e.target.value)}
+                  onChange={(e) => handleMealTimeSelect(e.target.value)}
                 />
-                Janta
-              </label>
+                <label htmlFor="noite">Noite</label>
+              </div>
             </div>
-            {/* Lista de pets agrupados por localAtual */}
-            {Object.keys(groupedPets).map((location) => (
-              <div key={location}>
-                <h2 className={styles.locationTitle}>{location}</h2>
-                {groupedPets[location].map((pet) => (
+            {/* Exibe as localizações após a seleção do horário */}
+            {mealTimeSelected && (
+              <div className={styles.locationTabs}>
+                {locations.map((location) => (
+                  <div
+                    key={location}
+                    className={`${styles.locationTab} ${
+                      selectedLocation === location ? styles.activeLocationTab : ""
+                    }`}
+                    onClick={() => handleLocationSelect(location)}
+                  >
+                    {location}
+                  </div>
+                ))}
+              </div>
+            )}
+            {/* Exibe os pets após a seleção da localização */}
+            {selectedLocation && (
+              <div className={styles.petsContainer}>
+                {petsInSelectedLocation.map((pet) => (
                   <div key={pet.petId} className={styles.petFeedingItem}>
                     <span>{pet.mascotinho}</span>
                     {feedingData[pet.petId]?.isSaved ? (
                       <>
                         {/* Exibe o ícone correspondente ao status de alimentação */}
-                        <div className={styles.feedingStatusDisplay}>
+                        <div
+                          className={styles.feedingStatusDisplay}
+                          onClick={() => handleIconClick(pet.petId)}
+                        >
                           <img
                             src={getFeedingStatusIcon(feedingData[pet.petId].feedingStatus)}
                             alt={feedingData[pet.petId].feedingStatus}
                             className={styles.feedingIcon}
                           />
                         </div>
-                        {/* Exibe observações em um input desabilitado */}
+                        {/* Campo de horário */}
+                        <Input
+                          type="time"
+                          value={feedingData[pet.petId].horario}
+                          onChange={(e) => handleTimeChange(pet.petId, e.target.value)}
+                          className={styles.timeInput}
+                          containerClassName={styles.timeInputContainer}
+                          disabled={!feedingData[pet.petId]?.isSaved}
+                          placeholder="hh:mm"
+                        />
+                        {/* Campo de observação */}
                         <Input
                           type="text"
+                          placeholder="Observação"
                           value={feedingData[pet.petId].observations}
+                          onChange={(e) => handleObservationChange(pet.petId, e.target.value)}
                           className={styles.observationInput}
                           containerClassName={styles.observationInputContainer}
-                          disabled
+                          disabled={!feedingData[pet.petId]?.isSaved}
                         />
-                        {/* Botão desabilitado com texto "Salvo" */}
-                        <Button disabled>{'Salvo'}</Button>
                       </>
                     ) : (
                       <>
@@ -619,7 +749,16 @@ const NoLocal = ({ currentUser }) => {
                             <img src={naoIcon} alt="Não" />
                           </label>
                         </div>
-                        {/* Campo de observação */}
+                        {/* Campo de horário e observação desabilitados */}
+                        <Input
+                          type="time"
+                          placeholder="hh:mm"
+                          value={feedingData[pet.petId]?.horario || ""}
+                          onChange={(e) => handleTimeChange(pet.petId, e.target.value)}
+                          className={styles.timeInput}
+                          containerClassName={styles.timeInputContainer}
+                          disabled
+                        />
                         <Input
                           type="text"
                           placeholder="Observação"
@@ -627,19 +766,14 @@ const NoLocal = ({ currentUser }) => {
                           onChange={(e) => handleObservationChange(pet.petId, e.target.value)}
                           className={styles.observationInput}
                           containerClassName={styles.observationInputContainer}
+                          disabled
                         />
-                        {/* Botão Salvar */}
-                        <Button
-                          onClick={() => handleSaveFeeding(pet.petId)}
-                        >
-                          {'Salvar'}
-                        </Button>
                       </>
                     )}
                   </div>
                 ))}
               </div>
-            ))}
+            )}
           </div>
         </Modal>
       )}

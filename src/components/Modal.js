@@ -2,7 +2,7 @@ import React from 'react';
 import styles from '../styles/Modal.module.css';
 import Button from './Button';
 
-const Modal = ({ isOpen, onClose, title, children, onConfirm, showFooter = true }) => {
+const Modal = ({ isOpen, onClose, title, children, onConfirm, showFooter = true, className = '' }) => {
   if (!isOpen) return null;
 
   const handleOverlayClick = (e) => {
@@ -13,7 +13,7 @@ const Modal = ({ isOpen, onClose, title, children, onConfirm, showFooter = true 
 
   return (
     <div className={styles.modalOverlay} onClick={handleOverlayClick}>
-      <div className={styles.modal}>
+      <div className={`${styles.modal} ${className}`}>
         <button className={styles.closeButton} onClick={onClose}>X</button>
         {title && <h2 className={styles.modalTitle}>{title}</h2>}
         <div className={styles.modalContent}>
