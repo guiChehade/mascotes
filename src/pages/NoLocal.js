@@ -308,86 +308,145 @@ const NoLocal = ({ currentUser }) => {
       feedingStatus: feedingStatus,
       observations: observations || "",
       horario: horario || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      data: today,
+      usuario: currentUser.name,
     };
 
-    // Usa a função registerComentario existente
-    const result = await registerComentario(
-      petId,
-      currentUser,
-      "Alimentação",
-      dataToSave
+    const normalizedMealTime = selectedMealTime.trim().toLowerCase();
+
+    // Obter a referência para 'mostRecent'
+    const mostRecentRef = doc(firestore, "pets", petId, "controle", "mostRecent");
+    const alimentacaoRef = collection(mostRecentRef, "comentarioAlimentacao");
+  
+    // Encontrar o documento existente para o mealTime
+    const snapshot = await getDocs(alimentacaoRef);
+    const existingDoc = snapshot.docs.find(
+      (doc) =>
+        doc.data().mealTime.trim().toLowerCase() === normalizedMealTime &&
+        doc.data().data === today &&
+        !doc.data().apagado
     );
-
-    if (result.success) {
-      // Atualiza feedingData para refletir a nova alimentação
-      setFeedingData((prevData) => ({
-        ...prevData,
-        [petId]: {
-          ...prevData[petId],
-          isSaved: true,
-          feedingStatus: dataToSave.feedingStatus,
-          observations: dataToSave.observations,
-          horario: dataToSave.horario,
-        },
-      }));
-
-      // Atualiza a lista de pets localmente sem recarregar a página
-      setPets((prevPets) =>
-        prevPets.map((pet) => {
-          if (pet.petId === petId) {
-            // Atualiza os comentários de alimentação de hoje
-            const updatedAlimentacaoCommentsToday = pet.alimentacaoCommentsToday.map((comment) => {
-              if (comment.mealTime.trim().toLowerCase() === selectedMealTime.trim().toLowerCase()) {
-                return {
-                  ...comment,
-                  feedingStatus: dataToSave.feedingStatus,
-                  observations: dataToSave.observations,
-                  horario: dataToSave.horario,
-                  usuario: currentUser.email,
-                };
-              }
-              return comment;
-            });
-
-            // Se não existir um comentário para o horário selecionado, adiciona um novo
-            if (!updatedAlimentacaoCommentsToday.some(
-              (comment) => comment.mealTime.trim().toLowerCase() === selectedMealTime.trim().toLowerCase()
-            )) {
-              updatedAlimentacaoCommentsToday.push({
-                mealTime: dataToSave.mealTime,
-                feedingStatus: dataToSave.feedingStatus,
-                observations: dataToSave.observations,
-                data: today,
-                horario: dataToSave.horario,
-                usuario: currentUser.email,
-              });
-            }
-
-            // Atualiza feedingRecordsByMealTime
-            const updatedFeedingRecordsByMealTime = {
-              ...pet.feedingRecordsByMealTime,
-              [selectedMealTime.trim().toLowerCase()]: {
-                mealTime: dataToSave.mealTime,
-                feedingStatus: dataToSave.feedingStatus,
-                observations: dataToSave.observations,
-                data: today,
-                horario: dataToSave.horario,
-                usuario: currentUser.email,
-              },
-            };
-
-            return {
-              ...pet,
-              alimentacaoCommentsToday: updatedAlimentacaoCommentsToday,
-              feedingRecordsByMealTime: updatedFeedingRecordsByMealTime,
-            };
-          }
-          return pet;
-        })
-      );
+  
+    if (existingDoc) {
+      // Atualizar o documento existente
+      await updateDoc(existingDoc.ref, {
+        feedingStatus: dataToSave.feedingStatus,
+        observations: dataToSave.observations,
+        horario: dataToSave.horario,
+        usuario: dataToSave.usuario,
+      });
     } else {
-      alert("Erro ao registrar alimentação.");
+      // Criar um novo documento
+      const result = await registerComentario(
+        petId,
+        currentUser,
+        "Alimentação",
+        dataToSave
+      );
+  
+      if (!result.success) {
+        alert("Erro ao registrar alimentação.");
+        return;
+      }
     }
+  
+    // Atualiza feedingData para refletir a nova alimentação
+    setFeedingData((prevData) => ({
+      ...prevData,
+      [petId]: {
+        ...prevData[petId],
+        isSaved: true,
+        feedingStatus: dataToSave.feedingStatus,
+        observations: dataToSave.observations,
+        horario: dataToSave.horario,
+      },
+    }));
+  
+    // Atualiza a lista de pets localmente sem recarregar a página
+    setPets((prevPets) =>
+      prevPets.map((pet) => {
+        if (pet.petId === petId) {
+          // Atualiza os comentários de alimentação de hoje
+          let updatedAlimentacaoCommentsToday = pet.alimentacaoCommentsToday.map((comment) => {
+            if (comment.mealTime.trim().toLowerCase() === selectedMealTime.trim().toLowerCase()) {
+              return {
+                ...comment,
+                feedingStatus: dataToSave.feedingStatus,
+                observations: dataToSave.observations,
+                horario: dataToSave.horario,
+                usuario: dataToSave.usuario,
+              };
+            }
+            return comment;
+          });
+  
+          // Se não existir um comentário para o horário selecionado, adiciona um novo
+          if (!updatedAlimentacaoCommentsToday.some(
+            (comment) => comment.mealTime.trim().toLowerCase() === selectedMealTime.trim().toLowerCase()
+          )) {
+            updatedAlimentacaoCommentsToday.push({
+              mealTime: dataToSave.mealTime,
+              feedingStatus: dataToSave.feedingStatus,
+              observations: dataToSave.observations,
+              data: today,
+              horario: dataToSave.horario,
+              usuario: dataToSave.usuario,
+            });
+          }
+  
+          // Atualiza feedingRecordsByMealTime
+          const updatedFeedingRecordsByMealTime = {
+            ...pet.feedingRecordsByMealTime,
+            [selectedMealTime.trim().toLowerCase()]: {
+              mealTime: dataToSave.mealTime,
+              feedingStatus: dataToSave.feedingStatus,
+              observations: dataToSave.observations,
+              data: today,
+              horario: dataToSave.horario,
+              usuario: dataToSave.usuario,
+            },
+          };
+  
+          // Atualiza allAlimentacaoComments
+          let updatedAllAlimentacaoComments = pet.allAlimentacaoComments.map((comment) => {
+            if (comment.mealTime.trim().toLowerCase() === selectedMealTime.trim().toLowerCase() &&
+                comment.data === today &&
+                !comment.apagado) {
+              return {
+                ...comment,
+                feedingStatus: dataToSave.feedingStatus,
+                observations: dataToSave.observations,
+                horario: dataToSave.horario,
+                usuario: dataToSave.usuario,
+              };
+            }
+            return comment;
+          });
+  
+          // Se não existir um comentário para o horário selecionado, adiciona um novo
+          if (!updatedAllAlimentacaoComments.some(
+            (comment) => comment.mealTime.trim().toLowerCase() === selectedMealTime.trim().toLowerCase() && comment.data === today && !comment.apagado
+          )) {
+            updatedAllAlimentacaoComments.push({
+              mealTime: dataToSave.mealTime,
+              feedingStatus: dataToSave.feedingStatus,
+              observations: dataToSave.observations,
+              data: today,
+              horario: dataToSave.horario,
+              usuario: dataToSave.usuario,
+            });
+          }
+  
+          return {
+            ...pet,
+            alimentacaoCommentsToday: updatedAlimentacaoCommentsToday,
+            feedingRecordsByMealTime: updatedFeedingRecordsByMealTime,
+            allAlimentacaoComments: updatedAllAlimentacaoComments, // Atualização adicionada
+          };
+        }
+        return pet;
+      })
+    );
   };
 
   const handleIconClick = async (petId) => {
@@ -569,16 +628,18 @@ const NoLocal = ({ currentUser }) => {
           title={modalTitle}
           className={`${styles.modalAppear}`} /* Aplica a classe de animação */
         >
-          <Table
-            headers={["Tipo", "Comentário", "Usuário", "Horário", "Data"]}
-            data={selectedComments.map((detail) => ({
-              tipo: getCommentTypeName(detail.type),
-              comentario: detail.comentario,
-              usuario: detail.usuario,
-              horario: detail.horario,
-              data: detail.data,
-            }))}
-          />
+          <div className={styles.modalContent}> {/* Envolvimento adicionado */}
+            <Table
+              headers={["Tipo", "Comentário", "Usuário", "Horário", "Data"]}
+              data={selectedComments.map((detail) => ({
+                tipo: getCommentTypeName(detail.type),
+                comentario: detail.comentario,
+                usuario: detail.usuario,
+                horario: detail.horario,
+                data: detail.data,
+              }))}
+            />
+          </div>
         </Modal>
       )}
       {/* Modal para comentários de alimentação */}
@@ -590,23 +651,25 @@ const NoLocal = ({ currentUser }) => {
           title={modalTitle}
           className={`${styles.modalAppear}`} /* Aplica a classe de animação */
         >
-          <Table
-            headers={["Data", "Horário", "Usuário", "Refeição", "Status", "Observações"]}
-            data={selectedAlimentacaoComments.map((comment) => ({
-              data: comment.data,
-              horario: comment.horario,
-              usuario: comment.usuario,
-              refeicao: comment.mealTime,
-              status: (
-                <img
-                  src={getFeedingStatusIcon(comment.feedingStatus)}
-                  alt={comment.feedingStatus}
-                  className={styles.feedingIcon}
-                />
-              ),
-              observacoes: comment.observations,
-            }))}
-          />
+          <div className={styles.modalContent}> {/* Envolvimento adicionado */}
+            <Table
+              headers={["Data", "Horário", "Usuário", "Refeição", "Status", "Observações"]}
+              data={selectedAlimentacaoComments.map((comment) => ({
+                data: comment.data,
+                horario: comment.horario,
+                usuario: comment.usuario,
+                refeicao: comment.mealTime,
+                status: (
+                  <img
+                    src={getFeedingStatusIcon(comment.feedingStatus)}
+                    alt={comment.feedingStatus}
+                    className={styles.feedingIcon}
+                  />
+                ),
+                observacoes: comment.observations,
+              }))}
+            />
+          </div>
         </Modal>
       )}
       {/* Modal para registrar alimentação */}

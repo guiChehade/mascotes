@@ -263,10 +263,6 @@ th {
   flex-direction: column-reverse;
 }
 
-.mealTimeRadio input[type="radio"] {
-  /* display: none; */
-}
-
 .mealTimeRadio label {
   display: flex;
   align-items: center;
@@ -303,7 +299,6 @@ th {
   cursor: pointer;
   transition: background-color 0.3s, color 0.3s;
   font-weight: bold;
-
 }
 
 .locationTab:hover {
@@ -411,4 +406,11 @@ th {
 /* Estilização do Input de Observação quando desabilitado */
 .observationInput input:disabled::placeholder {
   color: #ccc;
+}
+
+.modalContent {
+  max-height: 70vh;
+  overflow-y: auto;
+  width: 100%;
+  transition: all 0.3s ease;
 }
